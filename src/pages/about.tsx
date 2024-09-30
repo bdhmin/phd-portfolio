@@ -21,9 +21,11 @@ export const About = () => {
             <div>
               <p>
                 I'm a first-year PhD student at{' '}
-                <Tag name="ucsd">UC San Diego</Tag> doing research in
-                Human-Computer Interaction. I work with <b>Haijun Xia</b> as a
-                member of the <Tag name="creativity">Creativity Lab</Tag>.
+                <Tag name="ucsd">UC San Diego</Tag> in the{' '}
+                <Tag name="cogsci">Department of Cognitive Science</Tag> doing
+                research in Human-Computer Interaction. I work with{' '}
+                <b>Haijun Xia</b> as a member of the{' '}
+                <Tag name="creativity">Creativity Lab</Tag>.
               </p>
             </div>
           </div>

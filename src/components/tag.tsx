@@ -19,6 +19,10 @@ export const Tag = ({ name, children }: { name: string; children: any }) => {
       color: '#00629B',
       url: 'https://ucsd.edu',
     },
+    cogsci: {
+      color: '#EC6556',
+      url: 'https://cogsci.ucsd.edu/graduates/phd-program/index.html',
+    },
     masonview: {
       color: '#f0b051',
       url: 'https://creativity.ucsd.edu/masonview',
