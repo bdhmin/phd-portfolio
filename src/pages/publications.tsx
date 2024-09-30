@@ -60,7 +60,7 @@ export const Publications = () => {
                 ) : (
                   publication.resources.map((resource) => (
                     <a
-                      className="text-zinc-400 hover:text-zinc-700 hover:font-semibold transition-all"
+                      className="text-zinc-400 hover:text-zinc-700 hover:font-[640] transition-all"
                       key={resource.type}
                       // style={{ pointerEvents: '' }}
                       href={resource.link}
