@@ -29,7 +29,7 @@ export const publications = [
         link: `/papers/chi24-sensemaking.pdf`,
       },
     ],
-    thumbnail: '/thumbnails/choiceMates.jpg',
+    thumbnail: '/thumbnails/choicemates.jpg',
     award: '',
     note: ''
   },
