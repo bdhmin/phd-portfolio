@@ -1,7 +1,7 @@
 import { serif } from '@/app/fonts';
-import { Tag } from '@/components/tag';
+import Tag from '@/components/tag';
 
-export const About = () => {
+export default function About() {
   return (
     <div className="flex flex-col gap-6">
       <div className="px-4 w-full flex flex-col md:flex-row gap-8 justify-start">
@@ -54,4 +54,4 @@ export const About = () => {
       </div>
     </div>
   );
-};
+}

@@ -1,6 +1,6 @@
-import { About } from '@/pages/about';
-import { Contact } from '@/pages/contact';
-import { Publications } from '@/pages/publications';
+import About from '@/pages/about';
+import Contact from '@/pages/contact';
+import Publications from '@/pages/publications';
 import Image from 'next/image';
 
 export default function Home() {

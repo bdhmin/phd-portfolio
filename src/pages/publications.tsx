@@ -1,7 +1,7 @@
 import { serif } from '@/app/fonts';
 import { publications } from '@/lib/publications-data';
 
-export const Publications = () => {
+export default function Publications() {
   return (
     <div className="mt-20">
       <div className={`mb-6 font-semibold text-2xl ${serif.className}`}>
@@ -80,4 +80,4 @@ export const Publications = () => {
       </div>
     </div>
   );
-};
+}

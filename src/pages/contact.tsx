@@ -1,7 +1,7 @@
 import { serif } from '@/app/fonts';
 import { publications } from '@/lib/publications-data';
 
-export const Contact = () => {
+export default function Contact() {
   return (
     <div className="mt-10 flex flex-col justify-center">
       {/* <div className={`mb-6 font-semibold text-2xl ${serif.className}`}>
@@ -28,4 +28,4 @@ export const Contact = () => {
       </div>
     </div>
   );
-};
+}

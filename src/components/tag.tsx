@@ -2,7 +2,13 @@
 
 import { useState } from 'react';
 
-export const Tag = ({ name, children }: { name: string; children: any }) => {
+export default function Tag({
+  name,
+  children,
+}: {
+  name: string;
+  children: any;
+}) {
   const [isHovered, setIsHovered] = useState(false);
 
   const linkMap: {
@@ -51,4 +57,4 @@ export const Tag = ({ name, children }: { name: string; children: any }) => {
       {children}
     </a>
   );
-};
+}
