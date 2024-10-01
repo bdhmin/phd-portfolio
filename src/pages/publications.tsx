@@ -2,11 +2,20 @@
 
 import { serif } from '@/app/fonts';
 import { publications } from '@/lib/publications-data';
+import { useEffect, useState } from 'react';
 
 export default function Publications() {
-  const isDarkMode =
-    window.matchMedia &&
-    window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    // Check if window is available (client-side)
+    if (typeof window !== 'undefined') {
+      const darkMode =
+        window.matchMedia &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches;
+      setIsDarkMode(darkMode);
+    }
+  }, []);
 
   return (
     <div className="mt-20">

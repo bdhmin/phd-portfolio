@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function Tag({
   name,
@@ -10,9 +10,17 @@ export default function Tag({
   children: any;
 }) {
   const [isHovered, setIsHovered] = useState(false);
-  const isDarkMode =
-    window.matchMedia &&
-    window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    // Check if window is available (client-side)
+    if (typeof window !== 'undefined') {
+      const darkMode =
+        window.matchMedia &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches;
+      setIsDarkMode(darkMode);
+    }
+  }, []);
   const linkMap: {
     [key: string]: {
       color: string;
