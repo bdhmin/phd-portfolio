@@ -3,22 +3,22 @@ import { publications } from '@/lib/publications-data';
 
 export const Publications = () => {
   return (
-    <div>
+    <div className="mt-20">
       <div className={`mb-6 font-semibold text-2xl ${serif.className}`}>
         Publications
       </div>
-      <div className="flex flex-col gap-6 px-4">
+      <div className="flex flex-col gap-12 md:gap-6 px-4">
         {publications.map((publication) => (
-          <div className="flex items-center w-full gap-8">
-            <div className="w-[240px] min-w-[240px] border border-zinc-200 rounded-sm">
+          <div className="flex flex-col md:flex-row items-start md:items-center w-full gap-4 md:gap-8">
+            <div className="max-w-[400px] md:w-[240px] md:min-w-[240px] border border-zinc-200 rounded-sm">
               <img
                 className="w-full"
                 src={publication.thumbnail}
                 alt={publication.title}
               />
             </div>
-            <div className="flex flex-col gap-0.5 w-full">
-              <h3 className="text-[1.05rem] font-[570]">
+            <div className="flex flex-col gap-1 w-full">
+              <h3 className="text-[1.05rem] leading-snug font-[570]">
                 {publication.title ? (
                   <>
                     {publication.title}: {publication.subtitle}
