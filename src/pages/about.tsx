@@ -5,7 +5,7 @@ export default function About() {
   return (
     <div className="flex flex-col gap-6">
       <div className="px-4 w-full flex flex-col md:flex-row gap-8 justify-start">
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col items-center gap-2">
           <div className="max-w-[380px] min-w-[130px] w-full md:min-w-[240px] md:w-[240px] md:h-[280px] rounded-sm overflow-hidden">
             <img
               className="w-full h-full object-cover"
@@ -42,7 +42,8 @@ export default function About() {
             natual language queries to AI.
           </p>
           <p>
-            You can reach me via email: <b>bdmin@ucsd.edu</b>
+            You can reach me via email:{' '}
+            <span className="font-semibold">bdmin@ucsd.edu</span>
           </p>
           {/* <div className="flex flex-col">
             <p>bdmin@ucsd.edu</p>

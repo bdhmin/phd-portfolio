@@ -10,7 +10,9 @@ export default function Tag({
   children: any;
 }) {
   const [isHovered, setIsHovered] = useState(false);
-
+  const isDarkMode =
+    window.matchMedia &&
+    window.matchMedia('(prefers-color-scheme: dark)').matches;
   const linkMap: {
     [key: string]: {
       color: string;
@@ -18,15 +20,15 @@ export default function Tag({
     };
   } = {
     creativity: {
-      color: '#9c9a99',
+      color: isDarkMode ? '#D7CAC3' : '#A19792',
       url: 'https://creativity.ucsd.edu/',
     },
     ucsd: {
-      color: '#00629B',
+      color: isDarkMode ? '#54AEE2' : '#00629B',
       url: 'https://ucsd.edu',
     },
     cogsci: {
-      color: '#EC6556',
+      color: isDarkMode ? '#F48175' : '#EC6556',
       url: 'https://cogsci.ucsd.edu/graduates/phd-program/index.html',
     },
     masonview: {
@@ -48,7 +50,7 @@ export default function Tag({
       target="_blank"
       rel="noreferrer"
       style={{
-        color: isHovered ? link.color : 'initial',
+        color: isHovered ? link.color : '',
         fontWeight: isHovered ? 500 : 640,
       }}
       onMouseEnter={() => setIsHovered(true)}

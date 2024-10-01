@@ -1,7 +1,13 @@
+'use client';
+
 import { serif } from '@/app/fonts';
 import { publications } from '@/lib/publications-data';
 
 export default function Publications() {
+  const isDarkMode =
+    window.matchMedia &&
+    window.matchMedia('(prefers-color-scheme: dark)').matches;
+
   return (
     <div className="mt-20">
       <div className={`mb-6 font-semibold text-2xl ${serif.className}`}>
@@ -9,7 +15,7 @@ export default function Publications() {
       </div>
       <div className="flex flex-col gap-12 md:gap-6 px-4">
         {publications.map((publication) => (
-          <div className="flex flex-col md:flex-row items-start md:items-center w-full gap-4 md:gap-8">
+          <div className="flex flex-col md:flex-row items-center md:items-center w-full gap-4 md:gap-8">
             <div className="max-w-[400px] md:w-[240px] md:min-w-[240px] border border-zinc-200 rounded-sm">
               <img
                 className="w-full"
@@ -48,7 +54,7 @@ export default function Publications() {
                 ))}
               </div>
               <div className="h-[6px]" />
-              <div className="flex gap-4">
+              <div className="w-full sm:flex flex-wrap items-center gap-4">
                 <h5 className="">{publication.venue}</h5>
                 <h5 className="font-semibold text-[#f19a21]">
                   {publication.award}
@@ -60,7 +66,9 @@ export default function Publications() {
                 ) : (
                   publication.resources.map((resource) => (
                     <a
-                      className="text-zinc-400 hover:text-zinc-700 hover:font-[640] transition-all"
+                      className={`text-zinc-400 hover:${
+                        isDarkMode ? 'text-white' : 'text-zinc-700'
+                      } hover:font-[640] transition-all`}
                       key={resource.type}
                       // style={{ pointerEvents: '' }}
                       href={resource.link}
