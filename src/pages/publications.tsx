@@ -24,8 +24,11 @@ export default function Publications() {
       </div>
       <div className="flex flex-col gap-12 md:gap-6 px-4">
         {publications.map((publication) => (
-          <div className="flex flex-col md:flex-row items-center md:items-center w-full gap-4 md:gap-8">
-            <div className="max-w-[400px] md:w-[240px] md:min-w-[240px] border border-zinc-200 rounded-sm">
+          <div
+            key={publication.subtitle}
+            className="flex flex-col md:flex-row items-center md:items-center w-full gap-4 md:gap-8"
+          >
+            <div className="max-w-[400px] md:w-[240px] md:min-w-[240px] border border-zinc-200 overflow-hidden rounded-sm">
               <img
                 className="w-full"
                 src={publication.thumbnail}
@@ -41,14 +44,6 @@ export default function Publications() {
                 ) : (
                   <>{publication.subtitle}</>
                 )}
-                {/* {publication.title ? (
-                  <>
-                    <b>{publication.title}</b>:{' '}
-                    <span className="font-[480]">{publication.subtitle}</span>
-                  </>
-                ) : (
-                  <span className="font-[480]">{publication.subtitle}</span>
-                )} */}
               </h3>
               <div className="">
                 {publication.authors.map((author, index) => (
