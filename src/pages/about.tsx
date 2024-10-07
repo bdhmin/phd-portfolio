@@ -39,7 +39,7 @@ export default function About() {
             interaction techniques in foundational design patterns that gives
             end-users this control to customize their interface. These
             techniques could either be supported by direct manipulation or
-            natual language queries to AI.
+            natural language queries to AI.
           </p>
           <p>
             You can reach me via email:{' '}
