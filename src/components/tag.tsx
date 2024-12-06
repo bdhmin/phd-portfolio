@@ -29,7 +29,7 @@ export default function Tag({
   } = {
     creativity: {
       color: isDarkMode ? '#D7CAC3' : '#A19792',
-      url: 'https://creativity.ucsd.edu/',
+      url: 'https://hci.ucsd.edu/',
     },
     ucsd: {
       color: isDarkMode ? '#54AEE2' : '#00629B',
