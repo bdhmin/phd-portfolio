@@ -25,9 +25,9 @@ export default function About() {
             <p>
               I'm a first-year PhD student at{' '}
               <Tag name="ucsd">UC San Diego</Tag> in the{' '}
-              <Tag name="cogsci">Department of Cognitive Science</Tag> doing
+              <Tag name="cogsci">Cognitive Science Department</Tag> doing
               research in Human-Computer Interaction. I work with{' '}
-              <b>Haijun Xia</b> as part of the{' '}
+              <b>Haijun Xia</b> as a member of the{' '}
               <Tag name="creativity">Foundation Interface Lab</Tag>.
             </p>
           </div>
