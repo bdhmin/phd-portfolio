@@ -37,10 +37,12 @@ export default function Publications() {
             </div>
             <div className="flex flex-col gap-1 w-full">
               <h3 className="text-[1.05rem] leading-snug font-[570]">
-                {publication.title ? (
+                {publication.title && publication.subtitle ? (
                   <>
                     {publication.title}: {publication.subtitle}
                   </>
+                ) : publication.title ? (
+                  <>{publication.title}</>
                 ) : (
                   <>{publication.subtitle}</>
                 )}

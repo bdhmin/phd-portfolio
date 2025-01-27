@@ -12,7 +12,7 @@ export default function Home() {
         <Publications />
       </main>
       <footer className="flex flex-wrap items-center justify-center p-8 text-zinc-400">
-        Last Updated: December 6, 2024
+        Last Updated: January 27, 2025
       </footer>
     </div>
   );

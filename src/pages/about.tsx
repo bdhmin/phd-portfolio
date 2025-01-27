@@ -23,7 +23,7 @@ export default function About() {
           </div>
           <div className="flex flex-col gap-6">
             <p>
-              I'm a first-year PhD student at{' '}
+              I'm a first-year Ph.D. student at{' '}
               <Tag name="ucsd">UC San Diego</Tag> in the{' '}
               <Tag name="cogsci">Cognitive Science Department</Tag> doing
               research in Human-Computer Interaction. I work with{' '}

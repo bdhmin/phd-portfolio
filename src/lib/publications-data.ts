@@ -1,5 +1,24 @@
 export const publications = [
   {
+    title: 'Malleable Overview-Detail Interfaces',
+    subtitle: '',
+    authors: ['Bryan Min', 'Allen Chen', 'Yining Cao', 'Haijun Xia'],
+    venue: 'CHI 2025 (Conditionally Accepted)',
+    resources: [
+      // {
+      //   type: 'DOI',
+      //   link: 'https://dl.acm.org/doi/10.1145/3613904.3642400',
+      // },
+      // {
+      //   type: 'Paper',
+      //   link: `/papers/chi24-luminate.pdf`,
+      // },
+    ],
+    thumbnail: '/thumbnails/malleable-odi.png',
+    award: '',
+    note: ''
+  },
+  {
     title: 'Luminate',
     subtitle: 'Structured Generation and Exploration of Design Space with Large Language Models for Human-AI Co-Creation',
     authors: ['Sangho Suh*', 'Meng Chen*', 'Bryan Min', 'Toby Jia-Jun Li', 'Haijun Xia'],
