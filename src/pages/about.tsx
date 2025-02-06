@@ -32,13 +32,13 @@ export default function About() {
             </p>
           </div>
           <p>
-            My goal is to achieve <b>malleable interfaces</b> where end-users
-            can easily, expressively, and broadly customize, without complex
-            code or searching for settings in a bloated settings panel. I
-            explore novel interaction techniques in foundational design patterns
-            that give end-users this control to customize their interface. These
-            techniques could either be supported by direct manipulation or
-            natural language queries to AI.
+            My goal is to achieve <b>malleable interfaces</b>—ones where
+            end-users can easily, expressively, and broadly customize, without
+            complex code or searching for settings in a bloated settings panel.
+            I explore novel interaction techniques in foundational design
+            patterns that give end-users this control to customize their
+            interface. These techniques could either be supported by direct
+            manipulation or natural language queries to AI.
           </p>
           <p>
             You can reach me via email:{' '}
