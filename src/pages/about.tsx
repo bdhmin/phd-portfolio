@@ -56,35 +56,27 @@ export default function About() {
               Bryan Min
             </h1>
           </div>
-          <div className="md:mt-4">
-            I am dissatisfied with the limited capabilities end-users currently
-            have to interact with their software. I believe end-users need{' '}
-            <i>greater control</i> over their interfaces in a more{' '}
-            <i>frictionless</i> and <i>in-situ</i> manner.
-          </div>
-          <div>
-            To achieve this, I believe end-users need{' '}
-            <b>malleable interfaces</b>
-            —interfaces that allow them to easily, expressively, and broadly
-            customize their software without code or bloated lists of settings.
-            They also need <b>user-defined abstractions</b>
-            —abstractions that end-users can form to view exactly the details
-            and representations they need. I am exploring ways to fulfill these
-            needs by investigating interface design patterns and developing
-            novel interaction techniques to support tasks in diverse domains,
-            including sensemaking, information management, and generative AI
-            interaction.
-          </div>
-          <div className="flex flex-col gap-6">
-            <p>
-              I'm a first-year Ph.D. student at{' '}
-              <Tag name="ucsd">UC San Diego</Tag> in the{' '}
-              <Tag name="cogsci">Cognitive Science Department</Tag> doing
-              research in Human-Computer Interaction. I work with{' '}
-              <b>Haijun Xia</b> as a member of the{' '}
-              <Tag name="creativity">Foundation Interface Lab</Tag>.
-            </p>
-          </div>
+          <p>
+            I'm a first-year Ph.D. student at{' '}
+            <Tag name="ucsd">UC San Diego</Tag> in the{' '}
+            <Tag name="cogsci">Cognitive Science Department</Tag> doing research
+            in Human-Computer Interaction. I work with <b>Haijun Xia</b> as a
+            member of the <Tag name="creativity">Foundation Interface Lab</Tag>.
+          </p>
+          <p>
+            My research focuses on giving end-users greater control over their
+            interfaces in a frictionless, in-situ manner. I am building{' '}
+            <b>malleable interfaces</b>—interfaces that allow users to easily,
+            expressively, and broadly customize their software without code or
+            bloated lists of settings. A key approach is{' '}
+            <b>user-defined abstractions</b>, allowing users to shape their
+            interface's details and representations to fit their needs. To
+            enable such flexibility, I explore interface design patterns and
+            develop novel interaction techniques to facilitate customization and
+            control across diverse domains, including sensemaking, information
+            management, and generative AI interaction.
+            {/* I am investigating interface design patterns and developing novel interaction techniques to support such tasks in diverse domains, including sensemaking, information management, and generative AI interaction. */}
+          </p>
           <p>
             You can reach me via email:{' '}
             <span className="font-semibold">bdmin@ucsd.edu</span>
