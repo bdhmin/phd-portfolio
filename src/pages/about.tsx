@@ -38,9 +38,9 @@ export default function About() {
             exploring novel interaction techniques in foundational design
             patterns that give end-users this <i>easy malleability</i> to
             customize their interface. These techniques could either be through
-            direct manipulation or prompts to AI—regardless, I believe these
-            techniques must be seamless and in-situ such that the user feels
-            minimal friction.
+            direct manipulation or prompts to AI. Regardless, these techniques
+            should be seamless and in-situ such that the user feels minimal
+            friction.
           </p>
           <p>
             You can reach me via email:{' '}

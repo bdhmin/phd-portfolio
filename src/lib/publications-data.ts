@@ -3,7 +3,7 @@ export const publications = [
     title: 'Malleable Overview-Detail Interfaces',
     subtitle: '',
     authors: ['Bryan Min', 'Allen Chen', 'Yining Cao', 'Haijun Xia'],
-    venue: 'CHI 2025 (Conditionally Accepted)',
+    venue: 'CHI 2025',
     resources: [
       // {
       //   type: 'DOI',
