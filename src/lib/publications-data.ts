@@ -1,7 +1,24 @@
-export const publications = [
+export interface Paper {
+  title: string;
+  subtitle: string;
+  type: 'publication' | 'poster' | 'demo' | 'workshop' | 'abstract';
+  authors: string[];
+  venue: string;
+  resources: {
+    type: string;
+    link: string;
+  }[];
+  thumbnail: string;
+  award: string;
+  note: string;
+  tags: ('malleable' | 'human-ai' | 'abstraction')[];
+}
+
+export const papers: Paper[] = [
   {
     title: 'Malleable Overview-Detail Interfaces',
     subtitle: '',
+    type: 'publication',
     authors: ['Bryan Min', 'Allen Chen', 'Yining Cao', 'Haijun Xia'],
     venue: 'CHI 2025',
     resources: [
@@ -16,11 +33,31 @@ export const publications = [
     ],
     thumbnail: '/thumbnails/malleable-odi.png',
     award: '',
-    note: ''
+    note: '',
+    tags: ['malleable'],
+  },
+  {
+    title: 'Feedforward in Generative AI',
+    subtitle: 'Opportunities for a Design Space',
+    type: 'workshop',
+    authors: ['Bryan Min', 'Haijun Xia'],
+    venue: 'arXiv (February 2025)',
+    // venue: 'CHI 2025 Tools for Thought Workshop',
+    resources: [
+      // {
+      //   type: 'Paper',
+      //   link: `/papers/chi24-sensemaking.pdf`,
+      // },
+    ],
+    thumbnail: '/thumbnails/feedforward-genAI.png',
+    award: '',
+    note: '',
+    tags: ['human-ai'],
   },
   {
     title: 'Luminate',
     subtitle: 'Structured Generation and Exploration of Design Space with Large Language Models for Human-AI Co-Creation',
+    type: 'publication',
     authors: ['Sangho Suh*', 'Meng Chen*', 'Bryan Min', 'Toby Jia-Jun Li', 'Haijun Xia'],
     venue: 'CHI 2024',
     resources: [
@@ -32,25 +69,15 @@ export const publications = [
         type: 'Paper',
         link: `/papers/chi24-luminate.pdf`,
       },
+      {
+        type: 'Website',
+        link: `https://luminate-research.github.io/`,
+      },
     ],
     thumbnail: '/thumbnails/luminate.jpg',
     award: '',
-    note: ''
-  },
-  {
-    title: '',
-    subtitle: 'How do multiple LLM-powered conversational agents assist sensemaking and decision-making in an unfamiliar domain?',
-    authors: ['Jeongeon Park', 'Bryan Min', 'Jean Y. Song', 'Xiaojuan Ma', 'Juho Kim'],
-    venue: 'CHI 2024 Sensemaking Workshop',
-    resources: [
-      {
-        type: 'Paper',
-        link: `/papers/chi24-sensemaking.pdf`,
-      },
-    ],
-    thumbnail: '/thumbnails/choicemates.jpg',
-    award: '',
-    note: ''
+    note: '',
+    tags: ['human-ai'],
   },
   // {
   //   title: 'ChoiceMates',
@@ -72,8 +99,26 @@ export const publications = [
   //   note: ''
   // },
   {
+    title: '',
+    subtitle: 'How do multiple LLM-powered conversational agents assist sensemaking and decision-making in an unfamiliar domain?',
+    type: 'workshop',
+    authors: ['Jeongeon Park', 'Bryan Min', 'Jean Y. Song', 'Xiaojuan Ma', 'Juho Kim'],
+    venue: 'CHI 2024 Sensemaking Workshop',
+    resources: [
+      {
+        type: 'Paper',
+        link: `/papers/chi24-sensemaking.pdf`,
+      },
+    ],
+    thumbnail: '/thumbnails/choicemates.jpg',
+    award: '',
+    note: '',
+    tags: ['human-ai'],
+  },
+  {
     title: 'Demonstration of Masonview',
     subtitle: 'Content-Driven Viewport Management',
+    type: 'demo',
     authors: ['Bryan Min', 'Matthew T Beaudouin-Lafon', 'Sangho Suh', 'Haijun Xia'],
     venue: 'UIST 2023 Demos',
     resources: [
@@ -99,12 +144,14 @@ export const publications = [
       },
     ],
     thumbnail: '/thumbnails/masonview.jpg',
-    award: 'Best Demo Honorable Mention',
-    note: ''
+    award: "Best Demo Honorable Mention (Jury's Choice)",
+    note: '',
+    tags: ['malleable'],
   },
   {
     title: 'Sensecape',
     subtitle: 'Enabling Multilevel Exploration and Sensemaking with Large Language Models',
+    type: 'publication',
     authors: ['Sangho Suh', 'Bryan Min', 'Srishti Palani', 'Haijun Xia'],
     venue: 'UIST 2023',
     resources: [
@@ -135,6 +182,7 @@ export const publications = [
     ],
     thumbnail: '/thumbnails/sensecape.png',
     award: '',
-    note: ''
+    note: '',
+    tags: ['human-ai'],
   }
 ]

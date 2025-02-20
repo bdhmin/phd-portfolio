@@ -21,6 +21,24 @@ export default function About() {
               Bryan Min
             </h1>
           </div>
+          <div>
+            I am dissatisfied with the current capabilities end-users have to
+            interact with their software. I believe end-users need{' '}
+            <i>greater control</i> over their interfaces, particularly in a{' '}
+            <i>frictionless</i> and <i>in-situ</i> manner.
+          </div>
+          <div>
+            To achieve this, end-users need <b>malleable interfaces</b>
+            —interfaces that allow them to easily, expressively, and broadly
+            customize their software without code or bloated lists of settings.
+            Additionally, they need <b>user-defined abstractions</b>
+            —abstractions that end-users can form to view exactly the details
+            and representations they need. I am exploring ways to fulfill these
+            needs by investigating interface design patterns and developing
+            novel interaction techniques to support tasks in diverse domains,
+            including sensemaking, information management, and generative AI
+            interaction.
+          </div>
           <div className="flex flex-col gap-6">
             <p>
               I'm a first-year Ph.D. student at{' '}
@@ -32,20 +50,10 @@ export default function About() {
             </p>
           </div>
           <p>
-            My goal is to achieve <b>malleable interfaces</b>—ones where
-            end-users can easily, expressively, and broadly customize without
-            complex code or a bloated settings panel. To achieve this, I'm
-            exploring novel interaction techniques in foundational design
-            patterns that give end-users this <i>easy malleability</i> to
-            customize their interface. These techniques could either be through
-            direct manipulation or prompts to AI. Regardless, these techniques
-            should be seamless and in-situ such that the user feels minimal
-            friction.
-          </p>
-          <p>
             You can reach me via email:{' '}
             <span className="font-semibold">bdmin@ucsd.edu</span>
           </p>
+
           {/* <div className="flex flex-col">
             <p>bdmin@ucsd.edu</p>
             <p>Github</p>
@@ -57,3 +65,37 @@ export default function About() {
     </div>
   );
 }
+
+{
+  /* <b>
+              I envision end-users will be in greater control over their
+              software interfaces, particularly in a frictionless and in-situ
+              manner.
+            </b>{' '} */
+}
+
+// that <b>interfaces must be malleable</b>
+//             To achieve this vision, I primarily investigate three domains:
+//             <div className="flex flex-wrap justify-center gap-3 my-2">
+//               {[
+//                 'Malleable Interfaces',
+//                 'User-Defined Abstractions',
+//                 'Human-AI Collaboration',
+//               ].map((domain) => (
+//                 <div className="px-3 py-[0.5] font-medium bg-zinc-200 rounded-sm">
+//                   {domain}
+//                 </div>
+//               ))}
+//             </div>
+//             1. Malleability, 2. User-Defined Abstractions, and 3. Human-AI
+//             Interaction. pushing for interfaces to be <b>malleable</b>
+//             —ones where end-users can easily, expressively, and broadly
+//             customize without code or bloated lists of settings. I am also
+//             pushing for end-users to be able to{' '}
+//             <b>form their own abstractions</b> in interfaces. —ones where
+//             end-users can easily, expressively, and broadly customize without
+//             complex code or a bloated settings panel. To achieve this, I'm
+//             exploring novel interaction techniques in foundational design
+//             patterns that give end-users this <i>easy malleability</i> to
+//             customize their interface. I Regardless, these techniques should be
+//             seamless and in-situ such that the user feels minimal friction.

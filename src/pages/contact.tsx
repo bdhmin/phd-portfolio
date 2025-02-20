@@ -1,5 +1,5 @@
 import { serif } from '@/app/fonts';
-import { publications } from '@/lib/publications-data';
+import { papers } from '@/lib/publications-data';
 
 export default function Contact() {
   return (
