@@ -57,8 +57,8 @@ export default function About() {
             </h1>
           </div>
           <div className="md:mt-4">
-            I am dissatisfied with the limited capabilities end-users have to
-            interact with their software. I believe end-users need{' '}
+            I am dissatisfied with the limited capabilities end-users currntly
+            have to interact with their software. I believe end-users need{' '}
             <i>greater control</i> over their interfaces in a more{' '}
             <i>frictionless</i> and <i>in-situ</i> manner.
           </div>
