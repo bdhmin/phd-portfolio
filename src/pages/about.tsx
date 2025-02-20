@@ -67,7 +67,7 @@ export default function About() {
             <b>malleable interfaces</b>
             —interfaces that allow them to easily, expressively, and broadly
             customize their software without code or bloated lists of settings.
-            Additionally, they need <b>user-defined abstractions</b>
+            They also need <b>user-defined abstractions</b>
             —abstractions that end-users can form to view exactly the details
             and representations they need. I am exploring ways to fulfill these
             needs by investigating interface design patterns and developing
