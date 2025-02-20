@@ -3,6 +3,37 @@ import Tag from '@/components/tag';
 import Link from '@/assets/link.svg';
 
 export default function About() {
+  const Links = () => {
+    return (
+      <div className="w-fit flex flex-row flex-wrap gap-6 my-2">
+        {[
+          {
+            name: 'Scholar',
+            link: 'https://scholar.google.com/citations?user=12yN6_gAAAAJ&hl=en',
+          },
+          {
+            name: 'Github',
+            link: 'https://github.com/bdhmin',
+          },
+          {
+            name: 'Twitter',
+            link: 'https://twitter.com/BryanDMin',
+          },
+        ].map((url) => (
+          <a
+            className="group flex flex-row items-center gap-[4px] hover:text-zinc-400 transition"
+            href={url.link}
+          >
+            {url.name}
+            <span className="opacity-100 group-hover:opacity-30 transition">
+              <Link />
+            </span>
+          </a>
+        ))}
+      </div>
+    );
+  };
+
   return (
     <div className="flex flex-col gap-6">
       <div className="px-4 w-full flex flex-col md:flex-row gap-8 justify-start">
@@ -14,31 +45,8 @@ export default function About() {
               alt="A medium close-up portrait photo of Bryan Min"
             />
           </div>
-          <div className="w-fit flex flex-row gap-6 my-2 mx-4">
-            {[
-              {
-                name: 'Scholar',
-                link: 'https://scholar.google.com/citations?user=12yN6_gAAAAJ&hl=en',
-              },
-              {
-                name: 'Github',
-                link: 'https://github.com/bdhmin',
-              },
-              {
-                name: 'Twitter',
-                link: 'https://twitter.com/BryanDMin',
-              },
-            ].map((url) => (
-              <a
-                className="group flex flex-row items-center gap-[4px] hover:text-zinc-400 transition"
-                href={url.link}
-              >
-                {url.name}
-                <span className="opacity-100 group-hover:opacity-30 transition">
-                  <Link />
-                </span>
-              </a>
-            ))}
+          <div className="hidden md:block">
+            <Links />
           </div>
           {/* <p>bdmin@ucsd.edu</p> */}
         </div>
@@ -48,7 +56,7 @@ export default function About() {
               Bryan Min
             </h1>
           </div>
-          <div className="mt-4">
+          <div className="md:mt-4">
             I am dissatisfied with the limited capabilities end-users have to
             interact with their software. I believe end-users need{' '}
             <i>greater control</i> over their interfaces in a more{' '}
@@ -81,6 +89,9 @@ export default function About() {
             You can reach me via email:{' '}
             <span className="font-semibold">bdmin@ucsd.edu</span>
           </p>
+          <div className="block md:hidden">
+            <Links />
+          </div>
 
           {/* <div className="flex flex-col">
             <p>bdmin@ucsd.edu</p>
