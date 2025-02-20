@@ -34,7 +34,7 @@ export default function Publications() {
       papers: papers.filter((paper) => paper.tags.includes('malleable')),
     },
     {
-      name: 'Human-AI Collaboration',
+      name: 'Human-AI Interaction',
       papers: papers.filter((paper) => paper.tags.includes('human-ai')),
     },
   ];

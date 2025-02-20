@@ -11,7 +11,8 @@
   "dependencies": {
     "react": "^18",
     "react-dom": "^18",
-    "next": "14.2.13"
+    "next": "14.2.13",
+    "@svgr/webpack": "^8.1.0"
   },
   "devDependencies": {
     "typescript": "^5",
