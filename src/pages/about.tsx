@@ -45,7 +45,7 @@ export default function About() {
               alt="A medium close-up portrait photo of Bryan Min"
             />
           </div>
-          <div className="hidden md:block">
+          <div className="hidden md:block mt-2">
             <Links />
           </div>
           {/* <p>bdmin@ucsd.edu</p> */}

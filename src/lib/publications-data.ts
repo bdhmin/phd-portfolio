@@ -44,6 +44,10 @@ export const papers: Paper[] = [
     venue: 'arXiv (February 2025)',
     // venue: 'CHI 2025 Tools for Thought Workshop',
     resources: [
+      {
+        type: 'DOI',
+        link: `https://arxiv.org/abs/2502.14229`,
+      },
       // {
       //   type: 'Paper',
       //   link: `/papers/chi24-sensemaking.pdf`,
