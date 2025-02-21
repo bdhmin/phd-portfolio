@@ -48,10 +48,10 @@ export const papers: Paper[] = [
         type: 'DOI',
         link: `https://arxiv.org/abs/2502.14229`,
       },
-      // {
-      //   type: 'Paper',
-      //   link: `/papers/chi24-sensemaking.pdf`,
-      // },
+      {
+        type: 'Paper',
+        link: `/papers/arxiv-feedforward-genAI.pdf`,
+      },
     ],
     thumbnail: '/thumbnails/feedforward-genAI.png',
     award: '',
