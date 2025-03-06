@@ -20,16 +20,16 @@ export const papers: Paper[] = [
     subtitle: '',
     type: 'publication',
     authors: ['Bryan Min', 'Allen Chen', 'Yining Cao', 'Haijun Xia'],
-    venue: 'CHI 2025',
+    venue: 'CHI 2025 (to appear)',
     resources: [
       // {
       //   type: 'DOI',
       //   link: 'https://dl.acm.org/doi/10.1145/3613904.3642400',
       // },
-      // {
-      //   type: 'Paper',
-      //   link: `/papers/chi24-luminate.pdf`,
-      // },
+      {
+        type: 'Paper',
+        link: `/papers/chi25-malleable-odi.pdf`,
+      },
     ],
     thumbnail: '/thumbnails/malleable-odi.png',
     award: '',
