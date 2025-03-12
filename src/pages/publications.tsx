@@ -41,13 +41,13 @@ export default function Publications() {
 
   return (
     <div className="flex flex-col gap-20 mt-20">
-      {topicOrganization.map((paper) => (
+      {topicOrganization.map((topic) => (
         <div>
           <div className={`mb-6 font-semibold text-2xl ${serif.className}`}>
-            {paper.name}
+            {topic.name}
           </div>
-          <div className="flex flex-col gap-12 md:gap-6 px-4">
-            {paper.papers.map((publication) => (
+          <div className="flex flex-col gap-12 md:gap-6">
+            {topic.papers.map((publication) => (
               <div
                 key={publication.subtitle}
                 className="flex flex-col md:flex-row items-center md:items-center w-full gap-4 md:gap-8"
