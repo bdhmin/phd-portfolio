@@ -41,8 +41,8 @@ export const papers: Paper[] = [
     subtitle: 'Opportunities for a Design Space',
     type: 'workshop',
     authors: ['Bryan Min', 'Haijun Xia'],
-    venue: 'arXiv (February 2025)',
-    // venue: 'CHI 2025 Tools for Thought Workshop',
+    // venue: 'arXiv (February 2025)',
+    venue: 'CHI 2025 Tools for Thought Workshop',
     resources: [
       {
         type: 'DOI',
