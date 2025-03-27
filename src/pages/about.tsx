@@ -68,7 +68,7 @@ export default function About() {
             interfaces in a frictionless, in-situ manner. I am building{' '}
             <b>malleable interfaces</b>—interfaces that allow users to easily,
             expressively, and broadly customize their software without code or
-            bloated lists of settings. A key approach is{' '}
+            bloated lists of settings. A key perspective of mine is to provide{' '}
             <b>user-defined abstractions</b>, allowing users to shape their
             interface's details and representations to fit their needs. To
             enable such flexibility, I explore interface design patterns and

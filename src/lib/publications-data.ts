@@ -20,7 +20,7 @@ export const papers: Paper[] = [
     subtitle: '',
     type: 'publication',
     authors: ['Bryan Min', 'Allen Chen', 'Yining Cao', 'Haijun Xia'],
-    venue: 'CHI 2025 (to appear)',
+    venue: 'CHI 2025',
     resources: [
       // {
       //   type: 'DOI',
