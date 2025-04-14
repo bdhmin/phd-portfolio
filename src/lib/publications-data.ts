@@ -42,7 +42,7 @@ export const papers: Paper[] = [
     type: 'workshop',
     authors: ['Bryan Min', 'Haijun Xia'],
     // venue: 'arXiv (February 2025)',
-    venue: 'CHI 2025 Tools for Thought Workshop',
+    venue: 'CHI 2025 Workshop on Tools for Thought',
     resources: [
       {
         type: 'DOI',
@@ -50,7 +50,7 @@ export const papers: Paper[] = [
       },
       {
         type: 'Paper',
-        link: `/papers/arxiv-feedforward-genAI.pdf`,
+        link: `/papers/chi24-workshop-feedforward-genAI.pdf`,
       },
     ],
     thumbnail: '/thumbnails/feedforward-genAI.png',
