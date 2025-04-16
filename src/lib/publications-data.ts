@@ -52,6 +52,10 @@ export const papers: Paper[] = [
         type: 'Paper',
         link: `/papers/chi24-workshop-feedforward-genAI.pdf`,
       },
+      {
+        type: 'Workshop',
+        link: `https://ai-tools-for-thought.github.io/workshop/`,
+      },
     ],
     thumbnail: '/thumbnails/feedforward-genAI.png',
     award: '',
