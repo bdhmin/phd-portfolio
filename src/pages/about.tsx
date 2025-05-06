@@ -17,7 +17,7 @@ export default function About() {
           },
           {
             name: 'Twitter',
-            link: 'https://twitter.com/BryanDMin',
+            link: 'https://twitter.com/bryandhmin',
           },
         ].map((url) => (
           <a
