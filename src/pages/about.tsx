@@ -64,18 +64,22 @@ export default function About() {
             member of the <Tag name="creativity">Foundation Interface Lab</Tag>.
           </p>
           <p>
-            My research focuses on giving end-users greater control over their
-            interfaces in a frictionless, in-situ manner. I am building{' '}
-            <b>malleable interfaces</b>—interfaces that allow users to easily,
-            expressively, and broadly customize their software without code or
-            bloated lists of settings. A key perspective of mine is to provide{' '}
-            <b>user-defined abstractions</b>, allowing users to shape their
-            interface's details and representations to fit their needs. To
-            enable such flexibility, I explore interface design patterns and
-            develop novel interaction techniques to facilitate customization and
-            control across diverse domains, including sensemaking, information
-            management, and generative AI interaction.
-            {/* I am investigating interface design patterns and developing novel interaction techniques to support such tasks in diverse domains, including sensemaking, information management, and generative AI interaction. */}
+            My research centers on the question:{' '}
+            <b>
+              How can we enable end users to <u>easily</u> customize their
+              interfaces?
+            </b>
+          </p>
+          <p>
+            I explore <b>malleable interfaces</b>—interfaces that empower users
+            to easily, expressively, and broadly customize their software
+            without code or bloated lists of settings. My current focus within
+            malleable interfaces is on <b>user-defined abstractions</b>: how
+            users can form custom, personalized representations of information
+            through the interface itself. This involves studying design
+            patterns, designing interaction techniques, and developing
+            theoretical frameworks that enable users to easily customize their
+            interfaces.
           </p>
           <p>
             You can reach me via email:{' '}
