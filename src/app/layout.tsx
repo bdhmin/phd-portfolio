@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Analytics } from '@vercel/analytics/next';
 import './globals.css';
 import { sansSerif } from './fonts';
 
@@ -15,6 +16,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${sansSerif.className} antialiased`}>{children}</body>
+      <Analytics />
     </html>
   );
 }
