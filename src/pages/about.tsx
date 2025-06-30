@@ -8,10 +8,10 @@ export default function About() {
       name: 'bdmin@ucsd.edu',
       link: '',
     },
-    // {
-    //   name: 'CV',
-    //   link: 'https://scholar.google.com/citations?user=12yN6_gAAAAJ&hl=en',
-    // },
+    {
+      name: 'CV',
+      link: 'https://drive.google.com/file/d/1QRxHPrn_d2tv947H3nf4uCfPLgEtRXHn/view?usp=sharing',
+    },
   ];
 
   const socialLinks = [
