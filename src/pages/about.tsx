@@ -105,10 +105,10 @@ export default function About() {
             My research centers on <b>malleable interfaces</b>—interfaces that
             enable users to easily, expressively, and broadly customize their
             software interface without code or bloated lists of settings.
-            Specifically, I'm exploring how users can create personal
+            Specifically, I'm exploring how users can create custom, personal
             abstractions of information through the interface. I analyze design
             patterns, develop interaction techniques, and create theoretical
-            frameworks that enable users to easily customize their interfaces.
+            frameworks for bringing malleable interfaces to more end-users.
           </p>
 
           {/* <div className="flex flex-col">
