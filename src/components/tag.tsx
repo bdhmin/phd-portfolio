@@ -31,6 +31,10 @@ export default function Tag({
       color: isDarkMode ? '#D7CAC3' : '#A19792',
       url: 'https://hci.ucsd.edu/',
     },
+    haijun: {
+      color: isDarkMode ? '#D7CAC3' : '#A19792',
+      url: 'https://hci.ucsd.edu/haijunxia',
+    },
     ucsd: {
       color: isDarkMode ? '#54AEE2' : '#00629B',
       url: 'https://ucsd.edu',
@@ -59,7 +63,7 @@ export default function Tag({
       rel="noreferrer"
       style={{
         color: isHovered ? link.color : '',
-        fontWeight: isHovered ? 500 : 640,
+        // fontWeight: isHovered ? 500 : 640,
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}

@@ -3,33 +3,57 @@ import Tag from '@/components/tag';
 import Link from '@/assets/link.svg';
 
 export default function About() {
-  const Links = () => {
+  const academicLinks = [
+    {
+      name: 'bdmin@ucsd.edu',
+      link: '',
+    },
+    // {
+    //   name: 'CV',
+    //   link: 'https://scholar.google.com/citations?user=12yN6_gAAAAJ&hl=en',
+    // },
+  ];
+
+  const socialLinks = [
+    {
+      name: 'Google Scholar',
+      link: 'https://scholar.google.com/citations?user=12yN6_gAAAAJ&hl=en',
+    },
+    {
+      name: 'GitHub',
+      link: 'https://github.com/bdhmin',
+    },
+    {
+      name: 'X',
+      link: 'https://twitter.com/bryandhmin',
+    },
+  ];
+
+  const Links = ({ links }: { links: { name: string; link: string }[] }) => {
     return (
-      <div className="w-fit flex flex-row flex-wrap gap-6 my-2">
-        {[
-          {
-            name: 'Scholar',
-            link: 'https://scholar.google.com/citations?user=12yN6_gAAAAJ&hl=en',
-          },
-          {
-            name: 'Github',
-            link: 'https://github.com/bdhmin',
-          },
-          {
-            name: 'Twitter',
-            link: 'https://twitter.com/bryandhmin',
-          },
-        ].map((url) => (
-          <a
-            className="group flex flex-row items-center gap-[4px] hover:text-zinc-400 transition"
-            href={url.link}
-          >
-            {url.name}
-            <span className="opacity-100 group-hover:opacity-30 transition">
-              <Link />
-            </span>
-          </a>
-        ))}
+      <div className="flex flex-row md:flex-col flex-wrap justify-start gap-x-8 gap-y-1 md:gap-1 text-zinc-500 md:mx-2 md:border-none md:text-black">
+        {/* <div className="w-fit flex flex-row flex-wrap gap-6 my-2"> */}
+        {links.map((url) =>
+          !url.name ? (
+            <div className="h-[1px] bg-zinc-200 my-2" />
+          ) : url.link ? (
+            <a
+              className="w-fit group flex flex-row items-center gap-[4px] hover:text-zinc-400 transition"
+              href={url.link}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {url.name}
+              <span className="opacity-50 md:opacity-100 group-hover:opacity-30 transition">
+                <Link />
+              </span>
+            </a>
+          ) : (
+            <p className="w-fit group flex flex-row items-center gap-[4px] transition">
+              {url.name}
+            </p>
+          )
+        )}
       </div>
     );
   };
@@ -37,20 +61,26 @@ export default function About() {
   return (
     <div className="flex flex-col gap-6">
       <div className="w-full flex flex-col md:flex-row gap-8 justify-start">
-        <div className="flex flex-col items-center gap-2">
-          <div className="max-w-[380px] min-w-[130px] w-full md:min-w-[240px] md:w-[240px] md:h-[280px] rounded-sm overflow-hidden">
+        <div className="flex flex-col items-start gap-2">
+          <div className="min-w-[200px] w-[200px] h-[240px] rounded-sm overflow-hidden">
             <img
               className="w-full h-full object-cover"
               src="portrait/portrait2023-1sq.JPEG"
               alt="A medium close-up portrait photo of Bryan Min"
             />
           </div>
-          <div className="hidden md:block mt-2">
-            <Links />
+
+          <div className="hidden md:block mt-2 w-full">
+            <Links links={academicLinks} />
+            <div className="h-[1px] bg-zinc-200 my-2" />
+            <Links links={socialLinks} />
           </div>
-          {/* <p>bdmin@ucsd.edu</p> */}
+
+          <div className="min-w-[200px] w-[200px] flex justify-start block md:hidden flex-row gap-6 my-2">
+            <Links links={[...academicLinks, ...socialLinks]} />
+          </div>
         </div>
-        <div className="w-full flex flex-col gap-4">
+        <div className="w-full flex flex-col gap-5 text-[15px]">
           <div className="flex flex-col gap-2">
             <h1 className={`font-semibold text-4xl ${serif.className}`}>
               Bryan Min
@@ -60,34 +90,26 @@ export default function About() {
             I'm a first-year Ph.D. student at{' '}
             <Tag name="ucsd">UC San Diego</Tag> in the{' '}
             <Tag name="cogsci">Cognitive Science Department</Tag> doing research
-            in Human-Computer Interaction. I work with <b>Haijun Xia</b> as a
-            member of the <Tag name="creativity">Foundation Interface Lab</Tag>.
+            in Human-Computer Interaction. I work with{' '}
+            <Tag name="haijun">Haijun Xia</Tag> as a member of the{' '}
+            <Tag name="creativity">Foundation Interface Lab</Tag>.
           </p>
-          <p>
+          {/* <p>
             My research centers on the question:{' '}
             <b>
               How can we enable end users to <u>easily</u> customize their
               interfaces?
             </b>
-          </p>
+          </p> */}
           <p>
-            I explore <b>malleable interfaces</b>—interfaces that empower users
-            to easily, expressively, and broadly customize their software
-            without code or bloated lists of settings. My current focus within
-            malleable interfaces is on <b>user-defined abstractions</b>: how
-            users can form custom, personalized representations of information
-            through the interface itself. This involves studying design
-            patterns, designing interaction techniques, and developing
-            theoretical frameworks that enable users to easily customize their
-            interfaces.
+            My research centers on <b>malleable interfaces</b>—interfaces that
+            enable users to easily, expressively, and broadly customize their
+            software interface without code or bloated lists of settings.
+            Specifically, I'm exploring how users can create personal
+            abstractions of information through the interface. I analyze design
+            patterns, develop interaction techniques, and create theoretical
+            frameworks that enable users to easily customize their interfaces.
           </p>
-          <p>
-            You can reach me via email:{' '}
-            <span className="font-semibold">bdmin@ucsd.edu</span>
-          </p>
-          <div className="block md:hidden">
-            <Links />
-          </div>
 
           {/* <div className="flex flex-col">
             <p>bdmin@ucsd.edu</p>

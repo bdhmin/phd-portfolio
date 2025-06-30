@@ -40,10 +40,10 @@ export default function Publications() {
   ];
 
   return (
-    <div className="flex flex-col gap-20 mt-20">
-      {topicOrganization.map((topic) => (
+    <div className="flex flex-col gap-20 mt-16">
+      {paperOrganization.map((topic) => (
         <div>
-          <div className={`mb-6 font-semibold text-2xl ${serif.className}`}>
+          <div className={`mb-6 font-semibold text-xl ${serif.className}`}>
             {topic.name}
           </div>
           <div className="flex flex-col gap-12 md:gap-6">
@@ -52,18 +52,28 @@ export default function Publications() {
                 key={publication.subtitle}
                 className="flex flex-col md:flex-row items-center md:items-center w-full gap-4 md:gap-8"
               >
-                <div className="max-w-[400px] md:w-[240px] md:min-w-[240px] border border-zinc-200 overflow-hidden rounded-sm">
+                <div className="max-w-[360px] md:w-[200px] md:min-w-[200px] border border-zinc-200 overflow-hidden rounded-sm">
                   <img
                     className="w-full"
                     src={publication.thumbnail}
                     alt={publication.title}
                   />
                 </div>
+
                 <div className="flex flex-col gap-1 w-full">
-                  <h3 className="text-[1.05rem] leading-snug font-[570]">
+                  <div className="w-full sm:flex flex-wrap text-[13px] text-zinc-500 items-center gap-4">
+                    <h5 className="">{publication.venue}</h5>
+                    <h5 className="font-semibold text-[#f19a21]">
+                      {publication.award}
+                    </h5>
+                  </div>
+                  <h3
+                    className={`text-[1rem] leading-snug font-medium my-1`}
+                    // className={`text-[1rem] leading-snug font-medium my-1 ${serif.className}`}
+                  >
                     {publication.title && publication.subtitle ? (
                       <>
-                        {publication.title}: {publication.subtitle}
+                        <b>{publication.title}</b>: {publication.subtitle}
                       </>
                     ) : publication.title ? (
                       <>{publication.title}</>
@@ -71,12 +81,12 @@ export default function Publications() {
                       <>{publication.subtitle}</>
                     )}
                   </h3>
-                  <div className="">
+                  <div className="text-[13px]">
                     {publication.authors.map((author, index) => (
                       <>
                         <span
                           style={{
-                            fontWeight: author === 'Bryan Min' ? 640 : 400,
+                            fontWeight: author === 'Bryan Min' ? 600 : 400,
                           }}
                         >
                           {author}
@@ -85,22 +95,16 @@ export default function Publications() {
                       </>
                     ))}
                   </div>
-                  <div className="h-[6px]" />
-                  <div className="w-full sm:flex flex-wrap items-center gap-4">
-                    <h5 className="">{publication.venue}</h5>
-                    <h5 className="font-semibold text-[#f19a21]">
-                      {publication.award}
-                    </h5>
-                  </div>
-                  <div className="flex gap-4">
+                  {/* <div className="h-[2px]" /> */}
+                  <div className="flex gap-4 text-[13px]">
                     {publication.resources.length === 0 ? (
                       <p className="text-zinc-400">Coming Soon</p>
                     ) : (
                       publication.resources.map((resource) => (
                         <a
-                          className={`text-zinc-400 hover:${
-                            isDarkMode ? 'text-white' : 'text-zinc-700'
-                          } hover:font-[640] transition-all`}
+                          className={`text-zinc-500 hover:${
+                            isDarkMode ? 'text-white' : 'text-zinc-600'
+                          } hover:text-zinc-800 transition-all`}
                           key={resource.type}
                           // style={{ pointerEvents: '' }}
                           href={resource.link}
