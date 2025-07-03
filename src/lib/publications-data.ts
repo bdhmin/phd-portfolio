@@ -22,13 +22,17 @@ export const papers: Paper[] = [
     authors: ['Bryan Min', 'Allen Chen', 'Yining Cao', 'Haijun Xia'],
     venue: 'CHI 2025',
     resources: [
-      // {
-      //   type: 'DOI',
-      //   link: 'https://dl.acm.org/doi/10.1145/3613904.3642400',
-      // },
+      {
+        type: 'DOI',
+        link: 'https://dl.acm.org/doi/10.1145/3706598.3714164',
+      },
       {
         type: 'Paper',
         link: `/papers/chi25-malleable-odi.pdf`,
+      },
+      {
+        type: 'Video',
+        link: `https://www.youtube.com/watch?v=XOlhkhsxREY`,
       },
     ],
     thumbnail: '/thumbnails/malleable-odi.png',
