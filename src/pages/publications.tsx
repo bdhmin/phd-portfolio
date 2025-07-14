@@ -52,7 +52,7 @@ export default function Publications() {
                 key={publication.title + publication.subtitle}
                 className="flex flex-col md:flex-row items-center md:items-center w-full gap-4 md:gap-8"
               >
-                <div className="max-w-[360px] md:w-[400px] md:min-w-[200px]  overflow-hidden rounded-sm">
+                <div className="max-w-[360px] md:w-[400px] md:min-w-[200px] border border-zinc-200 overflow-hidden rounded-sm">
                   <img
                     className="w-full"
                     src={publication.thumbnail}
