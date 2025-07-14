@@ -49,10 +49,10 @@ export default function Publications() {
           <div className="flex flex-col gap-12 md:gap-6">
             {topic.papers.map((publication) => (
               <div
-                key={publication.subtitle}
+                key={publication.title + publication.subtitle}
                 className="flex flex-col md:flex-row items-center md:items-center w-full gap-4 md:gap-8"
               >
-                <div className="max-w-[360px] md:w-[200px] md:min-w-[200px] border border-zinc-200 overflow-hidden rounded-sm">
+                <div className="max-w-[360px] md:w-[400px] md:min-w-[200px]  overflow-hidden rounded-sm">
                   <img
                     className="w-full"
                     src={publication.thumbnail}
@@ -68,12 +68,12 @@ export default function Publications() {
                     </h5>
                   </div>
                   <h3
-                    className={`text-[1rem] leading-snug font-medium my-1`}
+                    className={`text-[1rem] leading-snug font-semibold my-1`}
                     // className={`text-[1rem] leading-snug font-medium my-1 ${serif.className}`}
                   >
                     {publication.title && publication.subtitle ? (
                       <>
-                        <b>{publication.title}</b>: {publication.subtitle}
+                        {publication.title}: {publication.subtitle}
                       </>
                     ) : publication.title ? (
                       <>{publication.title}</>

@@ -16,6 +16,27 @@ export interface Paper {
 
 export const papers: Paper[] = [
   {
+    title: 'Meridian',
+    subtitle: 'A Design Framework for Malleable Overview-Detail Interfaces',
+    type: 'publication',
+    authors: ['Bryan Min', 'Haijun Xia'],
+    venue: 'UIST 2025',
+    resources: [
+      // {
+      //   type: 'DOI',
+      //   link: 'https://dl.acm.org/doi/10.1145/3613904.3642400',
+      // },
+      {
+        type: 'Paper',
+        link: `/papers/uist25-meridian.pdf`,
+      },
+    ],
+    thumbnail: '/thumbnails/meridian.png',
+    award: '',
+    note: '',
+    tags: ['malleable'],
+  },
+  {
     title: 'Malleable Overview-Detail Interfaces',
     subtitle: '',
     type: 'publication',
