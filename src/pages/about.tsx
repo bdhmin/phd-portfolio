@@ -31,7 +31,7 @@ export default function About() {
 
   const Links = ({ links }: { links: { name: string; link: string }[] }) => {
     return (
-      <div className="flex flex-row md:flex-col flex-wrap justify-start gap-x-8 gap-y-1 md:gap-1 text-zinc-500 md:mx-2 md:border-none md:text-black">
+      <div className="flex flex-col flex-wrap justify-start gap-x-8 gap-y-1 md:gap-1 text-zinc-500 md:mx-2 md:border-none md:text-black">
         {/* <div className="w-fit flex flex-row flex-wrap gap-6 my-2"> */}
         {links.map((url) =>
           !url.name ? (
@@ -62,22 +62,23 @@ export default function About() {
     <div className="flex flex-col gap-6">
       <div className="w-full flex flex-col md:flex-row gap-8 justify-start">
         <div className="flex flex-col items-start gap-2">
-          <div className="min-w-[200px] w-[200px] h-[240px] rounded-sm overflow-hidden">
-            <img
-              className="w-full h-full object-cover"
-              src="portrait/portrait2023-1sq.JPEG"
-              alt="A medium close-up portrait photo of Bryan Min"
-            />
+          <div className="flex flex-row gap-4">
+            <div className="min-w-[200px] w-[200px] h-[240px] rounded-sm overflow-hidden">
+              <img
+                className="w-full h-full object-cover"
+                src="portrait/portrait2023-1sq.JPEG"
+                alt="A medium close-up portrait photo of Bryan Min"
+              />
+            </div>
+            <div className="flex flex-col justify-start block md:hidden gap-6 my-2 pr-4">
+              <Links links={[...academicLinks, ...socialLinks]} />
+            </div>
           </div>
 
           <div className="hidden md:block mt-2 w-full">
             <Links links={academicLinks} />
             <div className="h-[1px] bg-zinc-200 my-2" />
             <Links links={socialLinks} />
-          </div>
-
-          <div className="min-w-[200px] w-[200px] flex justify-start block md:hidden flex-row gap-6 my-2">
-            <Links links={[...academicLinks, ...socialLinks]} />
           </div>
         </div>
         <div className="w-full flex flex-col gap-5 text-[15px]">
@@ -110,6 +111,15 @@ export default function About() {
             patterns, develop interaction techniques, and create theoretical
             frameworks for bringing malleable interfaces to more end-users.
           </p>
+
+          <div className="mt-4 flex flex-col gap-1 border-t border-zinc-200 pt-2">
+            <h2 className="font-semibold underline text-[16px]">News</h2>
+            <p>
+              <span className="font-semibold mr-2">Sept 28~Oct 1</span> I am
+              attending UIST 2025 in Busan, South Korea to present{' '}
+              <span className="font-semibold">Meridian</span>.
+            </p>
+          </div>
 
           {/* <div className="flex flex-col">
             <p>bdmin@ucsd.edu</p>
