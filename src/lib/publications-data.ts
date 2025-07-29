@@ -37,6 +37,31 @@ export const papers: Paper[] = [
     tags: ['malleable'],
   },
   {
+    title: 'Lessons from Designing a Course and Platform for Teaching Qualitative Analysis Experientially in a Large Course-Based Community Consultancy',
+    subtitle: '',
+    type: 'publication',
+    authors: ['Dustin Palea', 'Elijah Kirby', 'Madison Gruender', 'Bryan Min', 'Jessalyn Wang', 'David Lee'],
+    venue: 'ICER 2025',
+    resources: [
+      {
+        type: 'Website',
+        link: 'https://icer2025.acm.org/details/icer-2025-papers/5/Lessons-from-Designing-a-Course-and-Platform-for-Teaching-Qualitative-Analysis-Experi',
+      },
+      // {
+      //   type: 'DOI',
+      //   link: 'https://dl.acm.org/doi/10.1145/3613904.3642400',
+      // },
+      // {
+      //   type: 'Paper',
+      //   link: `/papers/uist25-meridian.pdf`,
+      // },
+    ],
+    thumbnail: '/thumbnails/annota.png',
+    award: '',
+    note: '',
+    tags: [],
+  },
+  {
     title: 'Malleable Overview-Detail Interfaces',
     subtitle: '',
     type: 'publication',

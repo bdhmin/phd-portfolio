@@ -70,8 +70,10 @@ export default function About() {
                 alt="A medium close-up portrait photo of Bryan Min"
               />
             </div>
-            <div className="flex flex-col justify-start block md:hidden gap-6 my-2 pr-4">
-              <Links links={[...academicLinks, ...socialLinks]} />
+            <div className="flex flex-col justify-start block md:hidden my-2 pr-4">
+              <Links links={academicLinks} />
+              <div className="h-[1px] bg-zinc-200 my-2" />
+              <Links links={socialLinks} />
             </div>
           </div>
 
@@ -115,7 +117,7 @@ export default function About() {
           <div className="mt-4 flex flex-col gap-1 border-t border-zinc-200 pt-2">
             <h2 className="font-semibold underline text-[16px]">News</h2>
             <p>
-              <span className="font-semibold mr-2">Sept 28~Oct 1</span> I am
+              <span className="font-semibold mr-2">Sept 28 - Oct 1</span> I am
               attending UIST 2025 in Busan, South Korea to present{' '}
               <span className="font-semibold">Meridian</span>.
             </p>
