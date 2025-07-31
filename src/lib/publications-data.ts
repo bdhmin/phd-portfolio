@@ -44,12 +44,12 @@ export const papers: Paper[] = [
     venue: 'ICER 2025',
     resources: [
       {
-        type: 'Website',
-        link: 'https://icer2025.acm.org/details/icer-2025-papers/5/Lessons-from-Designing-a-Course-and-Platform-for-Teaching-Qualitative-Analysis-Experi',
-      },
-      {
         type: 'DOI',
         link: 'https://dl.acm.org/doi/10.1145/3702652.3744206',
+      },
+      {
+        type: 'Website',
+        link: 'https://icer2025.acm.org/details/icer-2025-papers/5/Lessons-from-Designing-a-Course-and-Platform-for-Teaching-Qualitative-Analysis-Experi',
       },
       // {
       //   type: 'Paper',
