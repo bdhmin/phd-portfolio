@@ -30,6 +30,10 @@ export const papers: Paper[] = [
         type: 'Paper',
         link: `/papers/uist25-meridian.pdf`,
       },
+      {
+        type: 'Package',
+        link: `https://github.com/meridian-ui/meridian`,
+      },
     ],
     thumbnail: '/thumbnails/meridian.png',
     award: '',
