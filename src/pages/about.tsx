@@ -31,14 +31,14 @@ export default function About() {
 
   const Links = ({ links }: { links: { name: string; link: string }[] }) => {
     return (
-      <div className="flex flex-col flex-wrap justify-start gap-x-8 gap-y-1 md:gap-1 text-zinc-500 md:mx-2 md:border-none md:text-black">
+      <div className="flex flex-col flex-wrap justify-start gap-x-8 gap-y-1 md:gap-1 md:mx-2 md:border-none">
         {/* <div className="w-fit flex flex-row flex-wrap gap-6 my-2"> */}
         {links.map((url) =>
           !url.name ? (
-            <div className="h-[1px] bg-zinc-200 my-2" />
+            <div className="h-[1px] bg-zinc-200 dark:bg-zinc-700 my-2" />
           ) : url.link ? (
             <a
-              className="w-fit group flex flex-row items-center gap-[4px] hover:text-zinc-400 transition"
+              className="w-fit group flex flex-row items-center gap-[4px] hover:text-zinc-400 dark:hover:text-zinc-300 transition"
               href={url.link}
               target="_blank"
               rel="noreferrer"
@@ -72,14 +72,14 @@ export default function About() {
             </div>
             <div className="flex flex-col justify-start block md:hidden my-2 pr-4">
               <Links links={academicLinks} />
-              <div className="h-[1px] bg-zinc-200 my-2" />
+              <div className="h-[1px] bg-zinc-200 dark:bg-zinc-700 my-2" />
               <Links links={socialLinks} />
             </div>
           </div>
 
           <div className="hidden md:block mt-2 w-full">
             <Links links={academicLinks} />
-            <div className="h-[1px] bg-zinc-200 my-2" />
+            <div className="h-[1px] bg-zinc-200 dark:bg-zinc-700 my-2" />
             <Links links={socialLinks} />
           </div>
         </div>
@@ -90,8 +90,7 @@ export default function About() {
             </h1>
           </div>
           <p>
-            I'm a first-year Ph.D. student at{' '}
-            <Tag name="ucsd">UC San Diego</Tag> in the{' '}
+            I'm a Ph.D. student at <Tag name="ucsd">UC San Diego</Tag> in the{' '}
             <Tag name="cogsci">Cognitive Science Department</Tag> doing research
             in Human-Computer Interaction. I work with{' '}
             <Tag name="haijun">Prof. Haijun Xia</Tag> as part of the{' '}
@@ -114,7 +113,7 @@ export default function About() {
             frameworks for bringing malleable interfaces to more end-users.
           </p>
 
-          <div className="mt-4 flex flex-col gap-1 border-t border-zinc-200 pt-2">
+          <div className="mt-4 flex flex-col gap-1 border-t border-zinc-200 dark:border-zinc-700 pt-2">
             <h2 className="font-semibold underline text-[16px]">News</h2>
             <p>
               <span className="font-semibold mr-2">Sept 28 - Oct 1</span> I am

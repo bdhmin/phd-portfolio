@@ -52,16 +52,22 @@ export default function Publications() {
                 key={publication.title + publication.subtitle}
                 className="flex flex-col md:flex-row items-center md:items-center w-full gap-4 md:gap-8"
               >
-                <div className="max-w-[360px] md:w-[400px] md:min-w-[200px] border border-zinc-200 overflow-hidden rounded-sm">
+                <div className="max-w-[360px] md:w-[400px] md:min-w-[200px] border border-zinc-200 dark:border-zinc-700 overflow-hidden rounded-sm bg-white dark:bg-zinc-900">
                   <img
-                    className="w-full"
-                    src={publication.thumbnail}
+                    className="w-full transition-all duration-200"
+                    src={publication.thumbnail || '/thumbnails/coming-soon.png'}
                     alt={publication.title}
+                    style={{
+                      filter: isDarkMode
+                        ? 'brightness(0.85) contrast(1.1) saturate(0.9)'
+                        : 'none',
+                      backgroundColor: isDarkMode ? '#18181b' : '#fff',
+                    }}
                   />
                 </div>
 
                 <div className="flex flex-col gap-1 w-full">
-                  <div className="w-full sm:flex flex-wrap text-[13px] text-zinc-500 items-center gap-4">
+                  <div className="w-full sm:flex flex-wrap text-[13px] text-zinc-500 dark:text-zinc-400 items-center gap-4">
                     <h5 className="">{publication.venue}</h5>
                     <h5 className="font-semibold text-[#f19a21]">
                       {publication.award}
@@ -98,13 +104,13 @@ export default function Publications() {
                   {/* <div className="h-[2px]" /> */}
                   <div className="flex gap-4 text-[13px]">
                     {publication.resources.length === 0 ? (
-                      <p className="text-zinc-400">Coming Soon</p>
+                      <p className="text-zinc-500 dark:text-zinc-400">
+                        Coming Soon
+                      </p>
                     ) : (
                       publication.resources.map((resource) => (
                         <a
-                          className={`text-zinc-500 hover:${
-                            isDarkMode ? 'text-white' : 'text-zinc-600'
-                          } hover:text-zinc-800 transition-all`}
+                          className="text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-white transition-all"
                           key={resource.type}
                           // style={{ pointerEvents: '' }}
                           href={resource.link}
