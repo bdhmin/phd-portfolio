@@ -116,8 +116,8 @@ export default function About() {
           <div className="mt-4 flex flex-col gap-1 border-t border-zinc-200 dark:border-zinc-700 pt-2">
             <h2 className="font-semibold underline text-[16px]">News</h2>
             <p>
-              <span className="font-semibold mr-2">Sept 28 - Oct 1</span> I am
-              attending UIST 2025 in Busan, South Korea to present{' '}
+              <span className="font-semibold mr-2">Sept 28 - Oct 1</span> I
+              attended UIST 2025 in Busan, South Korea to present{' '}
               <span className="font-semibold">Meridian</span>.
             </p>
           </div>

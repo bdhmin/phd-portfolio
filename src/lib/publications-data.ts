@@ -22,10 +22,10 @@ export const papers: Paper[] = [
     authors: ['Bryan Min', 'Haijun Xia'],
     venue: 'UIST 2025',
     resources: [
-      // {
-      //   type: 'DOI',
-      //   link: 'https://dl.acm.org/doi/10.1145/3613904.3642400',
-      // },
+      {
+        type: 'DOI',
+        link: 'https://doi.org/10.1145/3746059.3747654',
+      },
       {
         type: 'Paper',
         link: `/papers/uist25-meridian.pdf`,
@@ -206,7 +206,7 @@ export const papers: Paper[] = [
       },
     ],
     thumbnail: '/thumbnails/masonview.jpg',
-    award: "Best Demo Honorable Mention (Jury's Choice)",
+    award: "Best Demo Honorable Mention",
     note: '',
     tags: ['malleable'],
   },
