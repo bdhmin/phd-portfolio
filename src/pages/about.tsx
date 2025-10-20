@@ -114,13 +114,32 @@ export default function About() {
           </p>
 
           <div className="mt-4 flex flex-col gap-1 border-t border-zinc-200 dark:border-zinc-700 pt-2">
+            <h2 className="font-semibold underline text-[16px]">
+              Undergraduate Research Opportunities
+            </h2>
+            <p>
+              I'm currently looking for driven undergraduate developers to join
+              me in making <span className="font-semibold">Meridian</span>{' '}
+              open-source. If you're interested, please{' '}
+              <a
+                className="underline"
+                href="https://doi.org/10.1145/3746059.3747654"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                read the paper
+              </a>{' '}
+              and email me!
+            </p>
+          </div>
+          {/* <div className="mt-4 flex flex-col gap-1 border-t border-zinc-200 dark:border-zinc-700 pt-2">
             <h2 className="font-semibold underline text-[16px]">News</h2>
             <p>
               <span className="font-semibold mr-2">Sept 28 - Oct 1</span> I
               attended UIST 2025 in Busan, South Korea to present{' '}
               <span className="font-semibold">Meridian</span>.
             </p>
-          </div>
+          </div> */}
 
           {/* <div className="flex flex-col">
             <p>bdmin@ucsd.edu</p>
