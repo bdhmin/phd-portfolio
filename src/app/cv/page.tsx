@@ -18,9 +18,9 @@ export default function CV() {
 
   return (
     <div
-      className={`w-full flex flex-col gap-4 items-center text-[16px] ${serifCV.className}`}
+      className={`w-full flex flex-col gap-4 items-center text-[12px] leading-[1.6] ${serifCV.className}`}
     >
-      <div className="w-full max-w-[840px] flex flex-col my-10 gap-y-6">
+      <div className="w-full max-w-[640px] flex flex-col my-10 gap-y-6">
         <a
           href="/api/cv-pdf"
           target="_blank"
@@ -31,7 +31,7 @@ export default function CV() {
         </a>
         {/* Name */}
         <div className="w-full flex justify-between my-4">
-          <h1 className="text-5xl font-[600]">{cv.profile.name}</h1>
+          <h1 className="text-[32px] font-[600]">{cv.profile.name}</h1>
           <div className="flex flex-col items-end">
             <p className="">{cv.profile.email}</p>
             <a
@@ -46,15 +46,15 @@ export default function CV() {
 
         {/* Education */}
         <div className="w-full flex flex-col justify-between">
-          <h2 className="text-2xl font-[700] capitalize">EDUCATION</h2>
-          <div className="border-t border-gray-400 w-full mt-1 mb-3" />
+          <h2 className="text-xl font-[700] capitalize">EDUCATION</h2>
+          <div className="border-t border-gray-400 w-full mt-1 mb-2" />
           {cv.education.map((education) => (
             <div
               key={education.name}
               className="flex flex-col justify-between my-1"
             >
-              <h2 className="text-lg font-[600] mb-2">{education.name}</h2>
-              <div className="flex flex-col ml-8 gap-y-2">
+              <h2 className="text-[14px] font-[600] mb-2">{education.name}</h2>
+              <div className="flex flex-col ml-8 gap-y-1">
                 {education.degrees.map((degree) => (
                   <div key={degree.name} className="flex justify-between">
                     <div>
@@ -75,14 +75,16 @@ export default function CV() {
 
         {/* Publications */}
         <div className="w-full flex flex-col justify-between">
-          <h2 className="text-2xl font-[700] capitalize">PUBLICATIONS</h2>
-          <div className="border-t border-gray-400 w-full mt-1 mb-3" />
+          <h2 className="text-lg font-[700] capitalize">PUBLICATIONS</h2>
+          <div className="border-t border-gray-400 w-full mt-1 mb-2" />
           {cv.publications.map((publication) => (
             <div
               key={publication.type}
-              className="flex flex-col justify-between my-1 mb-3"
+              className="flex flex-col justify-between my-1 mb-2"
             >
-              <h2 className="text-lg font-[600] mb-2">{publication.type}</h2>
+              <h2 className="text-[14px] font-[600] mb-2">
+                {publication.type}
+              </h2>
               <div className="flex flex-col gap-y-4">
                 {publication.papers
                   .filter((paper) => paper.status !== 'Not Accepted Yet')
@@ -199,10 +201,8 @@ export default function CV() {
 
         {/* Research Experience */}
         <div className="w-full flex flex-col justify-between">
-          <h2 className="text-2xl font-[700] capitalize">
-            RESEARCH EXPERIENCE
-          </h2>
-          <div className="border-t border-gray-400 w-full mt-1 mb-3" />
+          <h2 className="text-lg font-[700] capitalize">RESEARCH EXPERIENCE</h2>
+          <div className="border-t border-gray-400 w-full mt-1 mb-2" />
           {cv.research_experience.map((experience) => (
             <div
               key={experience.organization + experience.start + experience.end}
@@ -236,10 +236,10 @@ export default function CV() {
 
         {/* Professional Experience */}
         <div className="w-full flex flex-col justify-between">
-          <h2 className="text-2xl font-[700] capitalize">
+          <h2 className="text-lg font-[700] capitalize">
             PROFESSIONAL EXPERIENCE
           </h2>
-          <div className="border-t border-gray-400 w-full mt-1 mb-3" />
+          <div className="border-t border-gray-400 w-full mt-1 mb-2" />
           {cv.professional_experience.map((experience) => (
             <div
               key={experience.organization + experience.start + experience.end}
@@ -261,8 +261,8 @@ export default function CV() {
 
         {/* Honors and Awards */}
         <div className="w-full flex flex-col justify-between">
-          <h2 className="text-2xl font-[700] capitalize">HONORS AND AWARDS</h2>
-          <div className="border-t border-gray-400 w-full mt-1 mb-3" />
+          <h2 className="text-lg font-[700] capitalize">HONORS AND AWARDS</h2>
+          <div className="border-t border-gray-400 w-full mt-1 mb-2" />
           {cv.honors_and_awards.map((award) => (
             <div key={award.name + award.year} className="flex justify-between">
               <div>
@@ -280,8 +280,8 @@ export default function CV() {
 
         {/* Teaching */}
         <div className="w-full flex flex-col justify-between">
-          <h2 className="text-2xl font-[700] capitalize">TEACHING</h2>
-          <div className="border-t border-gray-400 w-full mt-1 mb-3" />
+          <h2 className="text-lg font-[700] capitalize">TEACHING</h2>
+          <div className="border-t border-gray-400 w-full mt-1 mb-2" />
           {cv.teaching.map((teaching) => (
             <div
               key={teaching.role + teaching.course}
@@ -302,8 +302,8 @@ export default function CV() {
 
         {/* Mentoring */}
         <div className="w-full flex flex-col justify-between">
-          <h2 className="text-2xl font-[700] capitalize">MENTORING</h2>
-          <div className="border-t border-gray-400 w-full mt-1 mb-3" />
+          <h2 className="text-lg font-[700] capitalize">MENTORING</h2>
+          <div className="border-t border-gray-400 w-full mt-1 mb-2" />
           {cv.mentoring.map((mentoring) => (
             <div
               key={mentoring.name + mentoring.start + mentoring.end}
@@ -329,8 +329,8 @@ export default function CV() {
 
         {/* Invited Talks */}
         <div className="w-full flex flex-col justify-between">
-          <h2 className="text-2xl font-[700] capitalize">INVITED TALKS</h2>
-          <div className="border-t border-gray-400 w-full mt-1 mb-3" />
+          <h2 className="text-lg font-[700] capitalize">INVITED TALKS</h2>
+          <div className="border-t border-gray-400 w-full mt-1 mb-2" />
           {cv.invited_talks.map((talk) => (
             <div
               key={talk.place + talk.title}
@@ -349,12 +349,12 @@ export default function CV() {
 
         {/* Service */}
         <div className="w-full flex flex-col justify-between">
-          <h2 className="text-2xl font-[700] capitalize">SERVICE</h2>
-          <div className="border-t border-gray-400 w-full mt-1 mb-3" />
+          <h2 className="text-lg font-[700] capitalize">SERVICE</h2>
+          <div className="border-t border-gray-400 w-full mt-1 mb-2" />
           {cv.service.map((service) => (
             <div
               key={service.name + service.start + service.end}
-              className="flex justify-between my-1"
+              className="flex justify-between"
             >
               <div>
                 <span className="font-[600]">{service.name}</span>{' '}
