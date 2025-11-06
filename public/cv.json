@@ -1,0 +1,291 @@
+{
+  "profile": {
+    "name": "Bryan Min",
+    "email": "bdmin@ucsd.edu",
+    "url": "bryanmin.me"
+  },
+  "education": [
+    {
+      "name": "University of California San Diego",
+      "degrees": [
+        {
+          "name": "Ph.D. in Cognitive Science",
+          "note": "Advised by Haijun Xia",
+          "start": "September 2024",
+          "end": "Present"
+        },
+        {
+          "name": "B.S. in Computer Science",
+          "note": "Magna Cum Laude",
+          "start": "",
+          "end": "June 2023"
+        }
+      ]
+    }
+  ],
+  "publications": [
+    {
+      "type": "Conference and Journal Papers",
+      "papers": [
+        {
+          "id": "abstraction-theory",
+          "title": "Making Abstraction Concrete: A Design Space and Interaction Model of Abstraction in Interactive Systems",
+          "shorttitle": "Theory on Abstraction in Interactive Systems",
+          "year": 2026,
+          "authors": ["Bryan Min", "Sangho Suh", "James D. Hollan", "Haijun Xia"],
+          "venue": "",
+          "award": "",
+          "status": "Under Review"
+        },
+        {
+          "id": "choicemates",
+          "title": "ChoiceMates: Supporting Unfamiliar Online Decision-Making with Multi-Agent Conversational Interactions",
+          "shorttitle": "Multi-Agent System for Unfamiliar Decision-Making",
+          "year": 2026,
+          "authors": ["Jeongeon Park", "Bryan Min", "Kihoon Sohn", "Jean Y. Song", "Xiaojuan Ma", "Juho Kim"],
+          "venue": "",
+          "award": "",
+          "status": "Under Review"
+        },
+        {
+          "id": "meridian",
+          "title": "Meridian: A Design Framework for Malleable Overview-Detail Interfaces",
+          "year": 2025,
+          "authors": ["Bryan Min", "Haijun Xia"],
+          "venue": "UIST 2025: Proceedings of the 2025 ACM Symposium on User Interface Software and Technology",
+          "award": "",
+          "status": "published"
+        },
+        {
+          "id": "annota",
+          "title": "Lessons from Designing a Course and Platform for Teaching Qualitative Analysis Experientially in a Large Course-Based Community Consultancy",
+          "year": 2025,
+          "authors": ["Dustin Palea", "Elijah Kirby", "Madison Gruender", "Bryan Min", "Jessalyn Wang", "David T. Lee"],
+          "venue": "ICER 2025: ACM Conference on International Computing Education Research",
+          "award": "",
+          "status": "published"
+        },
+        {
+          "id": "malleable-odi",
+          "title": "Malleable Overview-Detail Interfaces",
+          "year": 2025,
+          "authors": ["Bryan Min", "Allen Chen", "Yining Cao", "Haijun Xia"],
+          "venue": "CHI 2025: Proceedings of the 2025 CHI Conference on Human Factors in Computing Systems",
+          "award": "",
+          "status": "published"
+        },
+        {
+          "id": "luminate",
+          "title": "Luminate: Structured Generation and Exploration of Design Space with Large Language Models for Human-AI Co-Creation",
+          "year": 2024,
+          "authors": ["Sangho Suh", "Meng Chen", "Bryan Min", "Toby Jia-Jun Li", "Haijun Xia"],
+          "venue": "CHI 2024: Proceedings of the 2024 CHI Conference on Human Factors in Computing Systems",
+          "award": "",
+          "status": "published"
+        },
+        {
+          "id": "sensecape",
+          "title": "Sensecape: Enabling Multilevel Exploration and Sensemaking with Large Language Models",
+          "year": 2023,
+          "authors": ["Sangho Suh", "Bryan Min", "Srishti Palani", "Haijun Xia"],
+          "venue": "UIST 2023: Proceedings of the 2023 ACM Symposium on User Interface Software and Technology",
+          "award": "",
+          "status": "published"
+        }
+      ]
+    },
+    {
+      "type": "Posters, Demos, Workshop Papers",
+      "papers": [
+        {
+          "id": "feedforward-genai",
+          "title": "Feedforward in Generative AI: Opportunities for a Design Space",
+          "year": 2025,
+          "authors": ["Bryan Min", "Haijun Xia"],
+          "venue": "CHI 2025 Workshop on Tools for Thought",
+          "award": "",
+          "status": "published"
+        },
+        {
+          "id": "choicemates-workshop",
+          "title": "How do multiple LLM-powered conversational agents assist sensemaking and decision-making in an unfamiliar domain?",
+          "year": 2024,
+          "authors": ["Jeongeon Park", "Bryan Min", "Jean Y. Song", "Xiaojuan Ma", "Juho Kim"],
+          "venue": "CHI 2024 Sensemaking Workshop",
+          "award": "",
+          "status": "published"
+        },
+        {
+          "id": "masonview",
+          "title": "Demonstration of Masonview: Content-Driven Viewport Management",
+          "year": 2023,
+          "authors": ["Bryan Min", "Matthew T. Beaudouin-Lafon", "Sangho Suh", "Haijun Xia"],
+          "venue": "UIST 2023 Demos",
+          "award": "Best Demo Honorable Mention",
+          "status": "published"
+        }
+      ]
+    }
+  ],
+  "research_experience": [
+    {
+      "organization": "Foundation Interface Lab, UC San Diego",
+      "role": "Researcher",
+      "location": "La Jolla, CA",
+      "supervisor": "Haijun Xia",
+      "start": "September 2023",
+      "end": "September 2024",
+      "publications": ["malleable-odi"]
+    },
+    {
+      "organization": "KIXLAB, KAIST",
+      "role": "Undergraduate Research Intern",
+      "location": "Daejeon, South Korea",
+      "supervisor": "Juho Kim",
+      "start": "July 2023",
+      "end": "September 2023",
+      "publications": ["choicemates", "choicemates-workshop"]
+    },
+    {
+      "organization": "Foundation Interface Lab, UC San Diego",
+      "role": "Undergraduate Researcher",
+      "location": "La Jolla, CA",
+      "supervisor": "Haijun Xia",
+      "start": "November 2022",
+      "end": "June 2023",
+      "publications": ["sensecape", "luminate", "masonview"]
+    },
+    {
+      "organization": "Tech4Good Lab, UC Santa Cruz",
+      "role": "Undergraduate Researcher",
+      "location": "Santa Cruz, CA",
+      "supervisor": "David T. Lee",
+      "start": "January 2021",
+      "end": "January 2023",
+      "publications": ["annota"]
+    }
+  ],
+  "professional_experience": [
+    {
+      "organization": "Communications Department, UC San Diego",
+      "role": "Data Visualization Developer",
+      "location": "La Jolla, CA",
+      "start": "October 2022",
+      "end": "July 2023"
+    },
+    {
+      "organization": "AT&T",
+      "role": "Software Engineer Intern",
+      "location": "Chicago, IL",
+      "start": "June 2022",
+      "end": "September 2022"
+    },
+    {
+      "organization": "CSE Department, UC San Diego",
+      "role": "Undergraduate Research Assistant",
+      "location": "La Jolla, CA",
+      "start": "June 2022",
+      "end": "October 2022"
+    }
+  ],
+  "honors_and_awards": [
+    {
+      "name": "Best Demo Honorable Mention",
+      "source": "UIST 2023",
+      "year": "2023"
+    },
+    {
+      "name": "SD Hacks Winner",
+      "source": "UC San Diego",
+      "year": "2022"
+    },
+    {
+      "name": "Dean's List",
+      "source": "UC San Diego",
+      "year": "2019 - 2023"
+    }
+  ],
+  "teaching": [
+    {
+      "role": "TA",
+      "course": "COGS 10: Cognitive Consequences of Technology",
+      "instructor": "Amy R. Fox",
+      "term": "Fall 2025"
+    },
+    {
+      "role": "TA",
+      "course": "DSGN 2: Designing your Future Self",
+      "instructor": "Jim Hollan",
+      "term": "Spring 2025"
+    },
+    {
+      "role": "TA",
+      "course": "COGS 126: Thinking with Computers",
+      "instructor": "Jim Hollan",
+      "term": "Winter 2025"
+    },
+    {
+      "role": "TA",
+      "course": "DSGN 119: Design@Large Speaker Series",
+      "instructor": "Jim Hollan",
+      "term": "Spring 2024"
+    }
+  ],
+  "mentoring": [
+    {
+      "name": "Vincent Hsieh",
+      "study": "UCSD M.S. in Computer Science",
+      "now": "",
+      "start": "2025",
+      "end": "Ongoing"
+    },
+    {
+      "name": "Shamita Goyal",
+      "study": "UCSD B.S. in Cognitive Science",
+      "now": "",
+      "start": "2025",
+      "end": "Ongoing"
+    },
+    {
+      "name": "Keshav Tiwari",
+      "study": "UCSD B.S. in Cognitive Science",
+      "now": "",
+      "start": "2024",
+      "end": "2025"
+    },
+    {
+      "name": "Allen Chen",
+      "study": "UCSD B.S. in Cognitive Science",
+      "now": "MHCI Student at CMU",
+      "start": "2024",
+      "end": ""
+
+    }
+  ],
+  "invited_talks": [
+    {
+      "place": "CHI 2025 Workshop on Tools for Thought, Selected Lightning Talk",
+      "title": "Feedforward for GenAI: Opportunities for a Design Space",
+      "date": "April 2025"
+    },
+    {
+      "place": "Cognitive Science Student Assiciation 2024 Conference",
+      "title": "Towards Malleable and Proactive Information Spaces with Generative AI",
+      "date": "May 2024"
+    }
+  ],
+  "service": [
+    {
+      "name": "Design Lab Research Meeting Organizer",
+      "start": "2024",
+      "end": "2025",
+      "note": ""
+    },
+    {
+      "name": "Reviewer",
+      "start": "",
+      "end": "",
+      "note": "CHI 2024-2026, UIST 2024-2025"
+    }
+  ]
+}
