@@ -2,7 +2,7 @@
 
 import { serif } from '@/app/fonts';
 import { papers } from '@/lib/publications-data';
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 
 export default function Publications() {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -42,7 +42,7 @@ export default function Publications() {
   return (
     <div className="flex flex-col gap-20 mt-16">
       {paperOrganization.map((topic) => (
-        <div>
+        <div key={topic.name}>
           <div className={`mb-6 font-semibold text-xl ${serif.className}`}>
             {topic.name}
           </div>
@@ -89,7 +89,7 @@ export default function Publications() {
                   </h3>
                   <div className="text-[13px]">
                     {publication.authors.map((author, index) => (
-                      <>
+                      <Fragment key={author}>
                         <span
                           style={{
                             fontWeight: author === 'Bryan Min' ? 600 : 400,
@@ -98,7 +98,7 @@ export default function Publications() {
                           {author}
                         </span>
                         {index < publication.authors.length - 1 ? ', ' : null}
-                      </>
+                      </Fragment>
                     ))}
                   </div>
                   {/* <div className="h-[2px]" /> */}

@@ -10,20 +10,20 @@ export const Link = () => {
       <path
         d="M8 1L1 8"
         stroke="black"
-        stroke-width="1.2"
-        stroke-linecap="round"
+        strokeWidth="1.2"
+        strokeLinecap="round"
       />
       <path
         d="M2.39999 1L7.99999 1"
         stroke="black"
-        stroke-width="1.2"
-        stroke-linecap="round"
+        strokeWidth="1.2"
+        strokeLinecap="round"
       />
       <path
         d="M8 6.60001L8 1.00001"
         stroke="black"
-        stroke-width="1.2"
-        stroke-linecap="round"
+        strokeWidth="1.2"
+        strokeLinecap="round"
       />
     </svg>
   );

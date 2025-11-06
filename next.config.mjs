@@ -8,6 +8,11 @@ const nextConfig = {
 
   //   return config;
   // },
+  
+  // Required for @sparticuz/chromium in serverless functions
+  experimental: {
+    serverComponentsExternalPackages: ['@sparticuz/chromium'],
+  },
 };
 
 export default nextConfig;

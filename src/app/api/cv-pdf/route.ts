@@ -1,11 +1,24 @@
-import puppeteer from 'puppeteer';
 import { NextResponse } from 'next/server';
+import puppeteer from 'puppeteer-core';
+import chromium from '@sparticuz/chromium';
 
 export async function GET(request: Request) {
   try {
+    const isDev = process.env.NODE_ENV === 'development';
+    
     const browser = await puppeteer.launch({
-      headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      args: isDev 
+        ? ['--no-sandbox', '--disable-setuid-sandbox']
+        : chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: isDev
+        ? process.platform === 'win32'
+          ? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'
+          : process.platform === 'darwin'
+          ? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+          : '/usr/bin/google-chrome'
+        : await chromium.executablePath(),
+      headless: chromium.headless,
     });
     const page = await browser.newPage();
 
