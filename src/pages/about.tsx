@@ -1,6 +1,6 @@
 import { serif } from '@/app/fonts';
 import Tag from '@/components/tag';
-import Link from '@/../public/link.svg';
+import { Link } from '@/assets/link';
 
 export default function About() {
   const academicLinks = [
@@ -47,8 +47,8 @@ export default function About() {
             >
               {url.name}
               <span className="opacity-50 md:opacity-100 group-hover:opacity-30 transition">
-                {/* <Link /> */}
-                {/* <img src="/link.svg" alt="link" /> */}
+                <Link />
+                {/* <img src="@/../public/link.svg" alt="link" /> */}
               </span>
             </a>
           ) : (

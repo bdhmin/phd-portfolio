@@ -1,6 +1,7 @@
 import cv from '@/../public/cv.json';
 import { serifCV, serif } from '@/app/fonts';
 import { Fragment } from 'react';
+import { PDF } from '@/assets/pdf';
 
 export default function CV() {
   const publicationAbbreviations: Record<string, string> =
@@ -13,22 +14,21 @@ export default function CV() {
       return dict;
     }, {} as Record<string, string>);
 
-  console.log(publicationAbbreviations);
+  // console.log(publicationAbbreviations);
 
   return (
     <div
       className={`w-full flex flex-col gap-4 items-center text-[16px] ${serifCV.className}`}
     >
-      <a
-        href="/cv.pdf"
-        target="_blank"
-        rel="noreferrer"
-        className="self-end border border-gray-400 rounded-md px-3 py-1 m-4"
-      >
-        PDF
-      </a>
-
       <div className="w-full max-w-[840px] flex flex-col my-10 gap-y-6">
+        <a
+          href="/api/cv-pdf"
+          target="_blank"
+          rel="noreferrer"
+          className="self-end text-sm underline flex items-center gap-2"
+        >
+          View PDF <PDF />
+        </a>
         {/* Name */}
         <div className="w-full flex justify-between my-4">
           <h1 className="text-5xl font-[600]">{cv.profile.name}</h1>
