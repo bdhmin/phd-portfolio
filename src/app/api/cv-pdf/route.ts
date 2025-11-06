@@ -19,6 +19,19 @@ export async function GET(request: Request) {
       timeout: 30000 
     });
 
+    // Set PDF metadata - must be done before pdf generation
+    await page.evaluateOnNewDocument(() => {
+      Object.defineProperty(document, 'title', {
+        get() { return 'Bryan Min - Curriculum Vitae'; },
+        set() {},
+      });
+    });
+    
+    // Also set it directly
+    await page.evaluate(() => {
+      document.title = 'Bryan Min - Curriculum Vitae';
+    });
+
     const pdf = await page.pdf({ 
       format: 'A4', 
       printBackground: true,
@@ -27,7 +40,10 @@ export async function GET(request: Request) {
         right: '20px',
         bottom: '20px',
         left: '20px'
-      }
+      },
+      // displayHeaderFooter: false,
+      // tagged: true,
+      // outline: true, // Enable outline/bookmarks based on heading tags
     });
     
     await browser.close();
@@ -36,7 +52,7 @@ export async function GET(request: Request) {
     return new NextResponse(pdf, {
       headers: {
         'Content-Type': 'application/pdf',
-        'Content-Disposition': 'inline; filename="bryan_min_cv.pdf"',
+        'Content-Disposition': 'inline; filename="cv-bryan-min.pdf"',
       },
     });
   } catch (error) {

@@ -2,6 +2,7 @@ import cv from '@/../public/cv.json';
 import { serifCV, serif } from '@/app/fonts';
 import { Fragment } from 'react';
 import { PDF } from '@/assets/pdf';
+import './cv.css';
 
 export default function CV() {
   const publicationAbbreviations: Record<string, string> =
@@ -18,19 +19,19 @@ export default function CV() {
 
   return (
     <div
-      className={`w-full flex flex-col gap-4 items-center text-[12px] leading-[1.6] ${serifCV.className}`}
+      className={`w-full flex flex-col gap-4 items-center text-[14px] leading-[1.6] ${serifCV.className}`}
     >
-      <div className="w-full max-w-[640px] flex flex-col my-10 gap-y-6">
+      <div className="w-full max-w-[680px] flex flex-col my-8 gap-y-6">
         <a
           href="/api/cv-pdf"
           target="_blank"
           rel="noreferrer"
-          className="self-end text-sm underline flex items-center gap-2"
+          className="pdf-link self-end text-sm underline flex items-center gap-2"
         >
           View PDF <PDF />
         </a>
         {/* Name */}
-        <div className="w-full flex justify-between my-4">
+        <div className="w-full flex justify-between my-2">
           <h1 className="text-[32px] font-[600]">{cv.profile.name}</h1>
           <div className="flex flex-col items-end">
             <p className="">{cv.profile.email}</p>
@@ -53,7 +54,7 @@ export default function CV() {
               key={education.name}
               className="flex flex-col justify-between my-1"
             >
-              <h2 className="text-[14px] font-[600] mb-2">{education.name}</h2>
+              <h2 className="text-[16px] font-[600] mb-2">{education.name}</h2>
               <div className="flex flex-col ml-8 gap-y-1">
                 {education.degrees.map((degree) => (
                   <div key={degree.name} className="flex justify-between">
@@ -82,7 +83,7 @@ export default function CV() {
               key={publication.type}
               className="flex flex-col justify-between my-1 mb-2"
             >
-              <h2 className="text-[14px] font-[600] mb-2">
+              <h2 className="text-[16px] font-[600] mb-2">
                 {publication.type}
               </h2>
               <div className="flex flex-col gap-y-4">
@@ -97,13 +98,13 @@ export default function CV() {
                         {paper.year} [{publication.type[0].toUpperCase()}
                         {array.length - index}]
                       </div>
-                      <div className="w-full flex flex-col gap-y-[0.1em]">
-                        <p className="font-[700] leading-[1.2]">
+                      <div className="w-full flex flex-col gap-y-[0.2em]">
+                        <p className="font-[700] leading-[1.4]">
                           {paper.status === 'published'
                             ? paper.title
                             : paper.shorttitle}
                         </p>
-                        <p className="">
+                        <p className="leading-[1.4]">
                           {paper.status === 'published' ? (
                             paper.authors.length === 2 ? (
                               <>
@@ -181,7 +182,7 @@ export default function CV() {
                             })()
                           )}
                         </p>
-                        <p className="italic">
+                        <p className="italic leading-[1.4]">
                           {paper.status === 'published'
                             ? paper.venue
                             : paper.status}
@@ -206,7 +207,7 @@ export default function CV() {
           {cv.research_experience.map((experience) => (
             <div
               key={experience.organization + experience.start + experience.end}
-              className="flex justify-between my-1"
+              className="flex justify-between my-2"
             >
               <div>
                 <h2 className="font-[600]">{experience.organization}</h2>
@@ -243,7 +244,7 @@ export default function CV() {
           {cv.professional_experience.map((experience) => (
             <div
               key={experience.organization + experience.start + experience.end}
-              className="flex justify-between my-1"
+              className="flex justify-between my-2"
             >
               <div>
                 <h2 className="font-[600]">{experience.organization}</h2>
