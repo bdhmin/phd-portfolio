@@ -1,6 +1,6 @@
 import { serif } from '@/app/fonts';
 import Tag from '@/components/tag';
-import Link from '@/assets/link.svg';
+import Link from '@/../public/link.svg';
 
 export default function About() {
   const academicLinks = [
@@ -10,7 +10,8 @@ export default function About() {
     },
     {
       name: 'CV',
-      link: 'https://drive.google.com/file/d/1QRxHPrn_d2tv947H3nf4uCfPLgEtRXHn/view?usp=sharing',
+      link: '/cv',
+      // link: 'https://drive.google.com/file/d/1QRxHPrn_d2tv947H3nf4uCfPLgEtRXHn/view?usp=sharing',
     },
   ];
 
@@ -38,6 +39,7 @@ export default function About() {
             <div className="h-[1px] bg-zinc-200 dark:bg-zinc-700 my-2" />
           ) : url.link ? (
             <a
+              key={url.name}
               className="w-fit group flex flex-row items-center gap-[4px] hover:text-zinc-400 dark:hover:text-zinc-300 transition"
               href={url.link}
               target="_blank"
@@ -45,11 +47,15 @@ export default function About() {
             >
               {url.name}
               <span className="opacity-50 md:opacity-100 group-hover:opacity-30 transition">
-                <Link />
+                {/* <Link /> */}
+                {/* <img src="/link.svg" alt="link" /> */}
               </span>
             </a>
           ) : (
-            <p className="w-fit group flex flex-row items-center gap-[4px] transition">
+            <p
+              key={url.name}
+              className="w-fit group flex flex-row items-center gap-[4px] transition"
+            >
               {url.name}
             </p>
           )

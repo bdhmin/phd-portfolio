@@ -19,7 +19,16 @@ export default function CV() {
     <div
       className={`w-full flex flex-col gap-4 items-center text-[16px] ${serifCV.className}`}
     >
-      <div className="w-full max-w-[840px] flex flex-col my-20 gap-y-6">
+      <a
+        href="/cv.pdf"
+        target="_blank"
+        rel="noreferrer"
+        className="self-end border border-gray-400 rounded-md px-3 py-1 m-4"
+      >
+        PDF
+      </a>
+
+      <div className="w-full max-w-[840px] flex flex-col my-10 gap-y-6">
         {/* Name */}
         <div className="w-full flex justify-between my-4">
           <h1 className="text-5xl font-[600]">{cv.profile.name}</h1>
@@ -75,112 +84,114 @@ export default function CV() {
             >
               <h2 className="text-lg font-[600] mb-2">{publication.type}</h2>
               <div className="flex flex-col gap-y-4">
-                {publication.papers.map((paper, index, array) => (
-                  <div
-                    key={paper.id}
-                    className="flex justify-between ml-8 gap-x-4"
-                  >
-                    <div className="w-[100px] flex justify-end leading-[1.2]">
-                      {paper.year} [{publication.type[0].toUpperCase()}
-                      {array.length - index}]
-                    </div>
-                    <div className="w-full flex flex-col gap-y-[0.1em]">
-                      <p className="font-[700] leading-[1.2]">
-                        {paper.status === 'published'
-                          ? paper.title
-                          : paper.shorttitle}
-                      </p>
-                      <p className="">
-                        {paper.status === 'published' ? (
-                          paper.authors.length === 2 ? (
-                            <>
-                              {paper.authors
-                                .map((author, i) =>
-                                  author === 'Bryan Min' ? (
-                                    <span key={author} className="font-[700]">
-                                      {author}
-                                    </span>
-                                  ) : (
-                                    <span key={author}>{author}</span>
+                {publication.papers
+                  .filter((paper) => paper.status !== 'Not Accepted Yet')
+                  .map((paper, index, array) => (
+                    <div
+                      key={paper.id}
+                      className="flex justify-between ml-4 gap-x-4"
+                    >
+                      <div className="w-[100px] flex justify-end leading-[1.2]">
+                        {paper.year} [{publication.type[0].toUpperCase()}
+                        {array.length - index}]
+                      </div>
+                      <div className="w-full flex flex-col gap-y-[0.1em]">
+                        <p className="font-[700] leading-[1.2]">
+                          {paper.status === 'published'
+                            ? paper.title
+                            : paper.shorttitle}
+                        </p>
+                        <p className="">
+                          {paper.status === 'published' ? (
+                            paper.authors.length === 2 ? (
+                              <>
+                                {paper.authors
+                                  .map((author, i) =>
+                                    author === 'Bryan Min' ? (
+                                      <span key={author} className="font-[700]">
+                                        {author}
+                                      </span>
+                                    ) : (
+                                      <span key={author}>{author}</span>
+                                    )
                                   )
-                                )
-                                .reduce((prev, curr, idx) =>
-                                  idx === 1 ? (
-                                    <>
-                                      {prev} and {curr}
-                                    </>
-                                  ) : (
-                                    curr
-                                  )
-                                )}
-                            </>
-                          ) : (
-                            <>
-                              {paper.authors.map((author, i) => (
-                                <Fragment key={author + i}>
-                                  {i > 0 && ', '}
-                                  {author === 'Bryan Min' ? (
-                                    <b>{author}</b>
-                                  ) : (
-                                    author
+                                  .reduce((prev, curr, idx) =>
+                                    idx === 1 ? (
+                                      <>
+                                        {prev} and {curr}
+                                      </>
+                                    ) : (
+                                      curr
+                                    )
                                   )}
-                                </Fragment>
-                              ))}
-                            </>
-                          )
-                        ) : (
-                          // Not published: Only show Bryan Min in context, with ellipses as appropriate
-                          (() => {
-                            const idx = paper.authors.findIndex(
-                              (a) => a === 'Bryan Min'
-                            );
-                            const isFirst = idx === 0;
-                            const isLast = idx === paper.authors.length - 1;
-                            const isOnly = paper.authors.length === 1;
-                            if (isOnly) {
-                              return <b>Bryan Min</b>;
-                            } else if (isFirst) {
-                              return (
-                                <>
-                                  <b>Bryan Min</b>
-                                  {', ...'}
-                                </>
+                              </>
+                            ) : (
+                              <>
+                                {paper.authors.map((author, i) => (
+                                  <Fragment key={author + i}>
+                                    {i > 0 && ', '}
+                                    {author === 'Bryan Min' ? (
+                                      <b>{author}</b>
+                                    ) : (
+                                      author
+                                    )}
+                                  </Fragment>
+                                ))}
+                              </>
+                            )
+                          ) : (
+                            // Not published: Only show Bryan Min in context, with ellipses as appropriate
+                            (() => {
+                              const idx = paper.authors.findIndex(
+                                (a) => a === 'Bryan Min'
                               );
-                            } else if (isLast) {
-                              return (
-                                <>
-                                  {'..., '}
-                                  <b>Bryan Min</b>
-                                </>
-                              );
-                            } else if (idx !== -1) {
-                              return (
-                                <>
-                                  {'..., '}
-                                  <b>Bryan Min</b>
-                                  {', ...'}
-                                </>
-                              );
-                            } else {
-                              // Fallback if for some reason Bryan Min not found
-                              return null;
-                            }
-                          })()
-                        )}
-                      </p>
-                      <p className="italic">
-                        {paper.status === 'published'
-                          ? paper.venue
-                          : paper.status}
-                      </p>
-                      <p className="font-[700] text-orange-400">
-                        {paper.award.includes('Honorable Mention')
-                          ? `🏅 ${paper.award}`
-                          : paper.award}
-                      </p>
+                              const isFirst = idx === 0;
+                              const isLast = idx === paper.authors.length - 1;
+                              const isOnly = paper.authors.length === 1;
+                              if (isOnly) {
+                                return <b>Bryan Min</b>;
+                              } else if (isFirst) {
+                                return (
+                                  <>
+                                    <b>Bryan Min</b>
+                                    {', ...'}
+                                  </>
+                                );
+                              } else if (isLast) {
+                                return (
+                                  <>
+                                    {'..., '}
+                                    <b>Bryan Min</b>
+                                  </>
+                                );
+                              } else if (idx !== -1) {
+                                return (
+                                  <>
+                                    {'..., '}
+                                    <b>Bryan Min</b>
+                                    {', ...'}
+                                  </>
+                                );
+                              } else {
+                                // Fallback if for some reason Bryan Min not found
+                                return null;
+                              }
+                            })()
+                          )}
+                        </p>
+                        <p className="italic">
+                          {paper.status === 'published'
+                            ? paper.venue
+                            : paper.status}
+                        </p>
+                        <p className="font-[700] text-orange-400">
+                          {paper.award.includes('Honorable Mention')
+                            ? `🏅 ${paper.award}`
+                            : paper.award}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
               </div>
             </div>
           ))}
