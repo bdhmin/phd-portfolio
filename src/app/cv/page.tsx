@@ -22,14 +22,14 @@ export default function CV() {
       className={`w-full flex flex-col gap-4 items-center text-[14px] leading-[1.6] ${serifCV.className}`}
     >
       <div className="w-full max-w-[680px] flex flex-col my-8 gap-y-6">
-        <a
+        {/* <a
           href="/api/cv-pdf"
           target="_blank"
           rel="noreferrer"
           className="pdf-link self-end text-sm underline flex items-center gap-2"
         >
           View PDF <PDF />
-        </a>
+        </a> */}
         {/* Name */}
         <div className="w-full flex justify-between my-2">
           <h1 className="text-[32px] font-[600]">{cv.profile.name}</h1>
