@@ -96,7 +96,8 @@ export default function About() {
             </h1>
           </div>
           <p>
-            I'm a Ph.D. student at <Tag name="ucsd">UC San Diego</Tag> in the{' '}
+            I'm a second-year Ph.D. student at{' '}
+            <Tag name="ucsd">UC San Diego</Tag> in the{' '}
             <Tag name="cogsci">Cognitive Science Department</Tag> doing research
             in Human-Computer Interaction. I work with{' '}
             <Tag name="haijun">Prof. Haijun Xia</Tag> as part of the{' '}
@@ -110,23 +111,31 @@ export default function About() {
             </b>
           </p> */}
           <p>
-            My research centers on <b>malleable interfaces</b>—interfaces that
+            My research centers on <b>malleable software</b>—interfaces that
             enable users to easily, expressively, and broadly customize their
-            software interface without code or bloated lists of settings.
-            Specifically, I'm exploring how users can create custom, personal
-            abstractions of information through the interface. I analyze design
-            patterns, develop interaction techniques, and create theoretical
-            frameworks for bringing malleable interfaces to more end-users.
+            software interface without code or a bloated list of settings.
+            Specifically, I explore{' '}
+            <strong>
+              how we can bring malleable software to real-world,
+              production-grade software systems, considering the tensions
+              between designers, developers, and end-users.
+            </strong>{' '}
+            To do so, I study these three user groups, create interaction
+            techniques, develop novel software systems, and create theoretical
+            frameworks for bringing malleable software to more end-users.
           </p>
+          {/* Specifically, I'm exploring how users can create custom, personal
+            abstractions of information through the interface. */}
 
           <div className="mt-4 flex flex-col gap-1 border-t border-zinc-200 dark:border-zinc-700 pt-2">
             <h2 className="font-semibold underline text-[16px]">
-              Undergraduate Research Opportunities
+              Research Opportunities
             </h2>
             <p>
-              I'm currently looking for driven undergraduate developers to join
-              me in making <span className="font-semibold">Meridian</span>{' '}
-              open-source. If you're interested, please{' '}
+              I'm currently looking for driven developers
+              (undergraduate/master's) to join me in making{' '}
+              <span className="font-semibold">Meridian</span> open-source. If
+              you're interested, please{' '}
               <a
                 className="underline"
                 href="https://doi.org/10.1145/3746059.3747654"
@@ -136,6 +145,10 @@ export default function About() {
                 read the paper
               </a>{' '}
               and email me!
+            </p>
+            <p className="text-sm italic opacity-50">
+              (Tell me about your background and why you're interested in the
+              project.)
             </p>
           </div>
           {/* <div className="mt-4 flex flex-col gap-1 border-t border-zinc-200 dark:border-zinc-700 pt-2">
