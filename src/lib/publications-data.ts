@@ -31,6 +31,10 @@ export const papers: Paper[] = [
         link: `/papers/uist25-meridian.pdf`,
       },
       {
+        type: 'Website',
+        link: `https://meridian-ui.com`,
+      },
+      {
         type: 'Package',
         link: `https://github.com/meridian-ui/meridian`,
       },
