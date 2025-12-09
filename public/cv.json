@@ -29,14 +29,14 @@
       "type": "Conference and Journal Papers",
       "papers": [
         {
-          "id": "abstraction-theory",
+          "id": "abstraction-survey",
           "title": "Making Abstraction Concrete: A Design Space and Interaction Model of Abstraction in Interactive Systems",
-          "shorttitle": "Theory on Abstraction in Interactive Systems",
+          "shorttitle": "Survey on Designing Abstractions in Interactive Systems",
           "year": 2026,
           "authors": ["Bryan Min", "Sangho Suh", "James D. Hollan", "Haijun Xia"],
           "venue": "",
           "award": "",
-          "status": "Not Accepted Yet"
+          "status": "Under Review"
         },
         {
           "id": "choicemates",
