@@ -210,7 +210,7 @@ export const papers: Paper[] = [
       },
     ],
     thumbnail: '/thumbnails/masonview.jpg',
-    award: "Best Demo Honorable Mention",
+    award: "Best Demo Honorable Mention (<9%)",
     note: '',
     tags: ['malleable'],
   },
