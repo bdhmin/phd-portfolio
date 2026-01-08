@@ -16,6 +16,35 @@ export interface Paper {
 
 export const papers: Paper[] = [
   {
+    title: 'ChoiceMates',
+    subtitle: 'Supporting Unfamiliar Online Decision-Making with Multi-Agent Conversational Interactions',
+    type: 'publication',
+    authors: ['Jeongeon Park', 'Bryan Min', 'Kihoon Sohn', 'Jean Y. Song', 'Xiaojuan Ma', 'Juho Kim'],
+    venue: 'IUI 2026',
+    resources: [
+      // {
+      //   type: 'DOI',
+      //   link: 'https://doi.org/10.1145/3746059.3747654',
+      // },
+      // {
+      //   type: 'Paper',
+      //   link: `/papers/uist25-meridian.pdf`,
+      // },
+      // {
+      //   type: 'Website',
+      //   link: `https://meridian-ui.com`,
+      // },
+      // {
+      //   type: 'Package',
+      //   link: `https://github.com/meridian-ui/meridian`,
+      // },
+    ],
+    thumbnail: '/thumbnails/choicemates.jpg',
+    award: '',
+    note: '',
+    tags: ['human-ai'],
+  },
+  {
     title: 'Meridian',
     subtitle: 'A Design Framework for Malleable Overview-Detail Interfaces',
     type: 'publication',
