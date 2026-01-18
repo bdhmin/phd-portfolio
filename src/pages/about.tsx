@@ -10,8 +10,8 @@ export default function About() {
     },
     {
       name: 'CV',
-      link: '/cv',
-      // link: 'https://drive.google.com/file/d/1QRxHPrn_d2tv947H3nf4uCfPLgEtRXHn/view?usp=sharing',
+      // link: '/cv',
+      link: 'https://drive.google.com/file/d/1QRxHPrn_d2tv947H3nf4uCfPLgEtRXHn/view?usp=sharing',
     },
   ];
 
