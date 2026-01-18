@@ -193,23 +193,23 @@ export const papers: Paper[] = [
   //   award: '',
   //   note: ''
   // },
-  {
-    title: '',
-    subtitle: 'How do multiple LLM-powered conversational agents assist sensemaking and decision-making in an unfamiliar domain?',
-    type: 'workshop',
-    authors: ['Jeongeon Park', 'Bryan Min', 'Jean Y. Song', 'Xiaojuan Ma', 'Juho Kim'],
-    venue: 'CHI 2024 Sensemaking Workshop',
-    resources: [
-      {
-        type: 'Paper',
-        link: `/papers/chi24-sensemaking.pdf`,
-      },
-    ],
-    thumbnail: '/thumbnails/choicemates.jpg',
-    award: '',
-    note: '',
-    tags: ['human-ai'],
-  },
+  // {
+  //   title: '',
+  //   subtitle: 'How do multiple LLM-powered conversational agents assist sensemaking and decision-making in an unfamiliar domain?',
+  //   type: 'workshop',
+  //   authors: ['Jeongeon Park', 'Bryan Min', 'Jean Y. Song', 'Xiaojuan Ma', 'Juho Kim'],
+  //   venue: 'CHI 2024 Sensemaking Workshop',
+  //   resources: [
+  //     {
+  //       type: 'Paper',
+  //       link: `/papers/chi24-sensemaking.pdf`,
+  //     },
+  //   ],
+  //   thumbnail: '/thumbnails/choicemates.jpg',
+  //   award: '',
+  //   note: '',
+  //   tags: ['human-ai'],
+  // },
   {
     title: 'Demonstration of Masonview',
     subtitle: 'Content-Driven Viewport Management',
