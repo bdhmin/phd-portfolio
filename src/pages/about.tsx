@@ -97,11 +97,10 @@ export default function About() {
           </div>
           <p>
             I'm a second-year Ph.D. student at{' '}
-            <Tag name="ucsd">UC San Diego</Tag> in the{' '}
-            <Tag name="cogsci">Cognitive Science Department</Tag> doing research
-            in Human-Computer Interaction. I work with{' '}
-            <Tag name="haijun">Prof. Haijun Xia</Tag> as part of the{' '}
-            <Tag name="creativity">Foundation Interface Lab</Tag>.
+            <Tag name="ucsd">UC San Diego</Tag> doing research in Human-Computer
+            Interaction. I work with <Tag name="haijun">Prof. Haijun Xia</Tag>{' '}
+            as part of the <Tag name="creativity">Foundation Interface Lab</Tag>
+            .
           </p>
           {/* <p>
             My research centers on the question:{' '}

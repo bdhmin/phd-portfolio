@@ -16,6 +16,27 @@ export interface Paper {
 
 export const papers: Paper[] = [
   {
+    title: 'Gradual Generation of User Interfaces as a Design Method for Malleable Software',
+    subtitle: '',
+    type: 'poster',
+    authors: ['Bryan Min', 'Peiling Jiang', 'Zhicheng Huang', 'Haijun Xia'],
+    venue: 'arXiv (February 2026)',
+    resources: [
+      {
+        type: 'DOI',
+        link: `https://arxiv.org/pdf/2601.17975`,
+      },
+      {
+        type: 'Paper',
+        link: `/papers/arxiv-gradual-generation.pdf`,
+      },
+    ],
+    thumbnail: '/thumbnails/gradual-generation.png',
+    award: '',
+    note: '',
+    tags: ['malleable'],
+  },
+  {
     title: 'ChoiceMates',
     subtitle: 'Supporting Unfamiliar Online Decision-Making with Multi-Agent Conversational Interactions',
     type: 'publication',
@@ -239,7 +260,7 @@ export const papers: Paper[] = [
       },
     ],
     thumbnail: '/thumbnails/masonview.jpg',
-    award: "Best Demo Honorable Mention (<9%)",
+    award: "Best Demo Honorable Mention",
     note: '',
     tags: ['malleable'],
   },
