@@ -11,7 +11,8 @@ export interface Paper {
   thumbnail: string;
   award: string;
   note: string;
-  tags: ('malleable' | 'human-ai' | 'abstraction')[];
+  selected?: boolean;
+  tags: ('malleable' | 'human-ai' | 'abstraction' | 'gen-ui')[];
 }
 
 export const papers: Paper[] = [
@@ -92,6 +93,7 @@ export const papers: Paper[] = [
     thumbnail: '/thumbnails/meridian.png',
     award: '',
     note: '',
+    selected: true,
     tags: ['malleable'],
   },
   {
@@ -142,6 +144,7 @@ export const papers: Paper[] = [
     thumbnail: '/thumbnails/malleable-odi.png',
     award: '',
     note: '',
+    selected: true,
     tags: ['malleable'],
   },
   {

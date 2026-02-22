@@ -8,11 +8,11 @@ export default function About() {
       name: 'bdmin@ucsd.edu',
       link: '',
     },
-    {
-      name: 'CV',
-      // link: '/cv',
-      link: 'https://drive.google.com/file/d/1QRxHPrn_d2tv947H3nf4uCfPLgEtRXHn/view?usp=sharing',
-    },
+    // {
+    //   name: 'CV',
+    //   // link: '/cv',
+    //   link: 'https://drive.google.com/file/d/1QRxHPrn_d2tv947H3nf4uCfPLgEtRXHn/view?usp=sharing',
+    // },
   ];
 
   const socialLinks = [
@@ -58,7 +58,7 @@ export default function About() {
             >
               {url.name}
             </p>
-          )
+          ),
         )}
       </div>
     );
@@ -96,11 +96,10 @@ export default function About() {
             </h1>
           </div>
           <p>
-            I'm a second-year Ph.D. student at{' '}
-            <Tag name="ucsd">UC San Diego</Tag> doing research in Human-Computer
-            Interaction. I work with <Tag name="haijun">Prof. Haijun Xia</Tag>{' '}
-            as part of the <Tag name="creativity">Foundation Interface Lab</Tag>
-            .
+            I'm a Ph.D. student at <Tag name="ucsd">UC San Diego</Tag> doing
+            research in Human-Computer Interaction. I work with{' '}
+            <Tag name="haijun">Prof. Haijun Xia</Tag> as part of the{' '}
+            <Tag name="creativity">Foundation Interface Lab</Tag>.
           </p>
           {/* <p>
             My research centers on the question:{' '}
