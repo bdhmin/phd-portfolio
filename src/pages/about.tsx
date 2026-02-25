@@ -130,10 +130,17 @@ export default function About() {
               Research Opportunities
             </h2>
             <p>
-              I'm currently looking for driven developers
-              (undergraduate/master's) to join me in making{' '}
-              <span className="font-semibold">Meridian</span> open-source. If
-              you're interested, please{' '}
+              Meridian is now open-source! I'm currently looking for excited
+              developers to join me in growing{' '}
+              <a
+                className="underline"
+                href="https://meridian-ui.com"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Meridian
+              </a>
+              . If you're interested, please{' '}
               <a
                 className="underline"
                 href="https://doi.org/10.1145/3746059.3747654"
