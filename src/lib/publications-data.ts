@@ -23,10 +23,10 @@ export const papers: Paper[] = [
     authors: ['Jeongeon Park', 'Bryan Min', 'Kihoon Sohn', 'Jean Y. Song', 'Xiaojuan Ma', 'Juho Kim'],
     venue: 'IUI 2026',
     resources: [
-      // {
-      //   type: 'DOI',
-      //   link: 'https://doi.org/10.1145/3746059.3747654',
-      // },
+      {
+        type: 'DOI',
+        link: 'https://doi.org/10.1145/3742413.3789107',
+      },
       // {
       //   type: 'Paper',
       //   link: `/papers/uist25-meridian.pdf`,
