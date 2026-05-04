@@ -72,7 +72,7 @@ export default function About() {
             <div className="min-w-[200px] w-[200px] h-[240px] rounded-sm overflow-hidden">
               <img
                 className="w-full h-full object-cover"
-                src="portrait/portrait2026-4.jpeg"
+                src="portrait/portrait2026-1.jpeg"
                 alt="A medium close-up portrait photo of Bryan Min"
               />
             </div>
