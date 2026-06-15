@@ -20,7 +20,7 @@ export const papers: Paper[] = [
     title: 'ChoiceMates',
     subtitle: 'Supporting Unfamiliar Online Decision-Making with Multi-Agent Conversational Interactions',
     type: 'publication',
-    authors: ['Jeongeon Park', 'Bryan Min', 'Kihoon Sohn', 'Jean Y. Song', 'Xiaojuan Ma', 'Juho Kim'],
+    authors: ['Jeongeon Park', 'Bryan Min', 'Kihoon Son', 'Jean Y. Song', 'Xiaojuan Ma', 'Juho Kim'],
     venue: 'IUI 2026',
     resources: [
       {
