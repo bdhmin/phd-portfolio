@@ -51,6 +51,10 @@ export default function Tag({
       color: '#f0b051',
       url: 'https://programs.sigchi.org/uist/2023/program/content/127104/',
     },
+    nicmarquardt: {
+      color: isDarkMode ? '#D7CAC3' : '#A19792',
+      url: 'https://nicmarquardt.com/',
+    },
   };
 
   const link = linkMap[name];

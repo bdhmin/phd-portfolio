@@ -124,15 +124,7 @@ export default function About() {
           </p>
           <p>
             I'm interning at Microsoft Research right now, working with{' '}
-            <a
-              className="underline"
-              href="https://nicmarquardt.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Nic Marquardt
-            </a>
-            .
+            <Tag name="nicmarquardt">Nic Marquardt</Tag>.
           </p>
           {/* Specifically, I'm exploring how users can create custom, personal
             abstractions of information through the interface. */}
