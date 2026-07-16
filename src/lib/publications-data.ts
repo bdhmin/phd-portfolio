@@ -17,6 +17,97 @@ export interface Paper {
 
 export const papers: Paper[] = [
   {
+    title: "Information Architecture as a Shared Language for Structuring Generative User Interfaces",
+    subtitle: '',
+    type: 'publication',
+    authors: ['Eunhye Kim', 'Daeun Choi', 'Bryan Min', 'Hyunjung Yi', 'Yue Jiang', 'Juho Kim'],
+    venue: 'UIST 2026 (To appear)',
+    resources: [
+      // {
+      //   type: 'Paper',
+      //   link: 'https://genuimeetshci.github.io/chi26-workshop/proposals/genui_wont_make_software_malleable_chi26_workshop.pdf',
+      // },
+      // {
+      //   type: 'Paper',
+      //   link: `/papers/uist25-meridian.pdf`,
+      // },
+      // {
+      //   type: 'Website',
+      //   link: `https://meridian-ui.com`,
+      // },
+      // {
+      //   type: 'Package',
+      //   link: `https://github.com/meridian-ui/meridian`,
+      // },
+    ],
+    thumbnail: '/thumbnails/maru.png',
+    award: '',
+    note: '',
+    tags: ['malleable'],
+  },
+  {
+    title: "Making Abstraction Concrete: A Design Space and Interaction Model of Abstraction in Interactive Systems",
+    subtitle: '',
+    type: 'publication',
+    authors: ['Bryan Min', 'Sangho Suh', 'Jim Hollan', 'Haijun Xia'],
+    venue: 'arXiv (May 2026)',
+    resources: [
+      {
+        type: 'DOI',
+        link: 'https://arxiv.org/abs/2605.11344',
+      },
+      {
+        type: 'Paper',
+        link: 'https://hci.ucsd.edu/papers/concrete.pdf',
+      },
+      // {
+      //   type: 'Paper',
+      //   link: `/papers/uist25-meridian.pdf`,
+      // },
+      // {
+      //   type: 'Website',
+      //   link: `https://meridian-ui.com`,
+      // },
+      // {
+      //   type: 'Package',
+      //   link: `https://github.com/meridian-ui/meridian`,
+      // },
+    ],
+    thumbnail: '/thumbnails/abstraction.jpg',
+    award: '',
+    note: '',
+    tags: ['abstraction'],
+  },
+  {
+    title: "Generative UI Alone Won't Make Software Malleable",
+    subtitle: '',
+    type: 'workshop',
+    authors: ['Bryan Min'],
+    venue: 'CHI 2025 Workshop on HCI for GenUI',
+    resources: [
+      {
+        type: 'Paper',
+        link: 'https://genuimeetshci.github.io/chi26-workshop/proposals/genui_wont_make_software_malleable_chi26_workshop.pdf',
+      },
+      // {
+      //   type: 'Paper',
+      //   link: `/papers/uist25-meridian.pdf`,
+      // },
+      // {
+      //   type: 'Website',
+      //   link: `https://meridian-ui.com`,
+      // },
+      // {
+      //   type: 'Package',
+      //   link: `https://github.com/meridian-ui/meridian`,
+      // },
+    ],
+    thumbnail: '/thumbnails/genUI-malleable.jpg',
+    award: '',
+    note: '',
+    tags: ['malleable'],
+  },
+  {
     title: 'ChoiceMates',
     subtitle: 'Supporting Unfamiliar Online Decision-Making with Multi-Agent Conversational Interactions',
     type: 'publication',

@@ -122,10 +122,14 @@ export default function About() {
             techniques, develop novel software systems, and create theoretical
             frameworks for bringing malleable software to more end-users.
           </p>
+          <p>
+            I'm at Microsoft Research right now as an intern, working with Nic
+            Marquardt.
+          </p>
           {/* Specifically, I'm exploring how users can create custom, personal
             abstractions of information through the interface. */}
 
-          <div className="mt-4 flex flex-col gap-1 border-t border-zinc-200 dark:border-zinc-700 pt-2">
+          {/* <div className="mt-4 flex flex-col gap-1 border-t border-zinc-200 dark:border-zinc-700 pt-2">
             <h2 className="font-semibold underline text-[16px]">
               Research Opportunities
             </h2>
@@ -155,7 +159,7 @@ export default function About() {
               (Tell me about your background and why you're interested in the
               project.)
             </p>
-          </div>
+          </div> */}
           {/* <div className="mt-4 flex flex-col gap-1 border-t border-zinc-200 dark:border-zinc-700 pt-2">
             <h2 className="font-semibold underline text-[16px]">News</h2>
             <p>
