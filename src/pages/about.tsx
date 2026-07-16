@@ -123,7 +123,7 @@ export default function About() {
             frameworks for bringing malleable software to more end-users.
           </p>
           <p>
-            I'm at Microsoft Research right now as an intern, working with Nic
+            I'm interning at Microsoft Research right now, working with Nic
             Marquardt.
           </p>
           {/* Specifically, I'm exploring how users can create custom, personal
