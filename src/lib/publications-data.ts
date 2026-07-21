@@ -20,7 +20,7 @@ export const papers: Paper[] = [
     title: "Information Architecture as a Shared Language for Generating Aligned and Persistent User Interfaces",
     subtitle: '',
     type: 'publication',
-    authors: ['Eunhye Kim', 'Daeun Choi', 'Bryan Min', 'Hyunjung Yi', 'Yue Jiang', 'Juho Kim'],
+    authors: ['Eunhye Kim', 'DaEun Choi', 'Bryan Min', 'Hyunjung Yi', 'Yue Jiang', 'Juho Kim'],
     venue: 'UIST 2026 (To appear)',
     resources: [
       // {
