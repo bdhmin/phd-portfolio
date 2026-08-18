@@ -56,6 +56,7 @@ quietly does nothing, and visitors get a static page.
 | `<marble-alt data-marble-id="notice">` | nothing / research opportunities / news |
 | `#publications` | two lists sharing the sortable group `papers`, so a paper drags between them |
 | `<template id="tpl-paper">` | what the `+ paper` buttons clone |
+| `<template id="tpl-block">` | what the bio's `+ block` button clones |
 | `<script data-marble-id="richwire">` | the bio's rich block editor, link colours, and portrait picker |
 | `<template id="tpl-portraits">` | the portraits the gallery offers — add a line to offer another |
 | `<script>` at the end | the affordances — a copy of Marble's template, not a dependency |
@@ -70,7 +71,23 @@ typing: a `setText`'s inverse is another `setText` and cannot bring emphasis
 back, while a `setInner`'s inverse carries the previous markup and can.
 
 Select text and a small bar appears — bold, italic, underline, link, unlink.
-Enter starts a new block, Backspace in an empty one removes it.
+Enter starts a new block, Backspace in an empty one removes it. Hovering a block
+shows its grip: drag to reorder, `+` for a block below, and the stack icon to
+give this block versions.
+
+Every block in the bio is the same kind of thing, which is the point. It can be
+dragged, it can be typed into, and it can be given alternatives — including a
+block that lives inside an alternative, because a candidate is an ordinary
+container in the same sortable group and a paragraph drags out of one the way a
+paper drags between lists.
+
+Versions are named `v1`, `v2`, … and the stylesheet pairs each name against
+`data-marble-active` by hand, because a selector cannot compare a child's
+attribute against its parent's. That makes the list of names a ceiling rather
+than a convenience: a candidate named past the last rule is in the file and
+shown by nothing. So the switcher mints the *lowest unused* name and stops at
+twelve — delete `v2` of three and the next candidate is `v2` again. Extend the
+pairing in `<style>` and `ALT_CEILING` in the affordances script together.
 
 An inline mark inside a rich block carries no `data-marble-id`. The block is the
 piece an op names, the same way an `<svg>` is addressable and its paths are not.

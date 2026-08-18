@@ -159,31 +159,51 @@
   /* ---- alternatives --------------------------------------------------- */
 
   /* Which candidate shows is one attribute, and CSS reads it. Spelled out per
-     name because a selector cannot compare a child against its parent. */
+     name because a selector cannot compare a child against its parent, which
+     makes this list a ceiling rather than a convenience: a candidate named past
+     the last line here is in the file and shown by nothing. The switcher mints
+     the lowest unused name for that reason, so twelve is twelve at once and not
+     twelve ever. Extend this list and the switcher's ceiling together. */
+  marble-alt { display: block; }
   marble-alt > [data-marble-alt] { display: none; }
   marble-alt[data-marble-active="v1"] > [data-marble-alt="v1"],
   marble-alt[data-marble-active="v2"] > [data-marble-alt="v2"],
-  marble-alt[data-marble-active="v3"] > [data-marble-alt="v3"] { display: block; }
-  marble-alt:not([data-marble-active]) > [data-marble-alt]:first-child { display: block; }
-  /* The wrapper is scaffolding, not a box: the candidate that wins should sit
-     in the bio column or the links column as if it were a direct child. */
-  marble-alt.bio-alt, .links marble-alt { display: contents; }
+  marble-alt[data-marble-active="v3"] > [data-marble-alt="v3"],
+  marble-alt[data-marble-active="v4"] > [data-marble-alt="v4"],
+  marble-alt[data-marble-active="v5"] > [data-marble-alt="v5"],
+  marble-alt[data-marble-active="v6"] > [data-marble-alt="v6"],
+  marble-alt[data-marble-active="v7"] > [data-marble-alt="v7"],
+  marble-alt[data-marble-active="v8"] > [data-marble-alt="v8"],
+  marble-alt[data-marble-active="v9"] > [data-marble-alt="v9"],
+  marble-alt[data-marble-active="v10"] > [data-marble-alt="v10"],
+  marble-alt[data-marble-active="v11"] > [data-marble-alt="v11"],
+  marble-alt[data-marble-active="v12"] > [data-marble-alt="v12"] { display: var(--alt-display, block); }
+  marble-alt:not([data-marble-active]) > [data-marble-alt]:first-child { display: var(--alt-display, block); }
+
+  /* What "showing" means is the column's business, not the alternative's: in
+     the bio a candidate is a block, and in the links list it is a row of text
+     and arrow. One property, inherited, so the pairing above stays one list. */
+  .links { --alt-display: flex; }
 
   /* "Nothing" as an ordinary candidate. Later than the rules above and at the
      same specificity, so it wins when it is the one selected. */
   marble-alt > .none[data-marble-alt] { display: none; }
 
-  /* A link candidate is a row of text and arrow, not a block. */
-  .links marble-alt[data-marble-active="v2"] > a[data-marble-alt="v2"] { display: flex; }
+  /* The wrapper is scaffolding in the links column — the winning candidate has
+     to be a row of that flex list itself, not a box wrapped around one. In the
+     bio it stays an ordinary box, because a versioned block is one block of the
+     column and because an absolutely-positioned drag handle needs something to
+     hang on; display:contents leaves it nothing. */
+  .links marble-alt { display: contents; }
 
   /* A candidate that holds several paragraphs is one block, so the column's gap
      does not reach between them. Restate it inside. */
   .bio [data-marble-alt] > p + p { margin-top: 1.25rem; }
 
-  /* The version switcher is a child of the alt, and the alt is display:contents,
-     so the bio column treats it as another row and puts a full gap above it.
-     Pull it back under the block it belongs to. */
-  .bio .marble-alts { margin-top: -.95rem; }
+  /* And again for an aside, which is drawn as a flex column with a small gap —
+     but the pairing above has to name a display value, so the candidate that
+     wins is a block and the gap it was drawn with never applies. */
+  .bio .aside[data-marble-alt] > * + * { margin-top: .25rem; }
 
   /* ---- adders --------------------------------------------------------- */
 
@@ -230,7 +250,7 @@
       </div>
     </div>
 
-    <div class="bio" data-marble-id="bio" data-marble-sortable="bio">
+    <div class="bio" id="bio" data-marble-id="bio" data-marble-sortable="bio">
       <h1 data-marble-id="name" data-marble-rich>Bryan Min</h1>
       <p data-marble-id="bio-1" data-marble-rich>I'm a Ph.D. student at <a class="tag tag-ucsd" href="https://ucsd.edu" target="_blank" rel="noreferrer">UC San Diego</a> doing research in Human-Computer Interaction. I work with <a class="tag tag-lab" href="https://hci.ucsd.edu/haijunxia" target="_blank" rel="noreferrer">Prof. <span style="font-weight: normal;">Haijun Xia</span></a> as part of the <a class="tag tag-lab" href="https://hci.ucsd.edu/" target="_blank" rel="noreferrer">Foundation Interface Lab</a>.</p>
 
@@ -238,16 +258,16 @@
            commented out. A comment is not a candidate — nothing can switch to it
            and nothing checks it still reads. Here all three are in the file and
            one attribute says which is showing. -->
-      <marble-alt class="bio-alt" data-marble-id="statement" data-marble-active="v1">
-        <div data-marble-alt="v1" data-marble-id="stmt-v1">
+      <marble-alt data-marble-id="statement" data-marble-active="v1">
+        <div data-marble-alt="v1" data-marble-id="stmt-v1" data-marble-sortable="bio">
           <p data-marble-id="stmt-v1-a" data-marble-rich>My research centers on <b>malleable software</b>—interfaces that enable users to easily and expressively modify their software interface without code or a bloated list of settings.</p>
           <p data-marble-id="stmt-v1-b" data-marble-rich>Recently, I've been exploring malleable software under the world of generative user interfaces.</p>
           <p data-marble-id="stmt-v1-c" data-marble-rich>Generative UI is now building so many kinds of interfaces for us automatically. Traditional user interfaces show lists, widgets, text, images, and other forms of media. Now that generative UI is coming around, we're able to see that it can generate almost anything we envision. Yet, we're still generating the same traditional interfaces we've always had. Then, how do we design generative user interfaces that leverage the power of generative UI?</p>
         </div>
-        <div data-marble-alt="v2" data-marble-id="stmt-v2">
+        <div data-marble-alt="v2" data-marble-id="stmt-v2" data-marble-sortable="bio">
           <p data-marble-id="stmt-v2-a" data-marble-rich>My research centers on <b>malleable software</b>—interfaces that enable users to easily, expressively, and broadly customize their software interface without code or a bloated list of settings. Specifically, I explore <strong>how we can bring malleable software to real-world, production-grade software systems, considering the tensions between designers, developers, and end-users.</strong> To do so, I study these three user groups, create interaction techniques, develop novel software systems, and create theoretical frameworks for bringing malleable software to more end-users.</p>
         </div>
-        <div data-marble-alt="v3" data-marble-id="stmt-v3">
+        <div data-marble-alt="v3" data-marble-id="stmt-v3" data-marble-sortable="bio">
           <p data-marble-id="stmt-v3-a" data-marble-rich>My research centers on the question: <b>How can we enable end users to <u>easily</u> customize their interfaces?</b></p>
         </div>
       </marble-alt>
@@ -256,18 +276,20 @@
 
       <!-- Two blocks the old site kept commented out. Same treatment: in the
            file, with "nothing" as an ordinary candidate rather than a comment. -->
-      <marble-alt class="bio-alt" data-marble-id="notice" data-marble-active="v1">
+      <marble-alt data-marble-id="notice" data-marble-active="v1">
         <div class="none" data-marble-alt="v1" data-marble-id="notice-v1"></div>
-        <div class="aside" data-marble-alt="v2" data-marble-id="notice-v2">
+        <div class="aside" data-marble-alt="v2" data-marble-id="notice-v2" data-marble-sortable="bio">
           <h2 data-marble-id="notice-v2-h" data-marble-editable>Research Opportunities</h2>
           <p data-marble-id="notice-v2-p" data-marble-rich>Meridian is now open-source! I'm currently looking for excited developers to join me in growing <a href="https://meridian-ui.com" target="_blank" rel="noopener noreferrer">Meridian</a>. If you're interested, please <a href="https://doi.org/10.1145/3746059.3747654" target="_blank" rel="noopener noreferrer">read the paper</a> and email me!</p>
           <p class="quiet" data-marble-id="notice-v2-q" data-marble-editable>(Tell me about your background and why you're interested in the project.)</p>
         </div>
-        <div class="aside" data-marble-alt="v3" data-marble-id="notice-v3">
+        <div class="aside" data-marble-alt="v3" data-marble-id="notice-v3" data-marble-sortable="bio">
           <h2 data-marble-id="notice-v3-h" data-marble-editable>News</h2>
           <p data-marble-id="notice-v3-p" data-marble-rich><span class="stamp">Sept 28 - Oct 1</span>I attended UIST 2025 in Busan, South Korea to present <b>Meridian</b>.</p>
         </div>
       </marble-alt>
+
+      <button class="add" data-marble-id="addblock" data-marble-add="#tpl-block" data-marble-into="#bio" data-marble-instruction="Add another paragraph to the bio.">+ block</button>
     </div>
   </section>
 
@@ -466,6 +488,10 @@
   <img src="/portrait/portrait2023-1sq.JPEG" alt="Portrait, 2023">
 </template>
 
+<template id="tpl-block">
+  <p data-marble-rich>Say something here.</p>
+</template>
+
 <template id="tpl-link">
   <a data-marble-removable href="https://example.com" target="_blank" rel="noreferrer"><span data-marble-editable>New link</span><span class="arrow"><svg width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 1L1 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M2.39999 1L7.99999 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M8 6.60001L8 1.00001" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span></a>
 </template>
@@ -554,6 +580,12 @@
     // way to know until it is told.
     marble.pageOnly('contenteditable', 'spellcheck');
     addressable.push('[data-marble-editable]');
+    // A rich block is wired further down the file by the bio's own script, but
+    // being addressed is not part of being wired: an op names a node by id, so a
+    // block without one has every keystroke dropped on the way to the file. It
+    // is listed here because this is where subtrees get their ids — including a
+    // subtree cloned into a new version, whose blocks were stripped of theirs.
+    addressable.push('[data-marble-rich]');
     wirers.push(wireEditable);
 
     function wireEditable(root) {
@@ -642,6 +674,10 @@
     // Items move freely between containers declaring the same group.
     const group = (el) => el?.getAttribute('data-marble-sortable') ?? null;
 
+    const isAdder = (el) => el?.hasAttribute('data-marble-add') ?? false;
+    const sortableItems = (el) => persistentChildren(el).filter((c) => !isAdder(c));
+    const adderIn = (el) => persistentChildren(el).find(isAdder) ?? null;
+
     function wireSortableItem(item) {
       if (!claim(item, 'sortable-item')) return;
 
@@ -674,8 +710,18 @@
     }
 
     function wireSortable(root) {
+      // A subtree handed over on its own — an insert, an accepted proposal, a
+      // node the file grew in another window — is an item of the list it landed
+      // in, and that list is not inside it. Wiring only what the subtree
+      // contains leaves the thing itself without a handle, which is the whole
+      // of "some of these drag and some don't".
+      if (root.parentElement?.hasAttribute?.('data-marble-sortable') && !isAdder(root)) {
+        wireSortableItem(root);
+      }
       for (const container of within(root, '[data-marble-sortable]')) {
-        for (const item of persistentChildren(container)) wireSortableItem(item);
+        // An adder that lives inside the list it fills is chrome that happens
+        // to be in the file; it is not one of the things being ordered.
+        for (const item of sortableItems(container)) wireSortableItem(item);
         if (!claim(container, 'sortable')) continue;
 
         // Reorder live during the drag, then report the final resting place.
@@ -688,12 +734,15 @@
           event.preventDefault();
           event.dataTransfer.dropEffect = 'move';
 
-          const target = persistentChildren(container)
+          const over = sortableItems(container)
             .filter((child) => child !== dragging)
             .find((child) => {
               const rect = child.getBoundingClientRect();
               return event.clientY < rect.top + rect.height / 2;
             });
+          // Past the last item is still above the adder, which stays the last
+          // thing in the list however the list is reordered.
+          const target = over ?? adderIn(container);
 
           const settled =
             dragging.parentElement === container &&
@@ -751,9 +800,17 @@
           // Serialized before wiring, so no transient chrome lands in the file.
           const html = marble.source.outer(node);
 
-          container.append(node);
+          // A button standing in the list it fills adds above itself, so it
+          // stays at the bottom instead of drifting up as the list grows.
+          const anchor = button.parentElement === container ? button : null;
+          container.insertBefore(node, anchor);
           marble.adopt(node);
-          const op = { type: 'insert', html, parentId: marble.id(container), beforeId: null };
+          const op = {
+            type: 'insert',
+            html,
+            parentId: marble.id(container),
+            beforeId: anchor ? marble.id(anchor) : null,
+          };
           const inverse = marble.invert(op);
           if (inverse) marble.record({ redo: [op], undo: [inverse] });
           marble.op(op, { immediate: true });
@@ -808,6 +865,8 @@
         font: inherit; line-height: 1;
       }
       .marble-alts button.marble-alts-edge:hover { color: var(--dim, #71717a); }
+      .marble-alts button.marble-alts-edge:disabled { opacity: .35; cursor: default; }
+      .marble-alts button.marble-alts-edge:disabled:hover { color: var(--faint, #a1a1aa); }
       .marble-alts .marble-alts-drop:hover { color: #b4544f; }
     `);
     addressable.push('marble-alt', 'marble-alt > *');
@@ -815,6 +874,18 @@
 
     const ALT = 'data-marble-alt';
     const ACTIVE = 'data-marble-active';
+    // What can be typed into: the two affordances that put a caret somewhere.
+    const WRITABLE = '[data-marble-editable], [data-marble-rich]';
+
+    // A wrapper is not what takes the caret. A new candidate is a copy you are
+    // about to rewrite, so the first thing in it that accepts words gets the
+    // caret with its text selected.
+    function enterVersion(version) {
+      const writable = version.matches(WRITABLE) ? version : version.querySelector(WRITABLE);
+      if (!writable) return;
+      writable.focus();
+      getSelection()?.selectAllChildren(writable);
+    }
 
     const nameOf = (el) => el?.getAttribute(ALT) ?? null;
 
@@ -825,11 +896,44 @@
       return versions.find((el) => nameOf(el) === alt.getAttribute(ACTIVE)) ?? versions[0] ?? null;
     }
 
+    // The stylesheet pairs each name against data-marble-active by hand, because
+    // a selector cannot compare a child's attribute against its parent's. That
+    // makes the list of names a ceiling: past it a candidate is written to the
+    // file and shown by nothing. So the lowest unused name is minted rather than
+    // the next one up — delete v2 of three and the next candidate is v2 again —
+    // and the ceiling is reached only by holding that many alternatives at once.
+    const ALT_CEILING = 12;
+
     function nextName(versions) {
-      const numbered = versions
-        .map((el) => Number(/^v(\d+)$/.exec(nameOf(el) ?? '')?.[1]))
-        .filter(Number.isFinite);
-      return `v${Math.max(versions.length, ...numbered) + 1}`;
+      const taken = new Set(versions.map(nameOf));
+      for (let n = 1; n <= ALT_CEILING; n += 1) {
+        if (!taken.has(`v${n}`)) return `v${n}`;
+      }
+      return null;
+    }
+
+    // Which candidate a new one starts from. "Nothing" is an ordinary candidate
+    // here, and a copy of nothing is a version you cannot type into, so a blank
+    // one hands off to the nearest sibling that actually says something.
+    function seedVersion(alt) {
+      const versions = persistentChildren(alt);
+      const current = activeVersion(alt);
+      if (current && marble.text(current).trim()) return current;
+      return versions.find((el) => marble.text(el).trim()) ?? current;
+    }
+
+    // Only reached when every candidate is empty, which a hand-edit can arrange
+    // and the switcher cannot. There is nothing to copy, so a candidate is built
+    // — and its shape follows the wrapper it goes into, because a paragraph
+    // inside a row of links is not a smaller version of one.
+    function blankVersion(source) {
+      if (source.tagName !== 'DIV') return marble.clone(source);
+      const version = document.createElement('div');
+      const block = document.createElement('p');
+      block.setAttribute('data-marble-rich', '');
+      block.append(document.createElement('br'));
+      version.append(block);
+      return version;
     }
 
     function wireAlternatives(root) {
@@ -852,6 +956,7 @@
         const track = widget.querySelector('.marble-alts-track');
         const thumb = widget.querySelector('.marble-alts-thumb');
         const drop = widget.querySelector('.marble-alts-drop');
+        const add = widget.querySelector('.marble-alts-add');
 
         // No control decides what is on screen: each one writes the attribute
         // and the stylesheet reads it. That is why a switch arriving from a
@@ -913,19 +1018,30 @@
             thumb.style.transform = `translateX(${button.offsetLeft}px)`;
           }
           drop.hidden = versions.length < 2;
+          // Both derived from the same list the switch is drawn from, so the
+          // control cannot offer a name the stylesheet has no rule for.
+          add.disabled = versions.length >= ALT_CEILING;
+          add.title = add.disabled
+            ? `${ALT_CEILING} versions is as many as this document styles`
+            : 'Add a version';
         }
 
-        widget.querySelector('.marble-alts-add').addEventListener('click', () => {
-          const current = activeVersion(alt);
-          if (!current) return;
-
+        add.addEventListener('click', () => {
           // The new version starts as a copy of the one on screen, because a
-          // candidate phrasing is nearly always an edit of the current one.
-          const version = marble.clone(current);
+          // candidate phrasing is nearly always an edit of the current one —
+          // unless the one on screen is the "nothing" candidate, which would
+          // hand back a version with nowhere to put words.
+          const source = seedVersion(alt);
+          if (!source) return;
+          const name = nextName(persistentChildren(alt));
+          if (!name) return;
+
+          const version = marble.text(source).trim()
+            ? marble.clone(source)
+            : blankVersion(source);
           for (const el of [version, ...version.querySelectorAll(`[${ID}]`)]) {
             el.removeAttribute(ID);
           }
-          const name = nextName(persistentChildren(alt));
           version.setAttribute(ALT, name);
           assignIdsIn(version);
 
@@ -940,8 +1056,7 @@
           if (undo.length && redo.length) marble.record({ redo, undo });
           render();
 
-          version.focus();
-          getSelection()?.selectAllChildren(version);
+          enterVersion(version);
         });
 
         drop.addEventListener('click', () => {
@@ -1145,6 +1260,7 @@
       upload: svg('<rect x="1.2" y="2.6" width="11.6" height="9.4" rx="1"/><path d="M7 10V5.4M7 5.4 5.3 7.1M7 5.4l1.7 1.7"/>'),
       link: svg('<path d="M5.6 8.4 8.4 5.6"/><path d="M7.6 4.3 8.9 3a2.3 2.3 0 0 1 3.2 3.2l-1.3 1.3"/><path d="M6.4 9.7 5.1 11A2.3 2.3 0 0 1 1.9 7.8l1.3-1.3"/>'),
       unlink: svg('<path d="M7.6 4.3 8.9 3a2.3 2.3 0 0 1 3.2 3.2l-1.3 1.3"/><path d="M6.4 9.7 5.1 11A2.3 2.3 0 0 1 1.9 7.8l1.3-1.3"/><path d="M2 2l10 10"/>'),
+      versions: svg('<path d="M7 1.5 1.5 4.1 7 6.7l5.5-2.6Z"/><path d="M1.5 7.3 7 9.9l5.5-2.6"/><path d="M1.5 10.2 7 12.8l5.5-2.6"/>', 11),
     };
 
     const style = document.createElement('style');
@@ -1239,6 +1355,19 @@
       .marble-gal button:hover { border-color: var(--dim, #71717a); }
       .marble-gal button[aria-pressed="true"] { border-color: var(--foreground, #171717); }
       .marble-gal img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+      /* The grip is the copied affordances' column of controls; these two join
+         the drag handle rather than building a second strip beside it. */
+      .marble-grip .marble-rich-btn {
+        display: inline-flex; align-items: center; justify-content: center;
+      }
+      /* A candidate is ordered and copied by its switcher, not by dragging it
+         out of the wrapper or wrapping it again — so neither control is offered
+         on one. Read straight off the shape of the file, which is why nothing
+         has to remember to turn them back on when a block stops being a
+         candidate. */
+      marble-alt > [data-marble-alt] > .marble-grip .marble-handle,
+      marble-alt > [data-marble-alt] > .marble-grip .marble-rich-fork { display: none; }
     `;
     document.head.append(style);
 
@@ -1300,40 +1429,166 @@
             return;
           }
           // Backspace in an empty block removes the block, which is the only
-          // way to get rid of one without reaching for the drag handle.
+          // way to get rid of one without reaching for the grip.
           if (event.key === 'Backspace' && !marble.text(block).trim()) {
-            const siblings = within(block.parentElement, RICH);
-            if (siblings.length < 2) return;
-            event.preventDefault();
-            removeBlock(block);
+            if (removeBlock(block)) event.preventDefault();
           }
         });
+
+        wireBlockControls(block);
       }
     }
 
+    // The grip the copied affordances build, found or made. Wirers run in
+    // registration order and that script registered first, so a block sitting in
+    // a sortable list already has one and these controls join its drag handle. A
+    // block inside an alternative is in no list and has none, so it gets one.
+    function grip(item) {
+      let strip = item.querySelector(':scope > .marble-grip');
+      if (!strip) {
+        strip = chrome('div', 'marble-grip');
+        item.prepend(strip);
+        item.classList.add('marble-item');
+      }
+      return strip;
+    }
+
+    function control(cls, label, body) {
+      const button = document.createElement('button');
+      button.className = `marble-btn marble-rich-btn ${cls}`;
+      button.type = 'button';
+      button.title = label;
+      button.setAttribute('aria-label', label);
+      if (body.startsWith('<')) button.innerHTML = body;
+      else button.textContent = body;
+      // The caret is in the block these act on, and a press is what would take
+      // it away.
+      button.addEventListener('mousedown', (event) => event.preventDefault());
+      return button;
+    }
+
+    function wireBlockControls(block) {
+      if (!claim(block, 'controls')) return;
+      const strip = grip(block);
+
+      const add = control('marble-rich-add', 'Add a block below', '+');
+      add.addEventListener('click', () => addBlockAfter(block));
+
+      const fork = control('marble-rich-fork', 'Give this block versions', ICON.versions);
+      fork.addEventListener('click', () => versionBlock(block));
+
+      strip.append(add, fork);
+    }
+
+    const TRANSIENT = 'data-marble-transient';
+    const persistentChildren = (el) =>
+      [...el.children].filter((c) => !c.hasAttribute(TRANSIENT));
+
+    function nextPersistent(el) {
+      let sibling = el.nextElementSibling;
+      while (sibling?.hasAttribute(TRANSIENT)) sibling = sibling.nextElementSibling;
+      return sibling ?? null;
+    }
+
+    // A <marble-alt> holds candidates, not blocks. A sibling inserted inside one
+    // is another *version* of the block — never what Enter means — and it would
+    // arrive unnamed and hidden, which is how a keystroke ends up looking like
+    // it deleted the paragraph. So a new block clears the wrapper entirely and
+    // lands in the container the alternative itself sits in.
+    function blockHost(block) {
+      let node = block;
+      while (node.parentElement?.tagName === 'MARBLE-ALT') node = node.parentElement;
+      return node;
+    }
+
     function addBlockAfter(block) {
-      const parent = block.parentElement;
-      const parentId = marble.id(parent);
-      if (!parentId) return;
-      const next = block.nextElementSibling;
-      const html = `<p data-marble-id="${marble.newId()}" data-marble-rich><br></p>`;
+      const host = blockHost(block);
+      const parent = host.parentElement;
+      const parentId = parent && marble.id(parent);
+      if (!parentId) return null;
+      const id = marble.newId();
+      const next = nextPersistent(host);
+      const html = `<p data-marble-id="${id}" data-marble-rich><br></p>`;
       const op = { type: 'insert', html, parentId, beforeId: next ? marble.id(next) : null };
       marble.apply(op);
       const inverse = marble.invert(op);
       if (inverse) marble.record({ redo: [op], undo: [inverse] });
       marble.op(op, { immediate: true });
-      block.nextElementSibling?.focus();
+      const added = marble.byId(id);
+      added?.focus();
+      return added;
+    }
+
+    // Any block can have alternatives. That is what makes versioning a property
+    // of the bio rather than of the two blocks that happened to be written with
+    // it: the wrapper goes on when it is wanted, and the switcher it picks up on
+    // adoption is what adds the second candidate.
+    function versionBlock(block) {
+      const parent = block.parentElement;
+      const blockId = marble.id(block);
+      const parentId = parent && marble.id(parent);
+      if (!blockId || !parentId || parent.tagName === 'MARBLE-ALT') return;
+
+      const altId = marble.newId();
+      const back = nextPersistent(block);
+      const alt = document.createElement('marble-alt');
+      alt.setAttribute('data-marble-id', altId);
+      alt.setAttribute('data-marble-active', 'v1');
+      parent.insertBefore(alt, block);
+      // Serialized while it is still empty and before anything is adopted, so
+      // the switcher's chrome is not in the markup the file is told about.
+      const html = marble.source.outer(alt);
+
+      block.setAttribute('data-marble-alt', 'v1');
+      alt.append(block);
+      marble.adopt(alt);
+
+      const redo = [
+        { type: 'insert', html, parentId, beforeId: blockId },
+        { type: 'setAttr', id: blockId, name: 'data-marble-alt', value: 'v1' },
+        { type: 'move', id: blockId, parentId: altId, beforeId: null },
+      ];
+      const undo = [
+        { type: 'move', id: blockId, parentId, beforeId: back ? marble.id(back) : null },
+        { type: 'setAttr', id: blockId, name: 'data-marble-alt', value: null },
+        { type: 'remove', id: altId },
+      ];
+      marble.record({ redo, undo });
+      for (const op of redo) marble.op(op, { immediate: true });
     }
 
     function removeBlock(block) {
-      const back = [...within(block.parentElement, RICH)];
-      const before = back[back.indexOf(block) - 1] ?? back[back.indexOf(block) + 1];
-      const op = { type: 'remove', id: marble.id(block) };
+      // Removing the last candidate of an alternative would leave a wrapper that
+      // holds nothing, shows nothing, and cannot be selected to be got rid of.
+      let doomed = block;
+      while (
+        doomed.parentElement?.tagName === 'MARBLE-ALT' &&
+        persistentChildren(doomed.parentElement).length === 1
+      ) {
+        doomed = doomed.parentElement;
+      }
+      const id = marble.id(doomed);
+      const parent = doomed.parentElement;
+      if (!id || !parent) return false;
+
+      // Where the caret goes: the nearest block still on screen. A block inside
+      // a candidate that isn't showing is in the file but not in the page, and
+      // putting the caret there would look like the text had vanished.
+      const shown = within(parent, RICH).filter(
+        (el) => !doomed.contains(el) && el.getClientRects().length,
+      );
+      if (!shown.length) return false;
+      const before =
+        [...shown]
+          .reverse()
+          .find((el) => doomed.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_PRECEDING) ??
+        shown[0];
+
+      const op = { type: 'remove', id };
       const inverse = marble.invert(op);
       marble.apply(op);
       if (inverse) marble.record({ redo: [op], undo: [inverse] });
       marble.op(op, { immediate: true });
-      if (!before) return;
       before.focus();
       const range = document.createRange();
       range.selectNodeContents(before);
@@ -1341,6 +1596,7 @@
       const sel = getSelection();
       sel.removeAllRanges();
       sel.addRange(range);
+      return true;
     }
 
     // ------------------------------------------------------------- the toolbar
