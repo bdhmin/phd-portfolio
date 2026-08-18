@@ -1,36 +1,19 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
 # dependencies
 /node_modules
-/.pnp
-.pnp.js
-.yarn/install-state.gz
 
-# testing
-/coverage
+# what `npm run build` copies together — nothing here is a source
+/dist
 
-# next.js
-/.next/
-/out/
-
-# production
-/build
+# marble keeps its snapshots beside the documents it snapshots
+/.marble
 
 # misc
 .DS_Store
 *.pem
-
-# debug
 npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
 
 # local env files
 .env*.local
 
 # vercel
 .vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts

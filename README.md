@@ -1,36 +1,86 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# phd-portfolio
 
-## Getting Started
+Bryan Min's site. It is one file.
 
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+portfolio.mrbl     the site — markup, style, behaviour, and content
+public/            the things a single file cannot hold: images, PDFs, favicon
+dev.mjs            local host: public/ in front, the Marble host behind it
+build.mjs          publishing, which is a copy
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+`portfolio.mrbl` is valid HTML5 and is its own source. Opened with no host it is
+the site; opened with the Marble host it is the site *and* its editor — drag a
+paper to reorder it, click a title and type, and the bytes on disk change. There
+is no build step, no state layer, and no save button.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Working on it
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm install
+npm run dev      # http://localhost:4321/a/portfolio
+```
 
-## Learn More
+Two servers, one origin. `marble serve` answers for the document and returns 404
+for everything else on purpose, so `dev.mjs` puts `public/` in front of it and
+forwards the rest. That way `/thumbnails/meridian.png` means the same thing here
+as it does in production.
 
-To learn more about Next.js, take a look at the following resources:
+Edit the page in the browser, or edit `portfolio.mrbl` in an editor, or ask an
+agent to — all three write the same file, and an open tab reconciles by node id
+without losing your scroll or caret.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run doctor       # check the invariants that keep the file addressable
+npm run outline      # the shape of the file, for handing to an agent
+npm run rollback     # every write is snapshotted while the host runs
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Publishing
 
-## Deploy on Vercel
+```bash
+npm run build        # dist/ = public/ + portfolio.mrbl as index.html
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Vercel is configured to run exactly that (`vercel.json`). Nothing about the
+deployed site is Marble-aware: `window.marble` never arrives, every affordance
+quietly does nothing, and visitors get a static page.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## What is where in the document
+
+| | |
+|---|---|
+| `<style>` in the head | the whole design, ported from the Tailwind build this replaced |
+| `#about` | portrait, links, bio |
+| `<marble-alt data-marble-id="statement">` | three drafts of the research statement; one attribute says which shows |
+| `<marble-alt data-marble-id="notice">` | nothing / research opportunities / news |
+| `#publications` | two lists sharing the sortable group `papers`, so a paper drags between them |
+| `<template id="tpl-paper">` | what the `+ paper` buttons clone |
+| `<script data-marble-id="richwire">` | the bio's rich block editor, link colours, and portrait picker |
+| `<template id="tpl-portraits">` | the portraits the gallery offers — add a line to offer another |
+| `<script>` at the end | the affordances — a copy of Marble's template, not a dependency |
+
+## Editing the bio
+
+Blocks carry `data-marble-rich` rather than `data-marble-editable`, because the
+two file different ops. `data-marble-editable` files `setText`, whose premise is
+that the text *is* the element; a paragraph holding `<b>` and a link is not that,
+so a rich block files `setInner` instead. It matters for undo more than for
+typing: a `setText`'s inverse is another `setText` and cannot bring emphasis
+back, while a `setInner`'s inverse carries the previous markup and can.
+
+Select text and a small bar appears — bold, italic, underline, link, unlink.
+Enter starts a new block, Backspace in an empty one removes it.
+
+An inline mark inside a rich block carries no `data-marble-id`. The block is the
+piece an op names, the same way an `<svg>` is addressable and its paths are not.
+
+A link's hover colour is two facts, one per colour scheme. The colours this site
+uses more than once are classes (`.tag-ucsd`, `.tag-lab`, …) so the value lives in
+one place; a colour picked in the editor is inline on the single link it is true
+of. Both are read the same way by `.tag:hover`.
+
+The portrait has a gallery and an upload. The gallery reads
+`<template id="tpl-portraits">` — a document cannot read a folder, so the list of
+portraits is in the file. An upload has nowhere to go but into the file, so it is
+resized to 720px and lands as a data URI in the `src`; expect ~50–80KB per photo.

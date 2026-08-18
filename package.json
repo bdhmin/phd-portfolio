@@ -1,28 +1,17 @@
 {
   "name": "phd-portfolio",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
+  "type": "module",
+  "description": "Bryan Min's portfolio — one .mrbl document and its assets.",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "@sparticuz/chromium": "^131.0.0",
-    "@svgr/webpack": "^8.1.0",
-    "@vercel/analytics": "^1.5.0",
-    "next": "16.0.10",
-    "puppeteer-core": "^24.29.1",
-    "react": "^18",
-    "react-dom": "^18"
+    "dev": "node dev.mjs",
+    "build": "node build.mjs",
+    "doctor": "marble doctor portfolio.mrbl",
+    "outline": "marble outline portfolio.mrbl",
+    "rollback": "marble rollback portfolio"
   },
   "devDependencies": {
-    "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "postcss": "^8",
-    "tailwindcss": "^3.4.1",
-    "typescript": "^5"
+    "@bdhmin/marble": "^0.1.0"
   }
 }

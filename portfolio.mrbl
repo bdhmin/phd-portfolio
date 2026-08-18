@@ -1,0 +1,1638 @@
+<!doctype html>
+<html lang="en" data-marble="1">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="marble:capabilities" content="storage; net=fonts">
+<meta name="description" content="Bryan's Portfolio">
+<title>Bryan Min</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400..700&family=Source+Sans+3:wght@200..900&display=swap" rel="stylesheet">
+<style>
+  /* Ported from the Tailwind build this document replaces. Every value here was
+     a utility class before: the zinc ramp, the 0.873rem body size, the 200x240
+     portrait slot. Written out longhand because a .mrbl has no build step, and
+     because a person hand-editing this file should be able to see what a number
+     does without knowing Tailwind's scale. */
+  :root {
+    --background: #ffffff;
+    --foreground: #171717;
+    --zinc-200: #e4e4e7;
+    --zinc-400: #a1a1aa;
+    --zinc-500: #71717a;
+    --zinc-800: #27272a;
+    --rule: var(--zinc-200);
+    --dim: var(--zinc-500);
+    --faint: var(--zinc-400);
+    --thumb-bg: #ffffff;
+    --thumb-filter: none;
+    --award: #f19a21;
+    --sans: "Source Sans 3", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    --serif: "Lora", Georgia, "Times New Roman", serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --background: #0a0a0a;
+      --foreground: #ededed;
+      --rule: #3f3f46;          /* zinc-700 */
+      --dim: #a1a1aa;           /* zinc-400 */
+      --faint: #52525b;         /* zinc-600 */
+      --thumb-bg: #18181b;      /* zinc-900 */
+      --thumb-filter: brightness(0.85) contrast(1.1) saturate(0.9);
+    }
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--sans);
+    font-size: 0.873rem;
+    line-height: 1.5rem;
+    -webkit-font-smoothing: antialiased;
+  }
+  b { font-weight: 640; }
+  img { display: block; }
+
+  /* ---- shell ---------------------------------------------------------- */
+
+  .page { display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+  main { max-width: 960px; width: 100%; flex: 1; padding: 3rem 2rem 2rem; }
+  @media (min-width: 1024px) { main { padding-top: 5rem; } }
+
+  footer {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+    padding: 2rem;
+    color: var(--faint);
+  }
+
+  /* ---- about ---------------------------------------------------------- */
+
+  .about { display: flex; flex-direction: column; gap: 2rem; }
+  @media (min-width: 768px) { .about { flex-direction: row; } }
+
+  /* One links block, not two. The old site rendered the list twice — once
+     `block md:hidden` beside the photo, once `hidden md:block` under it — which
+     is the same fact in the file twice. Grid says where it goes instead. */
+  .identity {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 0 1rem;
+    align-items: start;
+  }
+  @media (min-width: 768px) { .identity { grid-template-columns: 200px; gap: 1.25rem 0; } }
+
+  .portrait { min-width: 200px; width: 200px; height: 240px; border-radius: 2px; overflow: hidden; }
+  .portrait img { width: 100%; height: 100%; object-fit: cover; }
+
+  .links { display: flex; flex-direction: column; gap: .25rem; padding: .5rem 1rem .5rem 0; }
+  @media (min-width: 768px) { .links { padding: 0 .5rem; } }
+  .links a, .links p { width: fit-content; display: flex; flex-direction: row; align-items: center; gap: 4px; margin: 0; transition: color .2s; }
+  .links a { color: inherit; text-decoration: none; }
+  .links a:hover { color: var(--faint); }
+  @media (prefers-color-scheme: dark) { .links a:hover { color: #d4d4d8; } }
+  .links .arrow { display: flex; opacity: .5; transition: opacity .2s; }
+  @media (min-width: 768px) { .links .arrow { opacity: 1; } }
+  .links a:hover .arrow { opacity: .3; }
+  .rule { height: 1px; background: var(--rule); margin: .5rem 0; }
+
+  .bio { width: 100%; display: flex; flex-direction: column; gap: 1.25rem; font-size: 15px; }
+  .bio p { margin: 0; }
+  .bio h1 { font-family: var(--serif); font-weight: 600; font-size: 2.25rem; line-height: 2.5rem; margin: 0; }
+
+  /* A tag is a link that only colours on hover, and the colour is two facts —
+     one per colour scheme. It lived in a React `linkMap` keyed off a `useState`
+     mirror of the scheme; here the scheme picks and CSS does the rest.
+
+     Where the pair lives depends on how the tag was written. The colours this
+     site uses more than once are a class, so the value is in one place and
+     every tag wearing it follows. A colour chosen in the editor for one link is
+     inline on that link, because that is the only place it is true. Both are
+     read the same way, so neither is a special case. */
+  .tag { font-weight: 640; color: inherit; text-decoration: none; transition: color .2s; }
+  .tag { --tag: var(--tag-light, currentColor); }
+  @media (prefers-color-scheme: dark) {
+    .tag { --tag: var(--tag-dark, var(--tag-light, currentColor)); }
+  }
+  .tag:hover { color: var(--tag); }
+  .tag-ucsd      { --tag-light: #00629B; --tag-dark: #54AEE2; }
+  .tag-lab       { --tag-light: #A19792; --tag-dark: #D7CAC3; }
+  .tag-cogsci    { --tag-light: #EC6556; --tag-dark: #F48175; }
+  .tag-masonview { --tag-light: #f0b051; --tag-dark: #f0b051; }
+
+  .aside { display: flex; flex-direction: column; gap: .25rem; border-top: 1px solid var(--rule); padding-top: .5rem; margin-top: 1rem; }
+  .aside h2 { font-weight: 600; text-decoration: underline; font-size: 16px; margin: 0; }
+  .aside p { margin: 0; }
+  .aside .quiet { font-size: 13px; font-style: italic; opacity: .5; }
+  .aside a { color: inherit; text-decoration: underline; }
+  .aside .stamp { font-weight: 600; margin-right: .5rem; }
+
+  /* ---- publications --------------------------------------------------- */
+
+  .papers { display: flex; flex-direction: column; gap: 5rem; margin-top: 4rem; }
+  .papers h2 { font-family: var(--serif); font-weight: 600; font-size: 1.25rem; line-height: 1.75rem; margin: 0 0 1.5rem; }
+  .stack { display: flex; flex-direction: column; gap: 4rem; }
+  @media (min-width: 768px) { .stack { gap: 2rem; } }
+
+  .paper { display: flex; flex-direction: column; align-items: center; width: 100%; gap: 1rem; }
+  @media (min-width: 768px) { .paper { flex-direction: row; gap: 2rem; } }
+  .shot { max-width: 360px; overflow: hidden; border-radius: 2px; background: var(--thumb-bg); }
+  @media (min-width: 768px) { .shot { width: 400px; min-width: 200px; } }
+  .shot img { width: 100%; background: var(--thumb-bg); filter: var(--thumb-filter); transition: all .2s; }
+
+  .meta { display: flex; flex-direction: column; gap: .25rem; width: 100%; }
+  .venue { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; font-size: 13px; color: var(--dim); }
+  .venue h5 { margin: 0; font-weight: 400; }
+  .venue .award { font-weight: 600; color: var(--award); }
+  .venue .award:empty { display: none; }
+  .paper h3 { font-size: 1rem; line-height: 1.375; font-weight: 600; margin: .25rem 0; }
+  .authors { font-size: 13px; }
+  .authors .me { font-weight: 600; }
+  .res { display: flex; flex-wrap: wrap; gap: 1rem; font-size: 13px; }
+  .res a, .res p { margin: 0; color: var(--dim); text-decoration: none; transition: all .2s; }
+  .res a:hover { color: var(--zinc-800); }
+  @media (prefers-color-scheme: dark) { .res a:hover { color: #ffffff; } }
+
+  /* ---- alternatives --------------------------------------------------- */
+
+  /* Which candidate shows is one attribute, and CSS reads it. Spelled out per
+     name because a selector cannot compare a child against its parent. */
+  marble-alt > [data-marble-alt] { display: none; }
+  marble-alt[data-marble-active="v1"] > [data-marble-alt="v1"],
+  marble-alt[data-marble-active="v2"] > [data-marble-alt="v2"],
+  marble-alt[data-marble-active="v3"] > [data-marble-alt="v3"] { display: block; }
+  marble-alt:not([data-marble-active]) > [data-marble-alt]:first-child { display: block; }
+  /* The wrapper is scaffolding, not a box: the candidate that wins should sit
+     in the bio column or the links column as if it were a direct child. */
+  marble-alt.bio-alt, .links marble-alt { display: contents; }
+
+  /* "Nothing" as an ordinary candidate. Later than the rules above and at the
+     same specificity, so it wins when it is the one selected. */
+  marble-alt > .none[data-marble-alt] { display: none; }
+
+  /* A link candidate is a row of text and arrow, not a block. */
+  .links marble-alt[data-marble-active="v2"] > a[data-marble-alt="v2"] { display: flex; }
+
+  /* A candidate that holds several paragraphs is one block, so the column's gap
+     does not reach between them. Restate it inside. */
+  .bio [data-marble-alt] > p + p { margin-top: 1.25rem; }
+
+  /* The version switcher is a child of the alt, and the alt is display:contents,
+     so the bio column treats it as another row and puts a full gap above it.
+     Pull it back under the block it belongs to. */
+  .bio .marble-alts { margin-top: -.95rem; }
+
+  /* ---- adders --------------------------------------------------------- */
+
+  .add {
+    align-self: flex-start;
+    font: inherit; font-size: 12px;
+    color: var(--faint);
+    background: none;
+    border: 1px dashed var(--rule);
+    border-radius: 3px;
+    padding: .2rem .6rem;
+    cursor: pointer;
+    transition: color .2s, border-color .2s;
+  }
+  .add:hover { color: var(--dim); border-color: var(--dim); }
+</style>
+</head>
+<body>
+
+<div class="page" data-marble-id="page">
+<main data-marble-id="main">
+
+  <section class="about" id="about" data-marble-id="about">
+    <div class="identity" data-marble-id="ident">
+      <div class="portrait" data-marble-id="portrait" data-marble-portrait>
+        <img data-marble-id="portraitimg" src="/portrait/portrait2026-4.jpg" alt="A medium close-up portrait photo of Bryan Min">
+      </div>
+      <div data-marble-id="contactblock">
+        <div class="links" data-marble-id="academic" data-marble-sortable="links">
+          <p data-marble-id="lnk-email" data-marble-removable data-marble-editable>bdmin@ucsd.edu</p>
+          <!-- The CV link the old file kept commented out. Switch to v2 to show it. -->
+          <marble-alt data-marble-id="cv" data-marble-active="v1">
+            <span class="none" data-marble-alt="v1" data-marble-id="cv-v1"></span>
+            <a data-marble-alt="v2" data-marble-id="cv-v2" href="https://drive.google.com/file/d/1QRxHPrn_d2tv947H3nf4uCfPLgEtRXHn/view?usp=sharing" target="_blank" rel="noreferrer"><span data-marble-id="cv-v2-t" data-marble-editable>CV</span><span class="arrow" data-marble-id="cv-v2-a"><svg width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 1L1 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M2.39999 1L7.99999 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M8 6.60001L8 1.00001" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span></a>
+          </marble-alt>
+        </div>
+        <div class="rule" data-marble-id="rule1"></div>
+        <div class="links" id="social" data-marble-id="social" data-marble-sortable="links">
+          <a data-marble-id="lnk-scholar" data-marble-removable href="https://scholar.google.com/citations?user=12yN6_gAAAAJ&amp;hl=en" target="_blank" rel="noreferrer"><span data-marble-id="lnk-scholar-t" data-marble-editable>Google Scholar</span><span class="arrow" data-marble-id="lnk-scholar-a"><svg width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 1L1 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M2.39999 1L7.99999 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M8 6.60001L8 1.00001" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span></a>
+          <a data-marble-id="lnk-github" data-marble-removable href="https://github.com/bdhmin" target="_blank" rel="noreferrer"><span data-marble-id="lnk-github-t" data-marble-editable>GitHub</span><span class="arrow" data-marble-id="lnk-github-a"><svg width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 1L1 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M2.39999 1L7.99999 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M8 6.60001L8 1.00001" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span></a>
+          <a data-marble-id="lnk-x" data-marble-removable href="https://twitter.com/bryandhmin" target="_blank" rel="noreferrer"><span data-marble-id="lnk-x-t" data-marble-editable>X</span><span class="arrow" data-marble-id="lnk-x-a"><svg width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 1L1 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M2.39999 1L7.99999 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M8 6.60001L8 1.00001" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span></a>
+        </div>
+        <button class="add" data-marble-id="addlink" data-marble-add="#tpl-link" data-marble-into="#social" data-marble-instruction="Add another social link.">+ link</button>
+      </div>
+    </div>
+
+    <div class="bio" data-marble-id="bio" data-marble-sortable="bio">
+      <h1 data-marble-id="name" data-marble-rich>Bryan Min</h1>
+      <p data-marble-id="bio-1" data-marble-rich>I'm a Ph.D. student at <a class="tag tag-ucsd" href="https://ucsd.edu" target="_blank" rel="noreferrer">UC San Diego</a> doing research in Human-Computer Interaction. I work with <a class="tag tag-lab" href="https://hci.ucsd.edu/haijunxia" target="_blank" rel="noreferrer">Prof. <span style="font-weight: normal;">Haijun Xia</span></a> as part of the <a class="tag tag-lab" href="https://hci.ucsd.edu/" target="_blank" rel="noreferrer">Foundation Interface Lab</a>.</p>
+
+      <!-- The research statement had three drafts in the old file: one live, two
+           commented out. A comment is not a candidate — nothing can switch to it
+           and nothing checks it still reads. Here all three are in the file and
+           one attribute says which is showing. -->
+      <marble-alt class="bio-alt" data-marble-id="statement" data-marble-active="v1">
+        <div data-marble-alt="v1" data-marble-id="stmt-v1">
+          <p data-marble-id="stmt-v1-a" data-marble-rich>My research centers on <b>malleable software</b>—interfaces that enable users to easily and expressively modify their software interface without code or a bloated list of settings.</p>
+          <p data-marble-id="stmt-v1-b" data-marble-rich>Recently, I've been exploring malleable software under the world of generative user interfaces.</p>
+          <p data-marble-id="stmt-v1-c" data-marble-rich>Generative UI is now building so many kinds of interfaces for us automatically. Traditional user interfaces show lists, widgets, text, images, and other forms of media. Now that generative UI is coming around, we're able to see that it can generate almost anything we envision. Yet, we're still generating the same traditional interfaces we've always had. Then, how do we design generative user interfaces that leverage the power of generative UI?</p>
+        </div>
+        <div data-marble-alt="v2" data-marble-id="stmt-v2">
+          <p data-marble-id="stmt-v2-a" data-marble-rich>My research centers on <b>malleable software</b>—interfaces that enable users to easily, expressively, and broadly customize their software interface without code or a bloated list of settings. Specifically, I explore <strong>how we can bring malleable software to real-world, production-grade software systems, considering the tensions between designers, developers, and end-users.</strong> To do so, I study these three user groups, create interaction techniques, develop novel software systems, and create theoretical frameworks for bringing malleable software to more end-users.</p>
+        </div>
+        <div data-marble-alt="v3" data-marble-id="stmt-v3">
+          <p data-marble-id="stmt-v3-a" data-marble-rich>My research centers on the question: <b>How can we enable end users to <u>easily</u> customize their interfaces?</b></p>
+        </div>
+      </marble-alt>
+
+      <p data-marble-id="bio-2" data-marble-rich>I'm interning at Microsoft Research right now, working with <a class="tag tag-lab" href="https://nicmarquardt.com/" target="_blank" rel="noreferrer">Nic Marquardt</a>.</p>
+
+      <!-- Two blocks the old site kept commented out. Same treatment: in the
+           file, with "nothing" as an ordinary candidate rather than a comment. -->
+      <marble-alt class="bio-alt" data-marble-id="notice" data-marble-active="v1">
+        <div class="none" data-marble-alt="v1" data-marble-id="notice-v1"></div>
+        <div class="aside" data-marble-alt="v2" data-marble-id="notice-v2">
+          <h2 data-marble-id="notice-v2-h" data-marble-editable>Research Opportunities</h2>
+          <p data-marble-id="notice-v2-p" data-marble-rich>Meridian is now open-source! I'm currently looking for excited developers to join me in growing <a href="https://meridian-ui.com" target="_blank" rel="noopener noreferrer">Meridian</a>. If you're interested, please <a href="https://doi.org/10.1145/3746059.3747654" target="_blank" rel="noopener noreferrer">read the paper</a> and email me!</p>
+          <p class="quiet" data-marble-id="notice-v2-q" data-marble-editable>(Tell me about your background and why you're interested in the project.)</p>
+        </div>
+        <div class="aside" data-marble-alt="v3" data-marble-id="notice-v3">
+          <h2 data-marble-id="notice-v3-h" data-marble-editable>News</h2>
+          <p data-marble-id="notice-v3-p" data-marble-rich><span class="stamp">Sept 28 - Oct 1</span>I attended UIST 2025 in Busan, South Korea to present <b>Meridian</b>.</p>
+        </div>
+      </marble-alt>
+    </div>
+  </section>
+
+  <section class="papers" id="publications" data-marble-id="papers">
+    <div data-marble-id="grp-pubs">
+      <h2 data-marble-id="grp-pubs-h" data-marble-editable>Publications</h2>
+      <div class="stack" id="stack-pubs" data-marble-id="stack-pubs" data-marble-sortable="papers">
+
+        <article class="paper" data-marble-id="p-maru" data-marble-removable>
+          <div class="shot" data-marble-id="p-maru-s"><img data-marble-id="p-maru-i" src="/thumbnails/maru.png" alt="Information Architecture as a Shared Language for Generating Aligned and Persistent User Interfaces"></div>
+          <div class="meta" data-marble-id="p-maru-m">
+            <div class="venue" data-marble-id="p-maru-v"><h5 data-marble-id="p-maru-vt" data-marble-editable>UIST 2026 (To appear)</h5><h5 class="award" data-marble-id="p-maru-aw" data-marble-editable></h5></div>
+            <h3 data-marble-id="p-maru-t" data-marble-editable>Information Architecture as a Shared Language for Generating Aligned and Persistent User Interfaces</h3>
+            <div class="authors" data-marble-id="p-maru-a">Eunhye Kim, DaEun Choi, <span class="me" data-marble-id="p-maru-me">Bryan Min</span>, Hyunjung Yi, Yue Jiang, Juho Kim</div>
+            <div class="res" data-marble-id="p-maru-r" data-marble-sortable="res"><p data-marble-id="p-maru-r0" data-marble-editable>Coming Soon</p></div>
+          </div>
+        </article>
+
+        <article class="paper" data-marble-id="p-abs" data-marble-removable>
+          <div class="shot" data-marble-id="p-abs-s"><img data-marble-id="p-abs-i" src="/thumbnails/abstraction.jpg" alt="Making Abstraction Concrete: A Design Space and Interaction Model of Abstraction in Interactive Systems"></div>
+          <div class="meta" data-marble-id="p-abs-m">
+            <div class="venue" data-marble-id="p-abs-v"><h5 data-marble-id="p-abs-vt" data-marble-editable>arXiv (May 2026)</h5><h5 class="award" data-marble-id="p-abs-aw" data-marble-editable></h5></div>
+            <h3 data-marble-id="p-abs-t" data-marble-editable>Making Abstraction Concrete: A Design Space and Interaction Model of Abstraction in Interactive Systems</h3>
+            <div class="authors" data-marble-id="p-abs-a"><span class="me" data-marble-id="p-abs-me">Bryan Min</span>, Sangho Suh, Jim Hollan, Haijun Xia</div>
+            <div class="res" data-marble-id="p-abs-r" data-marble-sortable="res">
+              <a data-marble-id="p-abs-r1" data-marble-removable data-marble-editable href="https://arxiv.org/abs/2605.11344" target="_blank" rel="noreferrer">DOI</a>
+              <a data-marble-id="p-abs-r2" data-marble-removable data-marble-editable href="https://hci.ucsd.edu/papers/concrete.pdf" target="_blank" rel="noopener noreferrer">Paper</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="paper" data-marble-id="p-choice" data-marble-removable>
+          <div class="shot" data-marble-id="p-choice-s"><img data-marble-id="p-choice-i" src="/thumbnails/choicemates.jpg" alt="ChoiceMates: Supporting Unfamiliar Online Decision-Making with Multi-Agent Conversational Interactions"></div>
+          <div class="meta" data-marble-id="p-choice-m">
+            <div class="venue" data-marble-id="p-choice-v"><h5 data-marble-id="p-choice-vt" data-marble-editable>IUI 2026</h5><h5 class="award" data-marble-id="p-choice-aw" data-marble-editable></h5></div>
+            <h3 data-marble-id="p-choice-t" data-marble-editable>ChoiceMates: Supporting Unfamiliar Online Decision-Making with Multi-Agent Conversational Interactions</h3>
+            <div class="authors" data-marble-id="p-choice-a">Jeongeon Park, <span class="me" data-marble-id="p-choice-me">Bryan Min</span>, Kihoon Son, Jean Y. Song, Xiaojuan Ma, Juho Kim</div>
+            <div class="res" data-marble-id="p-choice-r" data-marble-sortable="res">
+              <a data-marble-id="p-choice-r1" data-marble-removable data-marble-editable href="https://doi.org/10.1145/3742413.3789107" target="_blank" rel="noreferrer">DOI</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="paper" data-marble-id="p-mer" data-marble-removable>
+          <div class="shot" data-marble-id="p-mer-s"><img data-marble-id="p-mer-i" src="/thumbnails/meridian.png" alt="Meridian: A Design Framework for Malleable Overview-Detail Interfaces"></div>
+          <div class="meta" data-marble-id="p-mer-m">
+            <div class="venue" data-marble-id="p-mer-v"><h5 data-marble-id="p-mer-vt" data-marble-editable>UIST 2025</h5><h5 class="award" data-marble-id="p-mer-aw" data-marble-editable></h5></div>
+            <h3 data-marble-id="p-mer-t" data-marble-editable>Meridian: A Design Framework for Malleable Overview-Detail Interfaces</h3>
+            <div class="authors" data-marble-id="p-mer-a"><span class="me" data-marble-id="p-mer-me">Bryan Min</span>, Haijun Xia</div>
+            <div class="res" data-marble-id="p-mer-r" data-marble-sortable="res">
+              <a data-marble-id="p-mer-r1" data-marble-removable data-marble-editable href="https://doi.org/10.1145/3746059.3747654" target="_blank" rel="noreferrer">DOI</a>
+              <a data-marble-id="p-mer-r2" data-marble-removable data-marble-editable href="/papers/uist25-meridian.pdf" target="_blank" rel="noopener noreferrer">Paper</a>
+              <a data-marble-id="p-mer-r3" data-marble-removable data-marble-editable href="https://meridian-ui.com" target="_blank" rel="noreferrer">Website</a>
+              <a data-marble-id="p-mer-r4" data-marble-removable data-marble-editable href="https://github.com/meridian-ui/meridian" target="_blank" rel="noreferrer">Package</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="paper" data-marble-id="p-annota" data-marble-removable>
+          <div class="shot" data-marble-id="p-annota-s"><img data-marble-id="p-annota-i" src="/thumbnails/annota.png" alt="Lessons from Designing a Course and Platform for Teaching Qualitative Analysis Experientially in a Large Course-Based Community Consultancy"></div>
+          <div class="meta" data-marble-id="p-annota-m">
+            <div class="venue" data-marble-id="p-annota-v"><h5 data-marble-id="p-annota-vt" data-marble-editable>ICER 2025</h5><h5 class="award" data-marble-id="p-annota-aw" data-marble-editable></h5></div>
+            <h3 data-marble-id="p-annota-t" data-marble-editable>Lessons from Designing a Course and Platform for Teaching Qualitative Analysis Experientially in a Large Course-Based Community Consultancy</h3>
+            <div class="authors" data-marble-id="p-annota-a">Dustin Palea, Elijah Kirby, Madison Gruender, <span class="me" data-marble-id="p-annota-me">Bryan Min</span>, Jessalyn Wang, David Lee</div>
+            <div class="res" data-marble-id="p-annota-r" data-marble-sortable="res">
+              <a data-marble-id="p-annota-r1" data-marble-removable data-marble-editable href="https://dl.acm.org/doi/10.1145/3702652.3744206" target="_blank" rel="noreferrer">DOI</a>
+              <a data-marble-id="p-annota-r2" data-marble-removable data-marble-editable href="https://icer2025.acm.org/details/icer-2025-papers/5/Lessons-from-Designing-a-Course-and-Platform-for-Teaching-Qualitative-Analysis-Experi" target="_blank" rel="noreferrer">Website</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="paper" data-marble-id="p-odi" data-marble-removable>
+          <div class="shot" data-marble-id="p-odi-s"><img data-marble-id="p-odi-i" src="/thumbnails/malleable-odi.png" alt="Malleable Overview-Detail Interfaces"></div>
+          <div class="meta" data-marble-id="p-odi-m">
+            <div class="venue" data-marble-id="p-odi-v"><h5 data-marble-id="p-odi-vt" data-marble-editable>CHI 2025</h5><h5 class="award" data-marble-id="p-odi-aw" data-marble-editable></h5></div>
+            <h3 data-marble-id="p-odi-t" data-marble-editable>Malleable Overview-Detail Interfaces</h3>
+            <div class="authors" data-marble-id="p-odi-a"><span class="me" data-marble-id="p-odi-me">Bryan Min</span>, Allen Chen, Yining Cao, Haijun Xia</div>
+            <div class="res" data-marble-id="p-odi-r" data-marble-sortable="res">
+              <a data-marble-id="p-odi-r1" data-marble-removable data-marble-editable href="https://dl.acm.org/doi/10.1145/3706598.3714164" target="_blank" rel="noreferrer">DOI</a>
+              <a data-marble-id="p-odi-r2" data-marble-removable data-marble-editable href="/papers/chi25-malleable-odi.pdf" target="_blank" rel="noopener noreferrer">Paper</a>
+              <a data-marble-id="p-odi-r3" data-marble-removable data-marble-editable href="https://www.youtube.com/watch?v=XOlhkhsxREY" target="_blank" rel="noreferrer">Video</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="paper" data-marble-id="p-lum" data-marble-removable>
+          <div class="shot" data-marble-id="p-lum-s"><img data-marble-id="p-lum-i" src="/thumbnails/luminate.jpg" alt="Luminate: Structured Generation and Exploration of Design Space with Large Language Models for Human-AI Co-Creation"></div>
+          <div class="meta" data-marble-id="p-lum-m">
+            <div class="venue" data-marble-id="p-lum-v"><h5 data-marble-id="p-lum-vt" data-marble-editable>CHI 2024</h5><h5 class="award" data-marble-id="p-lum-aw" data-marble-editable></h5></div>
+            <h3 data-marble-id="p-lum-t" data-marble-editable>Luminate: Structured Generation and Exploration of Design Space with Large Language Models for Human-AI Co-Creation</h3>
+            <div class="authors" data-marble-id="p-lum-a">Sangho Suh*, Meng Chen*, <span class="me" data-marble-id="p-lum-me">Bryan Min</span>, Toby Jia-Jun Li, Haijun Xia</div>
+            <div class="res" data-marble-id="p-lum-r" data-marble-sortable="res">
+              <a data-marble-id="p-lum-r1" data-marble-removable data-marble-editable href="https://dl.acm.org/doi/10.1145/3613904.3642400" target="_blank" rel="noreferrer">DOI</a>
+              <a data-marble-id="p-lum-r2" data-marble-removable data-marble-editable href="/papers/chi24-luminate.pdf" target="_blank" rel="noopener noreferrer">Paper</a>
+              <a data-marble-id="p-lum-r3" data-marble-removable data-marble-editable href="https://luminate-research.github.io/" target="_blank" rel="noreferrer">Website</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="paper" data-marble-id="p-sens" data-marble-removable>
+          <div class="shot" data-marble-id="p-sens-s"><img data-marble-id="p-sens-i" src="/thumbnails/sensecape.png" alt="Sensecape: Enabling Multilevel Exploration and Sensemaking with Large Language Models"></div>
+          <div class="meta" data-marble-id="p-sens-m">
+            <div class="venue" data-marble-id="p-sens-v"><h5 data-marble-id="p-sens-vt" data-marble-editable>UIST 2023</h5><h5 class="award" data-marble-id="p-sens-aw" data-marble-editable></h5></div>
+            <h3 data-marble-id="p-sens-t" data-marble-editable>Sensecape: Enabling Multilevel Exploration and Sensemaking with Large Language Models</h3>
+            <div class="authors" data-marble-id="p-sens-a">Sangho Suh, <span class="me" data-marble-id="p-sens-me">Bryan Min</span>, Srishti Palani, Haijun Xia</div>
+            <div class="res" data-marble-id="p-sens-r" data-marble-sortable="res">
+              <a data-marble-id="p-sens-r1" data-marble-removable data-marble-editable href="https://doi.org/10.1145/3586183.3606756" target="_blank" rel="noreferrer">DOI</a>
+              <a data-marble-id="p-sens-r2" data-marble-removable data-marble-editable href="/papers/uist23-sensecape.pdf" target="_blank" rel="noopener noreferrer">Paper</a>
+              <a data-marble-id="p-sens-r3" data-marble-removable data-marble-editable href="https://www.youtube.com/watch?v=MIfhunAwZew&amp;t=146s" target="_blank" rel="noreferrer">Video</a>
+              <a data-marble-id="p-sens-r4" data-marble-removable data-marble-editable href="https://www.youtube.com/watch?v=X3cpRVGuC2w" target="_blank" rel="noreferrer">Preview</a>
+              <a data-marble-id="p-sens-r5" data-marble-removable data-marble-editable href="https://creativity.ucsd.edu/ai" target="_blank" rel="noreferrer">Website</a>
+              <a data-marble-id="p-sens-r6" data-marble-removable data-marble-editable href="https://twitter.com/HaijunXia/status/1646919380704559104?s=20" target="_blank" rel="noreferrer">Twitter</a>
+            </div>
+          </div>
+        </article>
+
+      </div>
+      <button class="add" data-marble-id="addpub" data-marble-add="#tpl-paper" data-marble-into="#stack-pubs" data-marble-instruction="Add a publication.">+ paper</button>
+    </div>
+
+    <div data-marble-id="grp-other">
+      <h2 data-marble-id="grp-other-h" data-marble-editable>Posters, Demos, and Workshop Papers</h2>
+      <div class="stack" id="stack-other" data-marble-id="stack-other" data-marble-sortable="papers">
+
+        <article class="paper" data-marble-id="p-genui" data-marble-removable>
+          <div class="shot" data-marble-id="p-genui-s"><img data-marble-id="p-genui-i" src="/thumbnails/genUI-malleable.jpg" alt="Generative UI Alone Won't Make Software Malleable"></div>
+          <div class="meta" data-marble-id="p-genui-m">
+            <div class="venue" data-marble-id="p-genui-v"><h5 data-marble-id="p-genui-vt" data-marble-editable>CHI 2025 Workshop on HCI for GenUI</h5><h5 class="award" data-marble-id="p-genui-aw" data-marble-editable></h5></div>
+            <h3 data-marble-id="p-genui-t" data-marble-editable>Generative UI Alone Won't Make Software Malleable</h3>
+            <div class="authors" data-marble-id="p-genui-a"><span class="me" data-marble-id="p-genui-me">Bryan Min</span></div>
+            <div class="res" data-marble-id="p-genui-r" data-marble-sortable="res">
+              <a data-marble-id="p-genui-r1" data-marble-removable data-marble-editable href="https://genuimeetshci.github.io/chi26-workshop/proposals/genui_wont_make_software_malleable_chi26_workshop.pdf" target="_blank" rel="noopener noreferrer">Paper</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="paper" data-marble-id="p-ff" data-marble-removable>
+          <div class="shot" data-marble-id="p-ff-s"><img data-marble-id="p-ff-i" src="/thumbnails/feedforward-genAI.png" alt="Feedforward in Generative AI: Opportunities for a Design Space"></div>
+          <div class="meta" data-marble-id="p-ff-m">
+            <div class="venue" data-marble-id="p-ff-v"><h5 data-marble-id="p-ff-vt" data-marble-editable>CHI 2025 Workshop on Tools for Thought</h5><h5 class="award" data-marble-id="p-ff-aw" data-marble-editable></h5></div>
+            <h3 data-marble-id="p-ff-t" data-marble-editable>Feedforward in Generative AI: Opportunities for a Design Space</h3>
+            <div class="authors" data-marble-id="p-ff-a"><span class="me" data-marble-id="p-ff-me">Bryan Min</span>, Haijun Xia</div>
+            <div class="res" data-marble-id="p-ff-r" data-marble-sortable="res">
+              <a data-marble-id="p-ff-r1" data-marble-removable data-marble-editable href="https://arxiv.org/abs/2502.14229" target="_blank" rel="noreferrer">DOI</a>
+              <a data-marble-id="p-ff-r2" data-marble-removable data-marble-editable href="/papers/chi24-workshop-feedforward-genAI.pdf" target="_blank" rel="noopener noreferrer">Paper</a>
+              <a data-marble-id="p-ff-r3" data-marble-removable data-marble-editable href="https://ai-tools-for-thought.github.io/workshop/" target="_blank" rel="noreferrer">Workshop</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="paper" data-marble-id="p-mason" data-marble-removable>
+          <div class="shot" data-marble-id="p-mason-s"><img data-marble-id="p-mason-i" src="/thumbnails/masonview.jpg" alt="Demonstration of Masonview: Content-Driven Viewport Management"></div>
+          <div class="meta" data-marble-id="p-mason-m">
+            <div class="venue" data-marble-id="p-mason-v"><h5 data-marble-id="p-mason-vt" data-marble-editable>UIST 2023 Demos</h5><h5 class="award" data-marble-id="p-mason-aw" data-marble-editable>Best Demo Honorable Mention</h5></div>
+            <h3 data-marble-id="p-mason-t" data-marble-editable>Demonstration of Masonview: Content-Driven Viewport Management</h3>
+            <div class="authors" data-marble-id="p-mason-a"><span class="me" data-marble-id="p-mason-me">Bryan Min</span>, Matthew T Beaudouin-Lafon, Sangho Suh, Haijun Xia</div>
+            <div class="res" data-marble-id="p-mason-r" data-marble-sortable="res">
+              <a data-marble-id="p-mason-r1" data-marble-removable data-marble-editable href="https://doi.org/10.1145/3586182.3615827" target="_blank" rel="noreferrer">DOI</a>
+              <a data-marble-id="p-mason-r2" data-marble-removable data-marble-editable href="/papers/uist23-demo-masonview.pdf" target="_blank" rel="noopener noreferrer">Paper</a>
+              <a data-marble-id="p-mason-r3" data-marble-removable data-marble-editable href="https://www.youtube.com/watch?v=HwHb02fxe5w&amp;t=7s" target="_blank" rel="noreferrer">Video</a>
+              <a data-marble-id="p-mason-r4" data-marble-removable data-marble-editable href="https://creativity.ucsd.edu/masonview" target="_blank" rel="noreferrer">Website</a>
+              <a data-marble-id="p-mason-r5" data-marble-removable data-marble-editable href="https://x.com/bdhmin/status/1710326548857811044?s=20" target="_blank" rel="noreferrer">Twitter</a>
+            </div>
+          </div>
+        </article>
+
+      </div>
+      <button class="add" data-marble-id="addother" data-marble-add="#tpl-paper" data-marble-into="#stack-other" data-marble-instruction="Add a poster, demo, or workshop paper.">+ paper</button>
+    </div>
+  </section>
+
+</main>
+<footer data-marble-id="foot">
+  <span data-marble-id="foot-t" data-marble-editable>Last Updated: August 17, 2026</span>
+</footer>
+</div>
+
+<template id="tpl-paper">
+  <article class="paper" data-marble-removable>
+    <div class="shot"><img src="/thumbnails/coming-soon.png" alt=""></div>
+    <div class="meta">
+      <div class="venue"><h5 data-marble-editable>Venue</h5><h5 class="award" data-marble-editable></h5></div>
+      <h3 data-marble-editable>Title</h3>
+      <div class="authors"><span class="me">Bryan Min</span></div>
+      <div class="res" data-marble-sortable="res"><p data-marble-editable>Coming Soon</p></div>
+    </div>
+  </article>
+</template>
+
+<!-- What the gallery offers. A document cannot read a folder, so the portraits
+     it knows about are listed here — add a line and the picker offers it. -->
+<template id="tpl-portraits">
+  <img src="/portrait/portrait2026-4.jpg" alt="Portrait, 2026">
+  <img src="/portrait/portrait2026-3.jpeg" alt="Portrait, 2026 (3)">
+  <img src="/portrait/portrait2026-1.jpeg" alt="Portrait, 2026 (1)">
+  <img src="/portrait/portrait2023-1sq.JPEG" alt="Portrait, 2023">
+</template>
+
+<template id="tpl-link">
+  <a data-marble-removable href="https://example.com" target="_blank" rel="noreferrer"><span data-marble-editable>New link</span><span class="arrow"><svg width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 1L1 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M2.39999 1L7.99999 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M8 6.60001L8 1.00001" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span></a>
+</template>
+
+<script>
+(() => {
+  const begin = (marble) => {
+    const TRANSIENT = 'data-marble-transient';
+    const ID = 'data-marble-id';
+
+    const isTransient = (el) => el.hasAttribute(TRANSIENT);
+    const persistentChildren = (el) => [...el.children].filter((c) => !isTransient(c));
+
+    function nextPersistentSibling(el) {
+      let sibling = el.nextElementSibling;
+      while (sibling && isTransient(sibling)) sibling = sibling.nextElementSibling;
+      return sibling;
+    }
+
+    // An element can hold several roles at once — a beat is both editable and a
+    // sortable item — so wiring is tracked per role, not per element.
+    const roles = new WeakMap();
+    function claim(el, role) {
+      const held = roles.get(el) ?? new Set();
+      if (held.has(role)) return false;
+      held.add(role);
+      roles.set(el, held);
+      return true;
+    }
+
+    const within = (root, selector) => [
+      ...(root.matches?.(selector) ? [root] : []),
+      ...root.querySelectorAll(selector),
+    ];
+
+    // Each part contributes its own styling, its own wiring pass, and the
+    // selector for what it makes touchable — so removing a part removes all
+    // three and nothing dangles.
+    const css = [];
+    const wirers = [];
+    const addressable = [];
+
+    // A subtree that isn't in the document yet can't be addressed by path, so
+    // it carries its ids with it — they are serialized into the insert op.
+    function assignIdsIn(root) {
+      for (const el of [root, ...root.querySelectorAll('*')]) {
+        if (isTransient(el) || marble.id(el)) continue;
+        if (el === root || el.matches(ADDRESSABLE)) el.setAttribute(ID, marble.newId());
+      }
+    }
+
+    css.push(`
+      .marble-item { position: relative; }
+      .marble-item.marble-dragging { opacity: .4; }
+      .marble-grip {
+        position: absolute; left: -1.5rem; top: .1rem;
+        display: flex; flex-direction: column; gap: 2px;
+        opacity: 0; transition: opacity .12s ease;
+      }
+      .marble-item:hover > .marble-grip, .marble-grip:focus-within { opacity: 1; }
+      .marble-btn {
+        width: 1.1rem; height: 1.1rem; padding: 0; border: 0; border-radius: 3px;
+        background: none; color: currentColor; opacity: .35;
+        font: 500 11px/1.1rem ui-monospace, SFMono-Regular, Menlo, monospace;
+        text-align: center; cursor: pointer;
+      }
+      .marble-btn:hover { opacity: 1; background: rgba(127, 127, 127, .14); }
+    `);
+
+    function grip(item) {
+      let grip = item.querySelector(':scope > .marble-grip');
+      if (!grip) {
+        grip = document.createElement('div');
+        grip.className = 'marble-grip';
+        grip.setAttribute(TRANSIENT, '');
+        // The item may itself be editable, so the chrome has to be an atomic
+        // island the caret can't wander into.
+        grip.setAttribute('contenteditable', 'false');
+        item.prepend(grip);
+        item.classList.add('marble-item');
+      }
+      return grip;
+    }
+
+    // These live in the page and never in the file, which the carrier has no
+    // way to know until it is told.
+    marble.pageOnly('contenteditable', 'spellcheck');
+    addressable.push('[data-marble-editable]');
+    wirers.push(wireEditable);
+
+    function wireEditable(root) {
+      for (const el of within(root, '[data-marble-editable]')) {
+        if (!claim(el, 'editable')) continue;
+
+        // plaintext-only keeps the browser from injecting <div> and <br> soup
+        // on Enter, so textContent stays the whole truth and setText is safe.
+        el.setAttribute('contenteditable', 'plaintext-only');
+        if (el.contentEditable !== 'plaintext-only') el.setAttribute('contenteditable', 'true');
+        el.spellcheck = false;
+
+        // One undo step per edit session: prior text is captured on focus, and
+        // keystrokes coalesce against that same entry until blur.
+        let prior = null;
+        el.addEventListener('focus', () => {
+          prior = marble.text(el);
+        });
+        el.addEventListener('input', () => {
+          const id = marble.id(el);
+          const text = marble.text(el);
+          const op = { type: 'setText', id, text };
+          if (prior !== null && text !== prior) {
+            marble.record(
+              { redo: [op], undo: [{ type: 'setText', id, text: prior }] },
+              { coalesce: true },
+            );
+          }
+          marble.op(op);
+        });
+        el.addEventListener('blur', () => {
+          prior = null;
+          marble.flush();
+        });
+
+        // Most editable nodes here are a heading or a single line, where Enter
+        // means "done" and a newline buried in the text is a mistake you can't
+        // see. Shift-Enter still breaks the line where a break is wanted.
+        el.addEventListener('keydown', (event) => {
+          if (event.key === 'Escape' || (event.key === 'Enter' && !event.shiftKey)) {
+            event.preventDefault();
+            el.blur();
+          }
+        });
+      }
+    }
+
+    css.push(`.marble-remove:hover { color: #b4544f; }`);
+    addressable.push('[data-marble-removable]');
+    wirers.push(wireRemovable);
+
+    function wireRemovable(root) {
+      for (const el of within(root, '[data-marble-removable]')) {
+        if (!claim(el, 'removable')) continue;
+
+        const button = document.createElement('button');
+        button.className = 'marble-btn marble-remove';
+        button.setAttribute(TRANSIENT, '');
+        button.setAttribute('aria-label', 'Delete');
+        button.title = 'Delete';
+        button.textContent = '×';
+        button.addEventListener('click', () => {
+          const id = marble.id(el);
+          // Invert against the live node — after remove, the prior state is gone.
+          const inverse = marble.invert({ type: 'remove', id });
+          el.remove();
+          const op = { type: 'remove', id };
+          if (inverse) marble.record({ redo: [op], undo: [inverse] });
+          marble.op(op, { immediate: true });
+        });
+        grip(el).append(button);
+      }
+    }
+
+    css.push(`
+      .marble-handle { cursor: grab; }
+      .marble-handle:active { cursor: grabbing; }
+    `);
+    marble.pageOnly('draggable');
+    addressable.push('[data-marble-sortable]', '[data-marble-sortable] > *');
+    wirers.push(wireSortable);
+
+    let dragging = null;
+    let origin = null;
+
+    // Items move freely between containers declaring the same group.
+    const group = (el) => el?.getAttribute('data-marble-sortable') ?? null;
+
+    function wireSortableItem(item) {
+      if (!claim(item, 'sortable-item')) return;
+
+      const handle = document.createElement('button');
+      handle.className = 'marble-btn marble-handle';
+      handle.setAttribute(TRANSIENT, '');
+      handle.setAttribute('draggable', 'true');
+      handle.setAttribute('aria-label', 'Reorder');
+      handle.title = 'Drag to reorder';
+      handle.textContent = '⠿';
+
+      handle.addEventListener('dragstart', (event) => {
+        dragging = item;
+        origin = { parent: item.parentElement, before: nextPersistentSibling(item) };
+        item.classList.add('marble-dragging');
+        event.dataTransfer.effectAllowed = 'move';
+        event.dataTransfer.setData('text/plain', marble.id(item));
+        event.dataTransfer.setDragImage(item, 12, 12);
+      });
+
+      handle.addEventListener('dragend', () => {
+        if (!dragging) return;
+        dragging.classList.remove('marble-dragging');
+        commitMove();
+        dragging = null;
+        origin = null;
+      });
+
+      grip(item).prepend(handle);
+    }
+
+    function wireSortable(root) {
+      for (const container of within(root, '[data-marble-sortable]')) {
+        for (const item of persistentChildren(container)) wireSortableItem(item);
+        if (!claim(container, 'sortable')) continue;
+
+        // Reorder live during the drag, then report the final resting place.
+        // Moving the element *is* the code change, not a trigger for one.
+        container.addEventListener('dragover', (event) => {
+          // Sortables nest — beats inside sections — so a container only
+          // accepts items from a sortable of the same group, innermost first.
+          if (!dragging || group(container) !== group(origin.parent)) return;
+          event.stopPropagation();
+          event.preventDefault();
+          event.dataTransfer.dropEffect = 'move';
+
+          const target = persistentChildren(container)
+            .filter((child) => child !== dragging)
+            .find((child) => {
+              const rect = child.getBoundingClientRect();
+              return event.clientY < rect.top + rect.height / 2;
+            });
+
+          const settled =
+            dragging.parentElement === container &&
+            (target ?? null) === nextPersistentSibling(dragging);
+          if (!settled) container.insertBefore(dragging, target ?? null);
+        });
+
+        container.addEventListener('drop', (event) => event.preventDefault());
+      }
+    }
+
+    function commitMove() {
+      const parent = dragging.parentElement;
+      const before = nextPersistentSibling(dragging);
+      if (parent === origin.parent && before === origin.before) return;
+
+      const op = {
+        type: 'move',
+        id: marble.id(dragging),
+        parentId: marble.id(parent),
+        beforeId: marble.id(before),
+      };
+      const inverse = {
+        type: 'move',
+        id: marble.id(dragging),
+        parentId: marble.id(origin.parent),
+        beforeId: marble.id(origin.before),
+      };
+      marble.record({ redo: [op], undo: [inverse] });
+      marble.op(op, { immediate: true });
+    }
+
+    // <button data-marble-add="#tpl-section" data-marble-into="#outline">
+    wirers.push(wireAdders);
+
+    function wireAdders(root) {
+      for (const button of within(root, '[data-marble-add]')) {
+        if (!claim(button, 'adder')) continue;
+
+        button.addEventListener('click', () => {
+          const template = document.querySelector(button.dataset.marbleAdd);
+          const into = button.dataset.marbleInto;
+          // "prev" targets the list right before the button, so per-item adders
+          // don't each need a unique selector.
+          const container =
+            into === 'prev' ? button.previousElementSibling : document.querySelector(into);
+          const seed = template?.content?.firstElementChild;
+          if (!seed || !container) {
+            console.error('[marble] add: missing template or container', button.dataset);
+            return;
+          }
+
+          const node = seed.cloneNode(true);
+          assignIdsIn(node);
+          // Serialized before wiring, so no transient chrome lands in the file.
+          const html = marble.source.outer(node);
+
+          container.append(node);
+          marble.adopt(node);
+          const op = { type: 'insert', html, parentId: marble.id(container), beforeId: null };
+          const inverse = marble.invert(op);
+          if (inverse) marble.record({ redo: [op], undo: [inverse] });
+          marble.op(op, { immediate: true });
+
+          node.querySelector('[data-marble-editable]')?.focus();
+        });
+      }
+    }
+
+    // HTML represents exactly one state: a heading is whatever it says, and the
+    // three phrasings you were choosing between live in your head or in a
+    // comment. <marble-alt> holds them as siblings and shows one. Which one is
+    // showing is an attribute in the file, so switching is an ordinary setAttr.
+    //
+    //   <marble-alt data-marble-id="title" data-marble-active="v2">
+    //     <h1 data-marble-alt="v1" data-marble-editable>…</h1>
+    //     <h1 data-marble-alt="v2" data-marble-editable>…</h1>
+    //   </marble-alt>
+    //
+    // Which one *displays* is the app's own stylesheet, not this file's
+    // business — a document has to show the right version with no host at all.
+
+    // Forked from Marble's template to match this site. The default is a
+    // monospace pill switch with a white sliding thumb, which reads as a
+    // control borrowed from somewhere else; here the thumb is the same hairline
+    // the rest of the page rules with, and the type is the page's own.
+    css.push(`
+      .marble-alts {
+        display: inline-flex; align-items: baseline; gap: 10px; margin-top: .4rem;
+        font: 400 11px var(--sans, ui-sans-serif, system-ui, sans-serif);
+        letter-spacing: .04em;
+        user-select: none; opacity: .4; transition: opacity .16s ease;
+      }
+      marble-alt:hover .marble-alts, .marble-alts:focus-within { opacity: 1; }
+      .marble-alts-track { position: relative; display: flex; gap: 2px; padding-bottom: 4px; }
+      .marble-alts-thumb {
+        position: absolute; left: 0; bottom: 0; height: 1px; width: 0;
+        background: currentColor; opacity: .5;
+        transition: transform .18s cubic-bezier(.32, .72, 0, 1), width .18s cubic-bezier(.32, .72, 0, 1);
+      }
+      .marble-alts-v {
+        position: relative; padding: 0 5px; border: 0;
+        background: none; color: var(--faint, #a1a1aa); cursor: pointer;
+        font: inherit; letter-spacing: inherit;
+      }
+      .marble-alts-v:hover { color: var(--dim, #71717a); }
+      .marble-alts-v[aria-pressed="true"] { color: var(--foreground, inherit); }
+      .marble-alts-v:focus-visible { outline: 1px solid var(--rule, #e4e4e7); outline-offset: 2px; }
+      .marble-alts button.marble-alts-edge {
+        width: 14px; padding: 0; border: 0;
+        background: none; color: var(--faint, #a1a1aa); cursor: pointer;
+        font: inherit; line-height: 1;
+      }
+      .marble-alts button.marble-alts-edge:hover { color: var(--dim, #71717a); }
+      .marble-alts .marble-alts-drop:hover { color: #b4544f; }
+    `);
+    addressable.push('marble-alt', 'marble-alt > *');
+    wirers.push(wireAlternatives);
+
+    const ALT = 'data-marble-alt';
+    const ACTIVE = 'data-marble-active';
+
+    const nameOf = (el) => el?.getAttribute(ALT) ?? null;
+
+    function activeVersion(alt) {
+      const versions = persistentChildren(alt);
+      // An unrecognized name means the file was hand-edited into disagreement.
+      // Falling back to the first version keeps something on screen either way.
+      return versions.find((el) => nameOf(el) === alt.getAttribute(ACTIVE)) ?? versions[0] ?? null;
+    }
+
+    function nextName(versions) {
+      const numbered = versions
+        .map((el) => Number(/^v(\d+)$/.exec(nameOf(el) ?? '')?.[1]))
+        .filter(Number.isFinite);
+      return `v${Math.max(versions.length, ...numbered) + 1}`;
+    }
+
+    function wireAlternatives(root) {
+      for (const alt of within(root, 'marble-alt')) {
+        if (!claim(alt, 'alt')) continue;
+
+        const widget = document.createElement('div');
+        widget.className = 'marble-alts';
+        widget.setAttribute(TRANSIENT, '');
+        // The versions may themselves be editable, so the chrome has to be an
+        // island the caret can't wander into.
+        widget.setAttribute('contenteditable', 'false');
+        widget.innerHTML = `
+          <span class="marble-alts-track" role="group" aria-label="Versions">
+            <span class="marble-alts-thumb"></span>
+          </span>
+          <button class="marble-alts-edge marble-alts-add" title="Add a version">+</button>
+          <button class="marble-alts-edge marble-alts-drop" title="Delete this version">×</button>
+        `;
+        const track = widget.querySelector('.marble-alts-track');
+        const thumb = widget.querySelector('.marble-alts-thumb');
+        const drop = widget.querySelector('.marble-alts-drop');
+
+        // No control decides what is on screen: each one writes the attribute
+        // and the stylesheet reads it. That is why a switch arriving from a
+        // text editor or a model lands exactly the way a click does.
+        function setActive(name) {
+          if (!name || alt.getAttribute(ACTIVE) === name) return null;
+          const id = marble.id(alt);
+          const undo = { type: 'setAttr', id, name: ACTIVE, value: alt.getAttribute(ACTIVE) };
+          const redo = { type: 'setAttr', id, name: ACTIVE, value: name };
+          alt.setAttribute(ACTIVE, name);
+          marble.op(redo, { immediate: true });
+          return { redo, undo };
+        }
+
+        function show(name) {
+          const step = setActive(name);
+          if (step) marble.record({ redo: [step.redo], undo: [step.undo] });
+          render();
+        }
+
+        function render() {
+          const versions = persistentChildren(alt);
+
+          // A hand-written alternative needn't be named; naming it is a splice,
+          // exactly like the ids assigned on first sight.
+          versions.forEach((version, index) => {
+            if (nameOf(version)) return;
+            const name = `v${index + 1}`;
+            version.setAttribute(ALT, name);
+            if (marble.id(version)) {
+              marble.op({ type: 'setAttr', id: marble.id(version), name: ALT, value: name });
+            }
+          });
+
+          const current = activeVersion(alt);
+
+          // Rebuilt only when the set of versions changes, so an ordinary
+          // switch moves the thumb rather than replacing the control under the
+          // cursor.
+          const names = versions.map(nameOf);
+          if (track.dataset.names !== names.join('\u0000')) {
+            track.dataset.names = names.join('\u0000');
+            for (const stale of track.querySelectorAll('button')) stale.remove();
+            for (const name of names) {
+              const button = document.createElement('button');
+              button.className = 'marble-alts-v';
+              button.dataset.name = name;
+              button.textContent = name;
+              button.addEventListener('click', () => show(name));
+              track.append(button);
+            }
+          }
+
+          for (const button of track.querySelectorAll('button')) {
+            const on = button.dataset.name === nameOf(current);
+            button.setAttribute('aria-pressed', String(on));
+            if (!on) continue;
+            thumb.style.width = `${button.offsetWidth}px`;
+            thumb.style.transform = `translateX(${button.offsetLeft}px)`;
+          }
+          drop.hidden = versions.length < 2;
+        }
+
+        widget.querySelector('.marble-alts-add').addEventListener('click', () => {
+          const current = activeVersion(alt);
+          if (!current) return;
+
+          // The new version starts as a copy of the one on screen, because a
+          // candidate phrasing is nearly always an edit of the current one.
+          const version = marble.clone(current);
+          for (const el of [version, ...version.querySelectorAll(`[${ID}]`)]) {
+            el.removeAttribute(ID);
+          }
+          const name = nextName(persistentChildren(alt));
+          version.setAttribute(ALT, name);
+          assignIdsIn(version);
+
+          const html = marble.source.outer(version);
+          alt.insertBefore(version, widget);
+          marble.adopt(version);
+          const insert = { type: 'insert', html, parentId: marble.id(alt), beforeId: null };
+          marble.op(insert, { immediate: true });
+          const active = setActive(name);
+          const undo = [marble.invert(insert), active?.undo].filter(Boolean);
+          const redo = [insert, active?.redo].filter(Boolean);
+          if (undo.length && redo.length) marble.record({ redo, undo });
+          render();
+
+          version.focus();
+          getSelection()?.selectAllChildren(version);
+        });
+
+        drop.addEventListener('click', () => {
+          const versions = persistentChildren(alt);
+          if (versions.length < 2) return;
+          const at = versions.indexOf(activeVersion(alt));
+          const doomed = versions[at];
+          const next = nameOf(versions[at + 1] ?? versions[at - 1]);
+          const remove = { type: 'remove', id: marble.id(doomed) };
+          const removeUndo = marble.invert(remove);
+          const active = setActive(next);
+          doomed.remove();
+          marble.op(remove, { immediate: true });
+          const undo = [removeUndo, active?.undo].filter(Boolean);
+          const redo = [active?.redo, remove].filter(Boolean);
+          if (undo.length && redo.length) marble.record({ redo, undo });
+          render();
+        });
+
+        track.addEventListener('keydown', (event) => {
+          const step = { ArrowLeft: -1, ArrowRight: 1 }[event.key];
+          if (!step) return;
+          event.preventDefault();
+          const versions = persistentChildren(alt);
+          const at = versions.indexOf(activeVersion(alt));
+          const name = nameOf(versions[(at + step + versions.length) % versions.length]);
+          show(name);
+          track.querySelector(`[data-name="${CSS.escape(name)}"]`)?.focus();
+        });
+
+        alt.append(widget);
+        render();
+        // The thumb is measured, so it needs one frame in which the text has
+        // been laid out — and the widget may have been wired before its font
+        // arrived.
+        requestAnimationFrame(render);
+
+        new MutationObserver(render).observe(alt, {
+          attributes: true,
+          attributeFilter: [ACTIVE],
+          childList: true,
+        });
+      }
+    }
+
+    // Undo/redo is a carrier capability; binding the keys is the app's call,
+    // same as drawing a save indicator. Native inputs keep the browser's own
+    // undo — marble editables preventDefault so the stacks do not fight.
+    addEventListener('keydown', (event) => {
+      const mod = event.metaKey || event.ctrlKey;
+      if (!mod || event.altKey) return;
+      const key = event.key.toLowerCase();
+      const isUndo = key === 'z' && !event.shiftKey;
+      const isRedo = (key === 'z' && event.shiftKey) || key === 'y';
+      if (!isUndo && !isRedo) return;
+
+      const target = event.target;
+      if (
+        target instanceof HTMLInputElement ||
+        target instanceof HTMLTextAreaElement ||
+        (target instanceof HTMLElement &&
+          target.isContentEditable &&
+          !target.hasAttribute('data-marble-editable') &&
+          !target.closest('[data-marble-editable]'))
+      ) {
+        return;
+      }
+
+      // A staged proposal is not history yet — Mod+Z discards it instead.
+      if (isUndo && typeof marble.discardStaged === 'function' && marble.discardStaged()) {
+        event.preventDefault();
+        return;
+      }
+
+      if (isUndo && marble.canUndo) {
+        event.preventDefault();
+        marble.undo();
+      } else if (isRedo && marble.canRedo) {
+        event.preventDefault();
+        marble.redo();
+      }
+    });
+
+    // The carrier reports whether a change reached the file; drawing that is
+    // the app's call, and an app that wants no save indicator deletes this.
+
+    css.push(`
+      .marble-status {
+        position: fixed; right: 1rem; bottom: 1rem; z-index: 9999;
+        padding: .3rem .6rem; border-radius: 999px;
+        font: 500 11px ui-monospace, SFMono-Regular, Menlo, monospace;
+        letter-spacing: .04em; pointer-events: none;
+        opacity: 0; transition: opacity .25s ease;
+        background: rgba(20, 22, 26, .92); color: #b7c0cc; border: 1px solid rgba(255,255,255,.12);
+      }
+      .marble-status[data-state="saving"] { opacity: 1; }
+      .marble-status[data-state="saved"]  { opacity: .55; }
+      .marble-status[data-state="error"]  { opacity: 1; background: #46201f; color: #ff9b9b; }
+    `);
+
+    const status = document.createElement('div');
+    status.className = 'marble-status';
+    status.setAttribute(TRANSIENT, '');
+    document.body.append(status);
+
+    let statusTimer = null;
+    document.addEventListener('marble:status', ({ detail }) => {
+      status.dataset.state = detail.state;
+      status.textContent =
+        detail.state === 'saving'
+          ? 'saving…'
+          : detail.state === 'saved'
+            ? 'saved'
+            : `error — ${detail.message}`;
+      clearTimeout(statusTimer);
+      if (detail.state === 'saved') {
+        statusTimer = setTimeout(() => (status.dataset.state = 'idle'), 1200);
+      }
+    });
+
+    const style = document.createElement('style');
+    style.setAttribute(TRANSIENT, '');
+    style.textContent = css.join('\n');
+    document.head.append(style);
+
+    // Anything a hand can act on has to be addressable in the file first.
+    const ADDRESSABLE = addressable.join(', ');
+    marble.address(document.querySelectorAll(ADDRESSABLE));
+
+    // Runs now over the document as it stands, and again over anything that
+    // arrives later — an insert, an accepted proposal, an edit made to the file
+    // in another window.
+    marble.register((root) => {
+      for (const wirer of wirers) wirer(root);
+    });
+  };
+
+  // The carrier is injected after the document has been parsed, so this waits
+  // rather than the other way round. No carrier, no affordances: the document
+  // is still a page you can read, it just isn't one you can change.
+  if (window.marble) begin(window.marble);
+  else addEventListener('marble:ready', (event) => begin(event.detail), { once: true });
+})();
+</script>
+<script data-marble-id="richwire">
+// The bio, as a rich block editor.
+//
+// The copied affordances do not cover this and should not: data-marble-editable
+// files setText, whose whole premise is that the text *is* the block. A
+// paragraph carrying <b> and a link is not that. So these blocks file setInner,
+// and the difference matters for undo rather than for typing — a setText's
+// inverse is another setText, so it cannot bring emphasis back, while a
+// setInner's inverse carries the previous markup and can.
+//
+// The consequence, stated once here rather than repeated at every call site: an
+// inline mark inside a rich block carries no data-marble-id. The block is the
+// piece an op names, the same way an <svg> is addressable and its paths are
+// not. Marks travel in the block's markup.
+(() => {
+  const begin = (marble) => {
+    const RICH = '[data-marble-rich]';
+
+    // The colours this site already uses, offered by name so a link written in
+    // the editor lands as `class="tag tag-ucsd"` and inherits every later change
+    // to that class. A colour picked by hand has no class to belong to, so it
+    // goes inline on the one link it is true of.
+    const PALETTE = [
+      { name: 'ucsd', label: 'UCSD', light: '#00629B', dark: '#54AEE2' },
+      { name: 'lab', label: 'Lab', light: '#A19792', dark: '#D7CAC3' },
+      { name: 'cogsci', label: 'CogSci', light: '#EC6556', dark: '#F48175' },
+      { name: 'masonview', label: 'Gold', light: '#f0b051', dark: '#f0b051' },
+    ];
+
+    const roles = new WeakMap();
+    function claim(el, role) {
+      const held = roles.get(el) ?? new Set();
+      if (held.has(role)) return false;
+      held.add(role);
+      roles.set(el, held);
+      return true;
+    }
+    const within = (root, sel) => [
+      ...(root.matches?.(sel) ? [root] : []),
+      ...root.querySelectorAll(sel),
+    ];
+
+    // Chrome: belongs to the page, never to the file, and the caret may not
+    // wander into it.
+    function chrome(tag, cls) {
+      const el = document.createElement(tag);
+      if (cls) el.className = cls;
+      marble.transient(el);
+      el.setAttribute('contenteditable', 'false');
+      return el;
+    }
+    const svg = (body, size = 13) =>
+      `<svg viewBox="0 0 14 14" width="${size}" height="${size}" fill="none" stroke="currentColor"
+        stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${body}</svg>`;
+    const ICON = {
+      gallery: svg('<rect x="1.2" y="1.2" width="8.6" height="8.6" rx="1"/><path d="M4.2 12.8h7.6a1 1 0 0 0 1-1V4.2"/>'),
+      upload: svg('<rect x="1.2" y="2.6" width="11.6" height="9.4" rx="1"/><path d="M7 10V5.4M7 5.4 5.3 7.1M7 5.4l1.7 1.7"/>'),
+      link: svg('<path d="M5.6 8.4 8.4 5.6"/><path d="M7.6 4.3 8.9 3a2.3 2.3 0 0 1 3.2 3.2l-1.3 1.3"/><path d="M6.4 9.7 5.1 11A2.3 2.3 0 0 1 1.9 7.8l1.3-1.3"/>'),
+      unlink: svg('<path d="M7.6 4.3 8.9 3a2.3 2.3 0 0 1 3.2 3.2l-1.3 1.3"/><path d="M6.4 9.7 5.1 11A2.3 2.3 0 0 1 1.9 7.8l1.3-1.3"/><path d="M2 2l10 10"/>'),
+    };
+
+    const style = document.createElement('style');
+    marble.transient(style);
+    style.textContent = `
+      /* The caret is the focus indicator here. A block is a paragraph of the
+         page, and ringing it in blue the moment it is clicked is the browser
+         announcing an editor the rest of this design goes out of its way not
+         to look like. */
+      [data-marble-rich]:focus, [data-marble-rich]:focus-visible { outline: none; }
+      .marble-rt button:focus-visible, .marble-pp button:focus-visible,
+      .marble-gal button:focus-visible, .marble-lk-go:focus-visible {
+        outline: 1px solid var(--dim, #71717a); outline-offset: 1px;
+      }
+      .marble-rt {
+        position: fixed; z-index: 40; display: none;
+        align-items: center; gap: 2px; padding: 3px 4px;
+        background: var(--background, #fff); border: 1px solid var(--rule, #e4e4e7);
+        border-radius: 3px; box-shadow: 0 2px 8px rgba(0,0,0,.07);
+        font: 400 12px var(--sans, system-ui, sans-serif);
+      }
+      .marble-rt[data-open] { display: flex; }
+      .marble-rt button {
+        min-width: 22px; height: 22px; padding: 0 5px; border: 0; border-radius: 2px;
+        background: none; color: var(--dim, #71717a); cursor: pointer;
+        font: inherit; line-height: 1; display: inline-flex;
+        align-items: center; justify-content: center;
+      }
+      .marble-rt button:hover { color: var(--foreground, #171717); background: rgba(127,127,127,.1); }
+      .marble-rt button[aria-pressed="true"] { color: var(--foreground, #171717); }
+      .marble-rt .marble-rt-b { font-weight: 700; }
+      .marble-rt .marble-rt-i { font-style: italic; font-family: var(--serif, Georgia, serif); }
+      .marble-rt .marble-rt-u { text-decoration: underline; text-underline-offset: 2px; }
+      .marble-rt .marble-rt-sep { width: 1px; height: 14px; margin: 0 3px; background: var(--rule, #e4e4e7); }
+
+      .marble-lk {
+        position: fixed; z-index: 41; display: none;
+        flex-direction: column; gap: 8px; padding: 9px 10px; width: 254px;
+        background: var(--background, #fff); border: 1px solid var(--rule, #e4e4e7);
+        border-radius: 3px; box-shadow: 0 3px 12px rgba(0,0,0,.09);
+        font: 400 12px var(--sans, system-ui, sans-serif); color: var(--foreground, #171717);
+      }
+      .marble-lk[data-open] { display: flex; }
+      .marble-lk input[type="url"] {
+        width: 100%; padding: 4px 0; border: 0; border-bottom: 1px solid var(--rule, #e4e4e7);
+        background: none; color: inherit; font: inherit; outline: none;
+      }
+      .marble-lk input[type="url"]:focus { border-bottom-color: var(--dim, #71717a); }
+      .marble-lk-row { display: flex; align-items: center; gap: 6px; }
+      .marble-lk-hint { color: var(--faint, #a1a1aa); font-size: 11px; letter-spacing: .04em; }
+      .marble-sw {
+        width: 15px; height: 15px; padding: 0; border: 1px solid rgba(127,127,127,.35);
+        border-radius: 999px; cursor: pointer;
+      }
+      .marble-sw[aria-pressed="true"] { outline: 1px solid var(--dim, #71717a); outline-offset: 2px; }
+      .marble-lk input[type="color"] {
+        width: 17px; height: 17px; padding: 0; border: 0; background: none; cursor: pointer;
+      }
+      .marble-lk-go {
+        margin-left: auto; padding: 2px 9px; border: 1px solid var(--rule, #e4e4e7);
+        border-radius: 2px; background: none; color: var(--dim, #71717a);
+        font: inherit; cursor: pointer;
+      }
+      .marble-lk-go:hover { color: var(--foreground, #171717); border-color: var(--dim, #71717a); }
+
+      .marble-pp {
+        position: absolute; left: 0; right: 0; bottom: 0;
+        display: flex; justify-content: flex-end; gap: 2px; padding: 5px;
+        opacity: 0; transition: opacity .14s ease;
+      }
+      [data-marble-portrait] { position: relative; }
+      [data-marble-portrait]:hover .marble-pp, .marble-pp:focus-within { opacity: 1; }
+      .marble-pp button {
+        width: 22px; height: 22px; padding: 0; border: 0; border-radius: 2px;
+        display: inline-flex; align-items: center; justify-content: center;
+        background: rgba(255,255,255,.86); color: #27272a; cursor: pointer;
+        box-shadow: 0 1px 3px rgba(0,0,0,.2);
+      }
+      .marble-pp button:hover { background: #fff; }
+
+      .marble-gal {
+        position: fixed; z-index: 41; display: none;
+        grid-template-columns: repeat(4, 58px); gap: 6px; padding: 8px;
+        background: var(--background, #fff); border: 1px solid var(--rule, #e4e4e7);
+        border-radius: 3px; box-shadow: 0 3px 12px rgba(0,0,0,.09);
+      }
+      .marble-gal[data-open] { display: grid; }
+      .marble-gal button {
+        width: 58px; height: 70px; padding: 0; border: 1px solid transparent;
+        border-radius: 2px; overflow: hidden; background: none; cursor: pointer;
+      }
+      .marble-gal button:hover { border-color: var(--dim, #71717a); }
+      .marble-gal button[aria-pressed="true"] { border-color: var(--foreground, #171717); }
+      .marble-gal img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    `;
+    document.head.append(style);
+
+    // ---------------------------------------------------------------- blocks
+
+    // One undo step per editing session, captured on focus and coalesced until
+    // blur — the same shape the copied editable uses, with markup where it has
+    // text.
+    const priorHtml = new WeakMap();
+
+    function file(block, { immediate = false } = {}) {
+      const id = marble.id(block);
+      if (!id) return;
+      const html = marble.source.inner(block);
+      const prior = priorHtml.get(block);
+      if (prior === html) return;
+      const op = { type: 'setInner', id, html };
+      if (prior !== undefined) {
+        marble.record(
+          { redo: [op], undo: [{ type: 'setInner', id, html: prior }] },
+          { coalesce: true },
+        );
+      }
+      marble.op(op, { immediate });
+    }
+
+    function blockOf(node) {
+      const el = node?.nodeType === 1 ? node : node?.parentElement;
+      return el?.closest(RICH) ?? null;
+    }
+
+    function wireRich(root) {
+      for (const block of within(root, RICH)) {
+        if (!claim(block, 'rich')) continue;
+
+        block.setAttribute('contenteditable', 'true');
+        block.spellcheck = false;
+
+        block.addEventListener('focus', () => priorHtml.set(block, marble.source.inner(block)));
+        block.addEventListener('input', () => file(block));
+        block.addEventListener('blur', () => {
+          file(block, { immediate: true });
+          priorHtml.delete(block);
+          marble.flush();
+        });
+
+        block.addEventListener('keydown', (event) => {
+          if (event.key === 'Escape') {
+            event.preventDefault();
+            block.blur();
+            return;
+          }
+          // Enter starts a block rather than a line, because the column's
+          // spacing is what separates paragraphs here — a <br> would look
+          // like a paragraph and not behave like one. Shift-Enter still breaks.
+          if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+            addBlockAfter(block);
+            return;
+          }
+          // Backspace in an empty block removes the block, which is the only
+          // way to get rid of one without reaching for the drag handle.
+          if (event.key === 'Backspace' && !marble.text(block).trim()) {
+            const siblings = within(block.parentElement, RICH);
+            if (siblings.length < 2) return;
+            event.preventDefault();
+            removeBlock(block);
+          }
+        });
+      }
+    }
+
+    function addBlockAfter(block) {
+      const parent = block.parentElement;
+      const parentId = marble.id(parent);
+      if (!parentId) return;
+      const next = block.nextElementSibling;
+      const html = `<p data-marble-id="${marble.newId()}" data-marble-rich><br></p>`;
+      const op = { type: 'insert', html, parentId, beforeId: next ? marble.id(next) : null };
+      marble.apply(op);
+      const inverse = marble.invert(op);
+      if (inverse) marble.record({ redo: [op], undo: [inverse] });
+      marble.op(op, { immediate: true });
+      block.nextElementSibling?.focus();
+    }
+
+    function removeBlock(block) {
+      const back = [...within(block.parentElement, RICH)];
+      const before = back[back.indexOf(block) - 1] ?? back[back.indexOf(block) + 1];
+      const op = { type: 'remove', id: marble.id(block) };
+      const inverse = marble.invert(op);
+      marble.apply(op);
+      if (inverse) marble.record({ redo: [op], undo: [inverse] });
+      marble.op(op, { immediate: true });
+      if (!before) return;
+      before.focus();
+      const range = document.createRange();
+      range.selectNodeContents(before);
+      range.collapse(false);
+      const sel = getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+
+    // ------------------------------------------------------------- the toolbar
+
+    const bar = chrome('div', 'marble-rt');
+    bar.innerHTML = `
+      <button class="marble-rt-b" data-cmd="bold" title="Bold">B</button>
+      <button class="marble-rt-i" data-cmd="italic" title="Italic">I</button>
+      <button class="marble-rt-u" data-cmd="underline" title="Underline">U</button>
+      <span class="marble-rt-sep"></span>
+      <button data-act="link" title="Link">${ICON.link}</button>
+      <button data-act="unlink" title="Remove link">${ICON.unlink}</button>
+    `;
+    document.body.append(bar);
+
+    const panel = chrome('div', 'marble-lk');
+    panel.innerHTML = `
+      <input type="url" placeholder="https://" spellcheck="false">
+      <div class="marble-lk-row">
+        <span class="marble-lk-hint">HOVER</span>
+        <span class="marble-lk-row marble-lk-swatches"></span>
+        <input type="color" value="#00629B" title="A colour of your own">
+      </div>
+      <div class="marble-lk-row">
+        <span class="marble-lk-hint marble-lk-note"></span>
+        <button class="marble-lk-go">Link</button>
+      </div>
+    `;
+    document.body.append(panel);
+
+    const field = panel.querySelector('input[type="url"]');
+    const custom = panel.querySelector('input[type="color"]');
+    const note = panel.querySelector('.marble-lk-note');
+    const swatches = panel.querySelector('.marble-lk-swatches');
+    let chosen = PALETTE[0].name;
+
+    for (const entry of PALETTE) {
+      const sw = document.createElement('button');
+      sw.className = 'marble-sw';
+      sw.dataset.name = entry.name;
+      sw.title = entry.label;
+      sw.style.background = entry.light;
+      swatches.append(sw);
+    }
+
+    function paintSwatches() {
+      for (const sw of swatches.querySelectorAll('.marble-sw')) {
+        sw.setAttribute('aria-pressed', String(sw.dataset.name === chosen));
+      }
+      const named = PALETTE.find((e) => e.name === chosen);
+      note.textContent = named ? `tag-${named.name}` : 'inline colour';
+    }
+    swatches.addEventListener('click', (event) => {
+      const sw = event.target.closest('.marble-sw');
+      if (!sw) return;
+      chosen = sw.dataset.name;
+      paintSwatches();
+    });
+    custom.addEventListener('input', () => {
+      chosen = null;
+      paintSwatches();
+    });
+    paintSwatches();
+
+    // The selection is the argument to every one of these controls, and clicking
+    // a control is how you lose it. Held here from the moment the toolbar is
+    // shown, and put back before anything is applied.
+    let held = null;
+    const holdSelection = () => {
+      const sel = getSelection();
+      held = sel && sel.rangeCount ? sel.getRangeAt(0).cloneRange() : null;
+    };
+    function restoreSelection() {
+      if (!held) return false;
+      const sel = getSelection();
+      sel.removeAllRanges();
+      sel.addRange(held);
+      return true;
+    }
+
+    const close = () => {
+      panel.removeAttribute('data-open');
+      bar.removeAttribute('data-open');
+    };
+    function place(el, rect) {
+      el.style.left = `${Math.max(8, Math.min(rect.left, innerWidth - el.offsetWidth - 8))}px`;
+      const above = rect.top - el.offsetHeight - 8;
+      el.style.top = `${above > 8 ? above : rect.bottom + 8}px`;
+    }
+
+    document.addEventListener('selectionchange', () => {
+      if (panel.hasAttribute('data-open')) return;
+      const sel = getSelection();
+      const block = sel && sel.rangeCount ? blockOf(sel.anchorNode) : null;
+      if (!block || sel.isCollapsed || !block.isContentEditable) {
+        bar.removeAttribute('data-open');
+        return;
+      }
+      bar.setAttribute('data-open', '');
+      place(bar, sel.getRangeAt(0).getBoundingClientRect());
+      for (const button of bar.querySelectorAll('[data-cmd]')) {
+        button.setAttribute('aria-pressed', String(document.queryCommandState(button.dataset.cmd)));
+      }
+      bar.querySelector('[data-act="unlink"]').hidden = !linkAt(sel.anchorNode);
+    });
+
+    const linkAt = (node) => {
+      const el = node?.nodeType === 1 ? node : node?.parentElement;
+      return el?.closest('a') ?? null;
+    };
+
+    // Mousedown is what would collapse the selection, so the controls take the
+    // press and never the focus.
+    for (const surface of [bar, panel]) {
+      surface.addEventListener('mousedown', (event) => {
+        if (!event.target.closest('input')) event.preventDefault();
+      });
+    }
+
+    bar.addEventListener('click', (event) => {
+      const button = event.target.closest('button');
+      if (!button) return;
+      const block = blockOf(getSelection()?.anchorNode);
+      if (!block) return;
+
+      if (button.dataset.cmd) {
+        // styleWithCSS off so the mark lands as <b>/<i>/<u> rather than a span
+        // carrying a style attribute — this file is read by hand.
+        document.execCommand('styleWithCSS', false, false);
+        document.execCommand(button.dataset.cmd);
+        file(block, { immediate: true });
+        button.setAttribute('aria-pressed', String(document.queryCommandState(button.dataset.cmd)));
+        return;
+      }
+      if (button.dataset.act === 'unlink') {
+        document.execCommand('unlink');
+        file(block, { immediate: true });
+        return;
+      }
+      if (button.dataset.act === 'link') {
+        holdSelection();
+        const existing = linkAt(getSelection()?.anchorNode);
+        field.value = existing?.getAttribute('href') ?? '';
+        panel.setAttribute('data-open', '');
+        place(panel, bar.getBoundingClientRect());
+        field.focus();
+        field.select();
+      }
+    });
+
+    function applyLink() {
+      const url = field.value.trim();
+      const block = blockOf(held?.startContainer);
+      if (!url || !block) return close();
+
+      restoreSelection();
+      document.execCommand('unlink');
+      document.execCommand('createLink', false, url);
+
+      // execCommand may split the selection across several anchors; every one
+      // of them is this link and gets the same dressing.
+      for (const anchor of block.querySelectorAll('a[href]')) {
+        if (anchor.getAttribute('href') !== url) continue;
+        anchor.className = chosen ? `tag tag-${chosen}` : 'tag';
+        if (chosen) anchor.removeAttribute('style');
+        else anchor.setAttribute('style', `--tag-light: ${custom.value}; --tag-dark: ${custom.value}`);
+        anchor.setAttribute('target', '_blank');
+        anchor.setAttribute('rel', 'noreferrer');
+      }
+      file(block, { immediate: true });
+      close();
+    }
+    panel.querySelector('.marble-lk-go').addEventListener('click', applyLink);
+    field.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') { event.preventDefault(); applyLink(); }
+      if (event.key === 'Escape') { event.preventDefault(); close(); }
+    });
+
+    document.addEventListener('mousedown', (event) => {
+      if (!event.target.closest('.marble-rt, .marble-lk, .marble-gal')) close();
+    });
+
+    // ------------------------------------------------------------- the portrait
+
+    const gallery = chrome('div', 'marble-gal');
+    document.body.append(gallery);
+
+    function wirePortrait(root) {
+      for (const frame of within(root, '[data-marble-portrait]')) {
+        if (!claim(frame, 'portrait')) continue;
+        const img = frame.querySelector('img');
+        if (!img) continue;
+
+        const pick = chrome('div', 'marble-pp');
+        const choose = document.createElement('button');
+        choose.innerHTML = ICON.gallery;
+        choose.title = 'Choose a portrait';
+        const send = document.createElement('button');
+        send.innerHTML = ICON.upload;
+        send.title = 'Upload a portrait';
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.hidden = true;
+        pick.append(choose, send, input);
+        frame.append(pick);
+
+        choose.addEventListener('click', () => openGallery(frame, img));
+        send.addEventListener('click', () => input.click());
+        input.addEventListener('change', async () => {
+          const file0 = input.files?.[0];
+          input.value = '';
+          if (file0) setSrc(img, await downscale(file0));
+        });
+      }
+    }
+
+    function setSrc(img, src) {
+      const id = marble.id(img);
+      if (!id) return;
+      const was = img.getAttribute('src');
+      img.setAttribute('src', src);
+      const op = { type: 'setAttr', id, name: 'src', value: src };
+      marble.record({ redo: [op], undo: [{ type: 'setAttr', id, name: 'src', value: was }] });
+      marble.op(op, { immediate: true });
+    }
+
+    function openGallery(frame, img) {
+      const shelf = document.querySelector('#tpl-portraits');
+      gallery.replaceChildren();
+      const now = img.getAttribute('src');
+      for (const option of shelf?.content.querySelectorAll('img') ?? []) {
+        const button = document.createElement('button');
+        const src = option.getAttribute('src');
+        button.setAttribute('aria-pressed', String(src === now));
+        button.title = option.getAttribute('alt') ?? src;
+        const thumb = document.createElement('img');
+        thumb.src = src;
+        thumb.alt = '';
+        button.append(thumb);
+        button.addEventListener('click', () => {
+          setSrc(img, src);
+          gallery.removeAttribute('data-open');
+        });
+        gallery.append(button);
+      }
+      gallery.setAttribute('data-open', '');
+      place(gallery, frame.getBoundingClientRect());
+    }
+
+    // An upload has nowhere to go but into the file, so it arrives as a data
+    // URI — which is why it is resized on the way in rather than stored whole.
+    // The slot is 200x240 CSS pixels; 3x that covers any screen worth serving
+    // and a 4MB camera photo comes out around 60KB.
+    function downscale(blob, edge = 720) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onerror = reject;
+        reader.onload = () => {
+          const image = new Image();
+          image.onerror = reject;
+          image.onload = () => {
+            const scale = Math.min(1, edge / Math.max(image.width, image.height));
+            const canvas = document.createElement('canvas');
+            canvas.width = Math.round(image.width * scale);
+            canvas.height = Math.round(image.height * scale);
+            canvas.getContext('2d').drawImage(image, 0, 0, canvas.width, canvas.height);
+            const url = canvas.toDataURL('image/jpeg', 0.82);
+            console.info(`[portrait] ${canvas.width}x${canvas.height}, ${Math.round(url.length / 1024)}KB into the file`);
+            resolve(url);
+          };
+          image.src = reader.result;
+        };
+        reader.readAsDataURL(blob);
+      });
+    }
+
+    document.addEventListener('mousedown', (event) => {
+      if (!event.target.closest('.marble-gal, .marble-pp')) gallery.removeAttribute('data-open');
+    });
+
+    marble.register((root) => {
+      wireRich(root);
+      wirePortrait(root);
+    });
+  };
+
+  // No carrier, no editor: the bio is text you can read and a portrait you can
+  // look at, which is exactly what a visitor gets.
+  if (window.marble) begin(window.marble);
+  else addEventListener('marble:ready', (event) => begin(event.detail), { once: true });
+})();
+</script>
+</body>
+</html>
