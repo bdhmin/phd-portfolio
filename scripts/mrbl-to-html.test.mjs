@@ -18,14 +18,13 @@ const { html } = toHtml(source);
 // An element's shape as a visitor's browser resolves it: what it is, what it is
 // styled as, and where it points. Editor attributes are excluded because
 // removing them is the point.
-function shape(input, { dropAdders = false } = {}) {
+function shape(input) {
   const out = [];
   const visit = (node, depth) => {
     if (node.tagName) {
       const skip =
         node.tagName === 'script' ||
         node.tagName === 'template' ||
-        (dropAdders && node.attrs?.some((a) => a.name === 'data-marble-add')) ||
         (node.tagName === 'meta' && node.attrs?.some((a) => a.value === 'marble:capabilities'));
       if (skip) return;
       const attrs = (node.attrs ?? [])
@@ -46,7 +45,7 @@ test('verify passes on the real document', () => {
 });
 
 test('the element tree is unchanged apart from the removals', () => {
-  const before = shape(source, { dropAdders: true });
+  const before = shape(source);
   const after = shape(html);
   const at = before.findIndex((line, i) => line !== after[i]);
   assert.equal(
@@ -55,6 +54,31 @@ test('the element tree is unchanged apart from the removals', () => {
     at === -1 ? '' : `first difference at element ${at}:\n  .mrbl  ${before[at]}\n  .html  ${after[at]}`,
   );
   assert.equal(before.length, after.length);
+});
+
+test('content that carries an adder marker survives', () => {
+  // data-marble-add used to sit on a static "+" button, and the button was
+  // removed by cutting the element that carried it. It marks real content now —
+  // the heading a paper is added under, the list a co-author joins — so the
+  // element stays and only the attribute goes. Checked over the parse tree
+  // because the affordance script quotes the markup in a comment.
+  const carriers = (input) => {
+    const out = [];
+    const visit = (node) => {
+      if (node.tagName === 'script' || node.tagName === 'template') return;
+      if (node.attrs?.some((a) => a.name === 'data-marble-add')) out.push(node.tagName);
+      for (const child of node.childNodes ?? []) visit(child);
+    };
+    visit(parse(input));
+    return out;
+  };
+  const marked = carriers(source);
+  assert.ok(marked.length > 0, 'no adder markers in the .mrbl');
+  assert.deepEqual(carriers(html), [], 'the marker survived the conversion');
+
+  // The two the failure was visible in: the social links and the list heading.
+  assert.match(html, /Google Scholar/);
+  assert.match(html, /<h2[^>]*>Publications<\/h2>/);
 });
 
 test('the style block survives byte for byte', () => {
@@ -94,7 +118,10 @@ test('the alternatives keep the attributes their CSS selects on', () => {
 test('nothing addressed to a host survives', () => {
   assert.doesNotMatch(html, /window\.marble/);
   assert.doesNotMatch(html, /marble:capabilities/);
-  assert.doesNotMatch(html, /data-marble-(id|editable|rich|removable|sortable|add|into)=/);
+  assert.doesNotMatch(
+    html,
+    /data-marble-(id|editable|rich|removable|sortable|add|into|at|instruction|href|flag|image|gallery|edge)=/,
+  );
   assert.doesNotMatch(html, /<template/);
   assert.doesNotMatch(html, /<script/);
 });
