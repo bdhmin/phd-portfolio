@@ -9,7 +9,9 @@
     "build": "node build.mjs",
     "doctor": "marble doctor portfolio.mrbl",
     "outline": "marble outline portfolio.mrbl",
-    "rollback": "marble rollback portfolio"
+    "rollback": "marble rollback portfolio",
+    "date": "node scripts/update-last-updated.mjs",
+    "prepare": "git config core.hooksPath .githooks || true"
   },
   "devDependencies": {
     "@bdhmin/marble": "^0.1.0"

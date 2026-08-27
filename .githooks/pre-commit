@@ -1,0 +1,14 @@
+#!/bin/sh
+# Stamp today's date into the portfolio footer and fold it into this commit.
+# Escape hatch: SKIP_LAST_UPDATED=1 git commit ...
+[ -n "$SKIP_LAST_UPDATED" ] && exit 0
+
+command -v node >/dev/null 2>&1 || {
+  echo "pre-commit: node not found; skipping Last Updated stamp." >&2
+  exit 0
+}
+
+node "$(git rev-parse --show-toplevel)/scripts/update-last-updated.mjs" --stage --quiet || {
+  echo "pre-commit: could not stamp Last Updated (see above)." >&2
+  exit 1
+}
