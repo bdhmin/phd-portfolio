@@ -159,26 +159,40 @@
   /* ---- alternatives --------------------------------------------------- */
 
   /* Which candidate shows is one attribute, and CSS reads it. Spelled out per
-     name because a selector cannot compare a child against its parent. */
-  marble-alt > [data-marble-alt] { display: none; }
-  marble-alt[data-marble-active="v1"] > [data-marble-alt="v1"],
-  marble-alt[data-marble-active="v2"] > [data-marble-alt="v2"],
-  marble-alt[data-marble-active="v3"] > [data-marble-alt="v3"] { display: block; }
-  marble-alt:not([data-marble-active]) > [data-marble-alt]:first-child { display: block; }
+     name because a selector cannot compare a child against its parent, so each
+     line hides every candidate its parent did not name. Hiding rather than
+     showing is what lets the survivor keep the display it would have had: a
+     link candidate stays a row, an aside stays a column, and no candidate needs
+     a rule of its own. */
+  marble-alt[data-marble-active="v1"] > [data-marble-alt]:not([data-marble-alt="v1"]),
+  marble-alt[data-marble-active="v2"] > [data-marble-alt]:not([data-marble-alt="v2"]),
+  marble-alt[data-marble-active="v3"] > [data-marble-alt]:not([data-marble-alt="v3"]),
+  marble-alt[data-marble-active="v4"] > [data-marble-alt]:not([data-marble-alt="v4"]),
+  marble-alt[data-marble-active="v5"] > [data-marble-alt]:not([data-marble-alt="v5"]),
+  marble-alt[data-marble-active="v6"] > [data-marble-alt]:not([data-marble-alt="v6"]) { display: none; }
+
+  /* Named nothing at all, the first candidate stands in. */
+  marble-alt:not([data-marble-active]) > [data-marble-alt] ~ [data-marble-alt] { display: none; }
+
+  /* The other half of the switch. Which version is written is one question and
+     whether it is on the page at all is another, so "hidden" is an attribute of
+     its own rather than an empty candidate pretending to be a draft. The
+     version widget is not a candidate, so it survives this and can put the block
+     back — and data-marble-peek is that widget asking to see what it is hiding.
+     Nothing in the published file carries it, so a visitor gets the nothing this
+     says. */
+  marble-alt[data-marble-hidden] > [data-marble-alt]:not([data-marble-peek]) { display: none; }
+
   /* The wrapper is scaffolding, not a box: the candidate that wins should sit
      in the bio column or the links column as if it were a direct child. */
   marble-alt.bio-alt, .links marble-alt { display: contents; }
 
-  /* "Nothing" as an ordinary candidate. Later than the rules above and at the
-     same specificity, so it wins when it is the one selected. */
-  marble-alt > .none[data-marble-alt] { display: none; }
-
-  /* A link candidate is a row of text and arrow, not a block. */
-  .links marble-alt[data-marble-active="v2"] > a[data-marble-alt="v2"] { display: flex; }
-
-  /* A candidate that holds several paragraphs is one block, so the column's gap
-     does not reach between them. Restate it inside. */
-  .bio [data-marble-alt] > p + p { margin-top: 1.25rem; }
+  /* A flow block is a passage rather than a line, so the column's gap does not
+     reach between its paragraphs. Restate it inside — by position rather than
+     by tag, because what Enter leaves behind is the browser's decision and this
+     spacing is not. */
+  .bio [data-marble-flow] > * { margin: 0; }
+  .bio [data-marble-flow] > * + * { margin-top: 1.25rem; }
 
   /* The version switcher is a child of the alt, and the alt is display:contents,
      so the bio column treats it as another row and puts a full gap above it.
@@ -214,10 +228,10 @@
       <div data-marble-id="contactblock">
         <div class="links" data-marble-id="academic" data-marble-sortable="links">
           <p data-marble-id="lnk-email" data-marble-removable data-marble-editable>bdmin@ucsd.edu</p>
-          <!-- The CV link the old file kept commented out. Switch to v2 to show it. -->
-          <marble-alt data-marble-id="cv" data-marble-active="v1">
-            <span class="none" data-marble-alt="v1" data-marble-id="cv-v1"></span>
-            <a data-marble-alt="v2" data-marble-id="cv-v2" href="https://drive.google.com/file/d/1QRxHPrn_d2tv947H3nf4uCfPLgEtRXHn/view?usp=sharing" target="_blank" rel="noreferrer"><span data-marble-id="cv-v2-t" data-marble-editable>CV</span><span class="arrow" data-marble-id="cv-v2-a"><svg width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 1L1 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M2.39999 1L7.99999 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M8 6.60001L8 1.00001" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span></a>
+          <!-- The CV link the old file kept commented out. It is written here and
+               switched off; the eye on its widget puts it back. -->
+          <marble-alt data-marble-id="cv" data-marble-active="v1" data-marble-hidden>
+            <a data-marble-alt="v1" data-marble-id="cv-v1" href="https://drive.google.com/file/d/1QRxHPrn_d2tv947H3nf4uCfPLgEtRXHn/view?usp=sharing" target="_blank" rel="noreferrer"><span data-marble-id="cv-v1-t" data-marble-editable>CV</span><span class="arrow" data-marble-id="cv-v1-a"><svg width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 1L1 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M2.39999 1L7.99999 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M8 6.60001L8 1.00001" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span></a>
           </marble-alt>
         </div>
         <div class="rule" data-marble-id="rule1"></div>
@@ -232,40 +246,50 @@
 
     <div class="bio" data-marble-id="bio" data-marble-sortable="bio">
       <h1 data-marble-id="name" data-marble-rich>Bryan Min</h1>
-      <p data-marble-id="bio-1" data-marble-rich>I'm a Ph.D. student at <a class="tag tag-ucsd" href="https://ucsd.edu" target="_blank" rel="noreferrer">UC San Diego</a> doing research in Human-Computer Interaction. I work with <a class="tag tag-lab" href="https://hci.ucsd.edu/haijunxia" target="_blank" rel="noreferrer">Prof. <span style="font-weight: normal;">Haijun Xia</span></a> as part of the <a class="tag tag-lab" href="https://hci.ucsd.edu/" target="_blank" rel="noreferrer">Foundation Interface Lab</a>.</p>
 
-      <!-- The research statement had three drafts in the old file: one live, two
-           commented out. A comment is not a candidate — nothing can switch to it
-           and nothing checks it still reads. Here all three are in the file and
-           one attribute says which is showing. -->
+      <!-- The about text is one block, not a column of them. Pressing Enter
+           inside it starts a paragraph of the same passage rather than a new
+           piece, so the gaps you read are <p>s of one thing and a single op
+           names the whole passage — which is what makes an undo bring a
+           rewrite back whole.
+
+           The old file kept three drafts of it, one live and two in comments. A
+           comment is not a candidate: nothing can switch to it and nothing
+           checks it still reads. Here all three are in the file and one
+           attribute says which is showing. -->
       <marble-alt class="bio-alt" data-marble-id="statement" data-marble-active="v1">
-        <div data-marble-alt="v1" data-marble-id="stmt-v1">
-          <p data-marble-id="stmt-v1-a" data-marble-rich>My research centers on <b>malleable software</b>—interfaces that enable users to easily and expressively modify their software interface without code or a bloated list of settings.</p>
-          <p data-marble-id="stmt-v1-b" data-marble-rich>Recently, I've been exploring malleable software under the world of generative user interfaces.</p>
-          <p data-marble-id="stmt-v1-c" data-marble-rich>Generative UI is now building so many kinds of interfaces for us automatically. Traditional user interfaces show lists, widgets, text, images, and other forms of media. Now that generative UI is coming around, we're able to see that it can generate almost anything we envision. Yet, we're still generating the same traditional interfaces we've always had. Then, how do we design generative user interfaces that leverage the power of generative UI?</p>
+        <div data-marble-alt="v1" data-marble-id="stmt-v1" data-marble-rich data-marble-flow>
+          <p>I'm a Ph.D. student at <a class="tag tag-ucsd" href="https://ucsd.edu" target="_blank" rel="noreferrer">UC San Diego</a> doing research in Human-Computer Interaction. I work with <a class="tag tag-lab" href="https://hci.ucsd.edu/haijunxia" target="_blank" rel="noreferrer">Prof. <span style="font-weight: normal;">Haijun Xia</span></a> as part of the <a class="tag tag-lab" href="https://hci.ucsd.edu/" target="_blank" rel="noreferrer">Foundation Interface Lab</a>.</p>
+          <p>My research centers on <b>malleable software</b>—interfaces that enable users to easily and expressively modify their software interface without code or a bloated list of settings.</p>
+          <p>Recently, I've been exploring malleable software under the world of generative user interfaces.</p>
+          <p>Generative UI is now building so many kinds of interfaces for us automatically. Traditional user interfaces show lists, widgets, text, images, and other forms of media. Now that generative UI is coming around, we're able to see that it can generate almost anything we envision. Yet, we're still generating the same traditional interfaces we've always had. Then, how do we design generative user interfaces that leverage the power of generative UI?</p>
+          <p>I'm interning at Microsoft Research right now, working with <a class="tag tag-lab" href="https://nicmarquardt.com/" target="_blank" rel="noreferrer">Nic Marquardt</a>.</p>
         </div>
-        <div data-marble-alt="v2" data-marble-id="stmt-v2">
-          <p data-marble-id="stmt-v2-a" data-marble-rich>My research centers on <b>malleable software</b>—interfaces that enable users to easily, expressively, and broadly customize their software interface without code or a bloated list of settings. Specifically, I explore <strong>how we can bring malleable software to real-world, production-grade software systems, considering the tensions between designers, developers, and end-users.</strong> To do so, I study these three user groups, create interaction techniques, develop novel software systems, and create theoretical frameworks for bringing malleable software to more end-users.</p>
+        <div data-marble-alt="v2" data-marble-id="stmt-v2" data-marble-rich data-marble-flow>
+          <p>I'm a Ph.D. student at <a class="tag tag-ucsd" href="https://ucsd.edu" target="_blank" rel="noreferrer">UC San Diego</a> doing research in Human-Computer Interaction. I work with <a class="tag tag-lab" href="https://hci.ucsd.edu/haijunxia" target="_blank" rel="noreferrer">Prof. <span style="font-weight: normal;">Haijun Xia</span></a> as part of the <a class="tag tag-lab" href="https://hci.ucsd.edu/" target="_blank" rel="noreferrer">Foundation Interface Lab</a>.</p>
+          <p>My research centers on <b>malleable software</b>—interfaces that enable users to easily, expressively, and broadly customize their software interface without code or a bloated list of settings. Specifically, I explore <strong>how we can bring malleable software to real-world, production-grade software systems, considering the tensions between designers, developers, and end-users.</strong> To do so, I study these three user groups, create interaction techniques, develop novel software systems, and create theoretical frameworks for bringing malleable software to more end-users.</p>
+          <p>I'm interning at Microsoft Research right now, working with <a class="tag tag-lab" href="https://nicmarquardt.com/" target="_blank" rel="noreferrer">Nic Marquardt</a>.</p>
         </div>
-        <div data-marble-alt="v3" data-marble-id="stmt-v3">
-          <p data-marble-id="stmt-v3-a" data-marble-rich>My research centers on the question: <b>How can we enable end users to <u>easily</u> customize their interfaces?</b></p>
+        <div data-marble-alt="v3" data-marble-id="stmt-v3" data-marble-rich data-marble-flow>
+          <p>I'm a Ph.D. student at <a class="tag tag-ucsd" href="https://ucsd.edu" target="_blank" rel="noreferrer">UC San Diego</a> doing research in Human-Computer Interaction. I work with <a class="tag tag-lab" href="https://hci.ucsd.edu/haijunxia" target="_blank" rel="noreferrer">Prof. <span style="font-weight: normal;">Haijun Xia</span></a> as part of the <a class="tag tag-lab" href="https://hci.ucsd.edu/" target="_blank" rel="noreferrer">Foundation Interface Lab</a>.</p>
+          <p>My research centers on the question: <b>How can we enable end users to <u>easily</u> customize their interfaces?</b></p>
+          <p>I'm interning at Microsoft Research right now, working with <a class="tag tag-lab" href="https://nicmarquardt.com/" target="_blank" rel="noreferrer">Nic Marquardt</a>.</p>
         </div>
       </marble-alt>
 
-      <p data-marble-id="bio-2" data-marble-rich>I'm interning at Microsoft Research right now, working with <a class="tag tag-lab" href="https://nicmarquardt.com/" target="_blank" rel="noreferrer">Nic Marquardt</a>.</p>
-
-      <!-- Two blocks the old site kept commented out. Same treatment: in the
-           file, with "nothing" as an ordinary candidate rather than a comment. -->
-      <marble-alt class="bio-alt" data-marble-id="notice" data-marble-active="v1">
-        <div class="none" data-marble-alt="v1" data-marble-id="notice-v1"></div>
-        <div class="aside" data-marble-alt="v2" data-marble-id="notice-v2">
-          <h2 data-marble-id="notice-v2-h" data-marble-editable>Research Opportunities</h2>
-          <p data-marble-id="notice-v2-p" data-marble-rich>Meridian is now open-source! I'm currently looking for excited developers to join me in growing <a href="https://meridian-ui.com" target="_blank" rel="noopener noreferrer">Meridian</a>. If you're interested, please <a href="https://doi.org/10.1145/3746059.3747654" target="_blank" rel="noopener noreferrer">read the paper</a> and email me!</p>
-          <p class="quiet" data-marble-id="notice-v2-q" data-marble-editable>(Tell me about your background and why you're interested in the project.)</p>
+      <!-- Two asides that are usually not on the page at all. Which one is
+           written is a version; whether it publishes is data-marble-hidden. Both
+           are attributes of this element, so an agent, a text editor, and the
+           eye on the widget all turn them the same way. -->
+      <marble-alt class="bio-alt" data-marble-id="notice" data-marble-active="v1" data-marble-hidden>
+        <div class="aside" data-marble-alt="v1" data-marble-id="notice-v1">
+          <h2 data-marble-id="notice-v1-h" data-marble-editable>Research Opportunities</h2>
+          <p data-marble-id="notice-v1-p" data-marble-rich>Meridian is now open-source! I'm currently looking for excited developers to join me in growing <a href="https://meridian-ui.com" target="_blank" rel="noopener noreferrer">Meridian</a>. If you're interested, please <a href="https://doi.org/10.1145/3746059.3747654" target="_blank" rel="noopener noreferrer">read the paper</a> and email me!</p>
+          <p class="quiet" data-marble-id="notice-v1-q" data-marble-editable>(Tell me about your background and why you're interested in the project.)</p>
         </div>
-        <div class="aside" data-marble-alt="v3" data-marble-id="notice-v3">
-          <h2 data-marble-id="notice-v3-h" data-marble-editable>News</h2>
-          <p data-marble-id="notice-v3-p" data-marble-rich><span class="stamp">Sept 28 - Oct 1</span>I attended UIST 2025 in Busan, South Korea to present <b>Meridian</b>.</p>
+        <div class="aside" data-marble-alt="v2" data-marble-id="notice-v2">
+          <h2 data-marble-id="notice-v2-h" data-marble-editable>News</h2>
+          <p data-marble-id="notice-v2-p" data-marble-rich><span class="stamp">Sept 28 - Oct 1</span>I attended UIST 2025 in Busan, South Korea to present <b>Meridian</b>.</p>
         </div>
       </marble-alt>
     </div>
@@ -809,12 +833,46 @@
       }
       .marble-alts button.marble-alts-edge:hover { color: var(--dim, #71717a); }
       .marble-alts .marble-alts-drop:hover { color: #b4544f; }
+
+      /* Whether the block is on the page at all. It sits before the version
+         names because it governs all of them, and it is drawn rather than
+         spelled so it does not read as one more of them. The box is the height
+         of the type beside it, so the icon sits on that same line. */
+      .marble-alts button.marble-alts-eye {
+        width: 14px; height: 11px; align-self: baseline;
+        display: inline-flex; align-items: center; justify-content: center;
+      }
+      /* Hidden is a state worth seeing from across the page, so the control
+         stops being faint — and what it hides stays legible enough to keep
+         working on, ghosted, because it is not what a visitor gets. */
+      marble-alt[data-marble-hidden] .marble-alts { opacity: .85; }
+      marble-alt[data-marble-hidden] .marble-alts-eye { color: var(--foreground, inherit); }
+      marble-alt[data-marble-hidden] > [data-marble-peek] { opacity: .32; }
     `);
     addressable.push('marble-alt', 'marble-alt > *');
     wirers.push(wireAlternatives);
 
     const ALT = 'data-marble-alt';
     const ACTIVE = 'data-marble-active';
+    const HIDDEN = 'data-marble-hidden';
+
+    // Which version is written and whether it is on the page are two questions,
+    // and only the first one has candidates — so hiding is its own attribute
+    // rather than an empty draft standing in for "none". PEEK is the editor
+    // asking to see what it is hiding: page-only, so the file never says it and
+    // the published page has nothing there at all.
+    const PEEK = 'data-marble-peek';
+    marble.pageOnly(PEEK);
+
+    // Drawn rather than spelled: the row beside it is already made of words, and
+    // one more word would read as another version name.
+    const eyeIcon = (off) =>
+      `<svg viewBox="0 0 14 14" width="11" height="11" fill="none" stroke="currentColor"
+        stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path
+        d="M1.1 7S3.3 3.5 7 3.5 12.9 7 12.9 7 10.7 10.5 7 10.5 1.1 7 1.1 7Z"/><circle cx="7" cy="7" r="1.5"/>${
+        off ? '<path d="M2.3 11.7 11.7 2.3"/>' : ''}</svg>`;
+    const EYE_ON = eyeIcon(false);
+    const EYE_OFF = eyeIcon(true);
 
     const nameOf = (el) => el?.getAttribute(ALT) ?? null;
 
@@ -825,11 +883,19 @@
       return versions.find((el) => nameOf(el) === alt.getAttribute(ACTIVE)) ?? versions[0] ?? null;
     }
 
-    function nextName(versions) {
-      const numbered = versions
-        .map((el) => Number(/^v(\d+)$/.exec(nameOf(el) ?? '')?.[1]))
-        .filter(Number.isFinite);
-      return `v${Math.max(versions.length, ...numbered) + 1}`;
+    // A name is a slot rather than a running count. The stylesheet has to spell
+    // one rule per name — a document with no host has no other way to know which
+    // candidate won — so the set of names it can spell and the set a version can
+    // be given are the same set, and adding a seventh is refused rather than
+    // quietly unstyled. Deleting v2 frees v2; the next version takes it.
+    const SLOTS = 6;
+
+    function freeName(versions) {
+      const taken = new Set(versions.map(nameOf));
+      for (let n = 1; n <= SLOTS; n += 1) {
+        if (!taken.has(`v${n}`)) return `v${n}`;
+      }
+      return null;
     }
 
     function wireAlternatives(root) {
@@ -843,6 +909,7 @@
         // island the caret can't wander into.
         widget.setAttribute('contenteditable', 'false');
         widget.innerHTML = `
+          <button class="marble-alts-edge marble-alts-eye"></button>
           <span class="marble-alts-track" role="group" aria-label="Versions">
             <span class="marble-alts-thumb"></span>
           </span>
@@ -852,6 +919,8 @@
         const track = widget.querySelector('.marble-alts-track');
         const thumb = widget.querySelector('.marble-alts-thumb');
         const drop = widget.querySelector('.marble-alts-drop');
+        const add = widget.querySelector('.marble-alts-add');
+        const eye = widget.querySelector('.marble-alts-eye');
 
         // No control decides what is on screen: each one writes the attribute
         // and the stylesheet reads it. That is why a switch arriving from a
@@ -912,12 +981,31 @@
             thumb.style.width = `${button.offsetWidth}px`;
             thumb.style.transform = `translateX(${button.offsetLeft}px)`;
           }
+          const hidden = alt.hasAttribute(HIDDEN);
+          if (eye.dataset.off !== String(hidden)) {
+            eye.dataset.off = String(hidden);
+            eye.innerHTML = hidden ? EYE_OFF : EYE_ON;
+          }
+          eye.title = hidden ? 'Hidden — click to put it back on the page' : 'On the page — click to hide it';
+          eye.setAttribute('aria-label', hidden ? 'Show this block' : 'Hide this block');
+          eye.setAttribute('aria-pressed', String(hidden));
+
+          // The one candidate a hidden block still shows, and only here: the
+          // stylesheet spares whatever carries this, and nothing carries it in
+          // the file.
+          for (const version of versions) {
+            if (hidden && version === current) version.setAttribute(PEEK, '');
+            else version.removeAttribute(PEEK);
+          }
+
           drop.hidden = versions.length < 2;
+          add.hidden = !freeName(versions);
         }
 
-        widget.querySelector('.marble-alts-add').addEventListener('click', () => {
+        add.addEventListener('click', () => {
           const current = activeVersion(alt);
-          if (!current) return;
+          const name = freeName(persistentChildren(alt));
+          if (!current || !name) return;
 
           // The new version starts as a copy of the one on screen, because a
           // candidate phrasing is nearly always an edit of the current one.
@@ -925,7 +1013,6 @@
           for (const el of [version, ...version.querySelectorAll(`[${ID}]`)]) {
             el.removeAttribute(ID);
           }
-          const name = nextName(persistentChildren(alt));
           version.setAttribute(ALT, name);
           assignIdsIn(version);
 
@@ -961,6 +1048,22 @@
           render();
         });
 
+        // The same shape as the switch above it: write the attribute, file the
+        // op, and let the stylesheet decide what that means. Nothing here knows
+        // what "hidden" looks like.
+        eye.addEventListener('click', () => {
+          const id = marble.id(alt);
+          if (!id) return;
+          const hide = !alt.hasAttribute(HIDDEN);
+          const redo = { type: 'setAttr', id, name: HIDDEN, value: hide ? '' : null };
+          const undo = { type: 'setAttr', id, name: HIDDEN, value: hide ? null : '' };
+          if (hide) alt.setAttribute(HIDDEN, '');
+          else alt.removeAttribute(HIDDEN);
+          marble.record({ redo: [redo], undo: [undo] });
+          marble.op(redo, { immediate: true });
+          render();
+        });
+
         track.addEventListener('keydown', (event) => {
           const step = { ArrowLeft: -1, ArrowRight: 1 }[event.key];
           if (!step) return;
@@ -981,7 +1084,7 @@
 
         new MutationObserver(render).observe(alt, {
           attributes: true,
-          attributeFilter: [ACTIVE],
+          attributeFilter: [ACTIVE, HIDDEN],
           childList: true,
         });
       }
@@ -1103,6 +1206,18 @@
 (() => {
   const begin = (marble) => {
     const RICH = '[data-marble-rich]';
+
+    // A flow block is a rich block holding a passage rather than a line. Enter
+    // inside it starts a paragraph of the same block instead of a new block, so
+    // one op names the whole passage and one undo brings a rewrite back whole —
+    // which is the difference between an about section you edit and a column of
+    // separate sentences you maintain.
+    const FLOW = 'data-marble-flow';
+
+    // Provided the browser leaves a <p> behind rather than a <div>. This file is
+    // read by hand, so a paragraph should say it is one; the spacing above does
+    // not depend on it either way.
+    document.execCommand('defaultParagraphSeparator', false, 'p');
 
     // The colours this site already uses, offered by name so a link written in
     // the editor lands as `class="tag tag-ucsd"` and inherits every later change
@@ -1276,6 +1391,7 @@
 
         block.setAttribute('contenteditable', 'true');
         block.spellcheck = false;
+        const flow = block.hasAttribute(FLOW);
 
         block.addEventListener('focus', () => priorHtml.set(block, marble.source.inner(block)));
         block.addEventListener('input', () => file(block));
@@ -1294,14 +1410,20 @@
           // Enter starts a block rather than a line, because the column's
           // spacing is what separates paragraphs here — a <br> would look
           // like a paragraph and not behave like one. Shift-Enter still breaks.
+          // In a flow block the new paragraph belongs to the passage already
+          // being edited, so the browser's own break is the right one and this
+          // gets out of its way.
           if (event.key === 'Enter' && !event.shiftKey) {
+            if (flow) return;
             event.preventDefault();
             addBlockAfter(block);
             return;
           }
           // Backspace in an empty block removes the block, which is the only
-          // way to get rid of one without reaching for the drag handle.
-          if (event.key === 'Backspace' && !marble.text(block).trim()) {
+          // way to get rid of one without reaching for the drag handle. A flow
+          // block is the whole passage, and emptying a passage is not the same
+          // as asking for it to go.
+          if (event.key === 'Backspace' && !flow && !marble.text(block).trim()) {
             const siblings = within(block.parentElement, RICH);
             if (siblings.length < 2) return;
             event.preventDefault();

@@ -51,9 +51,9 @@ quietly does nothing, and visitors get a static page.
 | | |
 |---|---|
 | `<style>` in the head | the whole design, ported from the Tailwind build this replaced |
-| `#about` | portrait, links, bio |
-| `<marble-alt data-marble-id="statement">` | three drafts of the research statement; one attribute says which shows |
-| `<marble-alt data-marble-id="notice">` | nothing / research opportunities / news |
+| `#about` | portrait, links, and the about text |
+| `<marble-alt data-marble-id="statement">` | the about text — one block per draft, three drafts, one attribute saying which shows |
+| `<marble-alt data-marble-id="notice">` | research opportunities / news, switched off until one of them is true |
 | `#publications` | two lists sharing the sortable group `papers`, so a paper drags between them |
 | `<template id="tpl-paper">` | what the `+ paper` buttons clone |
 | `<script data-marble-id="richwire">` | the bio's rich block editor, link colours, and portrait picker |
@@ -72,8 +72,34 @@ back, while a `setInner`'s inverse carries the previous markup and can.
 Select text and a small bar appears — bold, italic, underline, link, unlink.
 Enter starts a new block, Backspace in an empty one removes it.
 
-An inline mark inside a rich block carries no `data-marble-id`. The block is the
-piece an op names, the same way an `<svg>` is addressable and its paths are not.
+The about text is the exception, and the reason `data-marble-flow` exists. It is
+one block holding the whole passage rather than a paragraph per block, so Enter
+inside it starts a paragraph of that same block and the gaps you read are its own
+`<p>`s. One op names the passage, which is what lets an undo bring a rewrite back
+whole instead of a sentence at a time. Emptying a flow block does not delete it —
+there is nothing else there to fall back to.
+
+An inline mark inside a rich block carries no `data-marble-id`, and neither does a
+paragraph inside a flow block. The block is the piece an op names, the same way an
+`<svg>` is addressable and its paths are not.
+
+## Versions, and whether they show
+
+A `<marble-alt>` answers two questions and keeps them apart. *Which* version is
+written is `data-marble-active`, and the `v1 v2 v3` switch on its widget sets it.
+*Whether the block is on the page at all* is `data-marble-hidden`, and the eye to
+the left of the versions turns it on and off. Both are attributes of the file, so
+a hand edit, an agent, and a click all mean the same thing.
+
+The old file said "off" by giving the alt an empty candidate to switch to, which
+made a draft out of the absence of one and left `+` and `×` acting on it. The eye
+replaces that: the CV link and the notice are both written out in full and simply
+switched off.
+
+A hidden block is gone from the published page and still here in the editor,
+ghosted, so it stays readable and editable while it waits. That is
+`data-marble-peek` — declared `marble.pageOnly`, so it never reaches the file and
+a visitor gets the nothing the file says.
 
 A link's hover colour is two facts, one per colour scheme. The colours this site
 uses more than once are classes (`.tag-ucsd`, `.tag-lab`, …) so the value lives in
