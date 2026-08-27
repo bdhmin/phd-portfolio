@@ -4,9 +4,11 @@ Bryan Min's site. It is one file.
 
 ```
 portfolio.mrbl     the site — markup, style, behaviour, and content
+index.html         the published page, derived from it; generated, never edited
 public/            the things a single file cannot hold: images, PDFs, favicon
 dev.mjs            local host: public/ in front, the Marble host behind it
-build.mjs          publishing, which is a copy
+scripts/           the derivation, its tests, and the git hooks that run it
+build.mjs          publishing: dist/ = public/ + index.html
 ```
 
 `portfolio.mrbl` is valid HTML5 and is its own source. Opened with no host it is
@@ -38,13 +40,55 @@ npm run rollback     # every write is snapshotted while the host runs
 
 ## Publishing
 
+`portfolio.mrbl` is the source. `index.html` is what a visitor gets, and it is
+derived from the .mrbl — never edited by hand.
+
 ```bash
-npm run build        # dist/ = public/ + portfolio.mrbl as index.html
+npm run html         # portfolio.mrbl -> index.html
+npm run build        # dist/ = public/ + index.html   (what Vercel runs)
+npm test             # check the derivation against the real document
 ```
 
-Vercel is configured to run exactly that (`vercel.json`). Nothing about the
-deployed site is Marble-aware: `window.marble` never arrives, every affordance
-quietly does nothing, and visitors get a static page.
+The derivation only ever subtracts. The document carries the machinery that
+makes it editable — two affordance scripts, the `data-marble-id`s ops address
+nodes by, three `<template>`s the adders clone — and a visitor has no host to
+talk to, so none of it is anything but weight. Two of them are worse than
+weight: the `+ paper` and `+ link` buttons are ordinary markup with no rule
+hiding them, so before this they rendered on the live site and did nothing when
+clicked. 84 KB becomes 26 KB.
+
+Three things are deliberately *not* removed. `<marble-alt>`, `data-marble-alt`
+and `data-marble-active` look like machinery and are not: no script reads them,
+the document's own `<style>` does, and it is how the page knows which draft of
+the research statement to show. `scripts/mrbl-to-html.test.mjs` asserts they
+survive, along with the stronger claim that the element tree is otherwise
+identical — same tags, classes, hrefs, order and depth.
+
+The edit is made against source offsets rather than by re-serializing the parse
+tree, so every byte not named above is the byte it was. The `<style>` block is
+checked byte for byte.
+
+### Keeping them together
+
+`index.html` is committed, so the repository always shows what is deployed. Two
+hooks in `.githooks/` keep that true; `npm install` points git at them.
+
+| | |
+|---|---|
+| `pre-commit` | rebuilds `index.html` from the **staged** `portfolio.mrbl` and stages it |
+| `pre-push` | refuses a push whose commit's `index.html` is not what its `.mrbl` makes |
+
+`pre-commit` can be skipped with `--no-verify`, and does not run for merge
+commits; `pre-push` is the backstop. If it stops you:
+
+```bash
+npm run html && git add index.html && git commit --amend --no-edit
+```
+
+Vercel does not trust the committed copy — `build.mjs` derives `index.html`
+again from `portfolio.mrbl` at deploy time, because a copy can be stale and a
+derivation cannot. The hooks are what keep the repository honest; the build is
+what keeps the site right. Nothing about the deployed page is Marble-aware.
 
 ## What is where in the document
 

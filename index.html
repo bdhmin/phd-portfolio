@@ -1,0 +1,439 @@
+<!doctype html>
+<!-- Generated from portfolio.mrbl by scripts/mrbl-to-html.mjs. Do not edit by hand. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Bryan's Portfolio">
+<title>Bryan Min</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400..700&family=Source+Sans+3:wght@200..900&display=swap" rel="stylesheet">
+<style>
+  /* Ported from the Tailwind build this document replaces. Every value here was
+     a utility class before: the zinc ramp, the 0.873rem body size, the 200x240
+     portrait slot. Written out longhand because a .mrbl has no build step, and
+     because a person hand-editing this file should be able to see what a number
+     does without knowing Tailwind's scale. */
+  :root {
+    --background: #ffffff;
+    --foreground: #171717;
+    --zinc-200: #e4e4e7;
+    --zinc-400: #a1a1aa;
+    --zinc-500: #71717a;
+    --zinc-800: #27272a;
+    --rule: var(--zinc-200);
+    --dim: var(--zinc-500);
+    --faint: var(--zinc-400);
+    --thumb-bg: #ffffff;
+    --thumb-filter: none;
+    --award: #f19a21;
+    --sans: "Source Sans 3", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    --serif: "Lora", Georgia, "Times New Roman", serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --background: #0a0a0a;
+      --foreground: #ededed;
+      --rule: #3f3f46;          /* zinc-700 */
+      --dim: #a1a1aa;           /* zinc-400 */
+      --faint: #52525b;         /* zinc-600 */
+      --thumb-bg: #18181b;      /* zinc-900 */
+      --thumb-filter: brightness(0.85) contrast(1.1) saturate(0.9);
+    }
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--sans);
+    font-size: 0.873rem;
+    line-height: 1.5rem;
+    -webkit-font-smoothing: antialiased;
+  }
+  b { font-weight: 640; }
+  img { display: block; }
+
+  /* ---- shell ---------------------------------------------------------- */
+
+  .page { display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+  main { max-width: 960px; width: 100%; flex: 1; padding: 3rem 2rem 2rem; }
+  @media (min-width: 1024px) { main { padding-top: 5rem; } }
+
+  footer {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+    padding: 2rem;
+    color: var(--faint);
+  }
+
+  /* ---- about ---------------------------------------------------------- */
+
+  .about { display: flex; flex-direction: column; gap: 2rem; }
+  @media (min-width: 768px) { .about { flex-direction: row; } }
+
+  /* One links block, not two. The old site rendered the list twice — once
+     `block md:hidden` beside the photo, once `hidden md:block` under it — which
+     is the same fact in the file twice. Grid says where it goes instead. */
+  .identity {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 0 1rem;
+    align-items: start;
+  }
+  @media (min-width: 768px) { .identity { grid-template-columns: 200px; gap: 1.25rem 0; } }
+
+  .portrait { min-width: 200px; width: 200px; height: 240px; border-radius: 2px; overflow: hidden; }
+  .portrait img { width: 100%; height: 100%; object-fit: cover; }
+
+  .links { display: flex; flex-direction: column; gap: .25rem; padding: .5rem 1rem .5rem 0; }
+  @media (min-width: 768px) { .links { padding: 0 .5rem; } }
+  .links a, .links p { width: fit-content; display: flex; flex-direction: row; align-items: center; gap: 4px; margin: 0; transition: color .2s; }
+  .links a { color: inherit; text-decoration: none; }
+  .links a:hover { color: var(--faint); }
+  @media (prefers-color-scheme: dark) { .links a:hover { color: #d4d4d8; } }
+  .links .arrow { display: flex; opacity: .5; transition: opacity .2s; }
+  @media (min-width: 768px) { .links .arrow { opacity: 1; } }
+  .links a:hover .arrow { opacity: .3; }
+  .rule { height: 1px; background: var(--rule); margin: .5rem 0; }
+
+  .bio { width: 100%; display: flex; flex-direction: column; gap: 1.25rem; font-size: 15px; }
+  .bio p { margin: 0; }
+  .bio h1 { font-family: var(--serif); font-weight: 600; font-size: 2.25rem; line-height: 2.5rem; margin: 0; }
+
+  /* A tag is a link that only colours on hover, and the colour is two facts —
+     one per colour scheme. It lived in a React `linkMap` keyed off a `useState`
+     mirror of the scheme; here the scheme picks and CSS does the rest.
+
+     Where the pair lives depends on how the tag was written. The colours this
+     site uses more than once are a class, so the value is in one place and
+     every tag wearing it follows. A colour chosen in the editor for one link is
+     inline on that link, because that is the only place it is true. Both are
+     read the same way, so neither is a special case. */
+  .tag { font-weight: 640; color: inherit; text-decoration: none; transition: color .2s; }
+  .tag { --tag: var(--tag-light, currentColor); }
+  @media (prefers-color-scheme: dark) {
+    .tag { --tag: var(--tag-dark, var(--tag-light, currentColor)); }
+  }
+  .tag:hover { color: var(--tag); }
+  .tag-ucsd      { --tag-light: #00629B; --tag-dark: #54AEE2; }
+  .tag-lab       { --tag-light: #A19792; --tag-dark: #D7CAC3; }
+  .tag-cogsci    { --tag-light: #EC6556; --tag-dark: #F48175; }
+  .tag-masonview { --tag-light: #f0b051; --tag-dark: #f0b051; }
+
+  .aside { display: flex; flex-direction: column; gap: .25rem; border-top: 1px solid var(--rule); padding-top: .5rem; margin-top: 1rem; }
+  .aside h2 { font-weight: 600; text-decoration: underline; font-size: 16px; margin: 0; }
+  .aside p { margin: 0; }
+  .aside .quiet { font-size: 13px; font-style: italic; opacity: .5; }
+  .aside a { color: inherit; text-decoration: underline; }
+  .aside .stamp { font-weight: 600; margin-right: .5rem; }
+
+  /* ---- publications --------------------------------------------------- */
+
+  .papers { display: flex; flex-direction: column; gap: 5rem; margin-top: 4rem; }
+  .papers h2 { font-family: var(--serif); font-weight: 600; font-size: 1.25rem; line-height: 1.75rem; margin: 0 0 1.5rem; }
+  .stack { display: flex; flex-direction: column; gap: 4rem; }
+  @media (min-width: 768px) { .stack { gap: 2rem; } }
+
+  .paper { display: flex; flex-direction: column; align-items: center; width: 100%; gap: 1rem; }
+  @media (min-width: 768px) { .paper { flex-direction: row; gap: 2rem; } }
+  .shot { max-width: 360px; overflow: hidden; border-radius: 2px; background: var(--thumb-bg); }
+  @media (min-width: 768px) { .shot { width: 400px; min-width: 200px; } }
+  .shot img { width: 100%; background: var(--thumb-bg); filter: var(--thumb-filter); transition: all .2s; }
+
+  .meta { display: flex; flex-direction: column; gap: .25rem; width: 100%; }
+  .venue { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; font-size: 13px; color: var(--dim); }
+  .venue h5 { margin: 0; font-weight: 400; }
+  .venue .award { font-weight: 600; color: var(--award); }
+  .venue .award:empty { display: none; }
+  .paper h3 { font-size: 1rem; line-height: 1.375; font-weight: 600; margin: .25rem 0; }
+  .authors { font-size: 13px; }
+  .authors .me { font-weight: 600; }
+  .res { display: flex; flex-wrap: wrap; gap: 1rem; font-size: 13px; }
+  .res a, .res p { margin: 0; color: var(--dim); text-decoration: none; transition: all .2s; }
+  .res a:hover { color: var(--zinc-800); }
+  @media (prefers-color-scheme: dark) { .res a:hover { color: #ffffff; } }
+
+  /* ---- alternatives --------------------------------------------------- */
+
+  /* Which candidate shows is one attribute, and CSS reads it. Spelled out per
+     name because a selector cannot compare a child against its parent. */
+  marble-alt > [data-marble-alt] { display: none; }
+  marble-alt[data-marble-active="v1"] > [data-marble-alt="v1"],
+  marble-alt[data-marble-active="v2"] > [data-marble-alt="v2"],
+  marble-alt[data-marble-active="v3"] > [data-marble-alt="v3"] { display: block; }
+  marble-alt:not([data-marble-active]) > [data-marble-alt]:first-child { display: block; }
+  /* The wrapper is scaffolding, not a box: the candidate that wins should sit
+     in the bio column or the links column as if it were a direct child. */
+  marble-alt.bio-alt, .links marble-alt { display: contents; }
+
+  /* "Nothing" as an ordinary candidate. Later than the rules above and at the
+     same specificity, so it wins when it is the one selected. */
+  marble-alt > .none[data-marble-alt] { display: none; }
+
+  /* A link candidate is a row of text and arrow, not a block. */
+  .links marble-alt[data-marble-active="v2"] > a[data-marble-alt="v2"] { display: flex; }
+
+  /* A candidate that holds several paragraphs is one block, so the column's gap
+     does not reach between them. Restate it inside. */
+  .bio [data-marble-alt] > p + p { margin-top: 1.25rem; }
+
+  /* The version switcher is a child of the alt, and the alt is display:contents,
+     so the bio column treats it as another row and puts a full gap above it.
+     Pull it back under the block it belongs to. */
+  .bio .marble-alts { margin-top: -.95rem; }
+
+  /* ---- adders --------------------------------------------------------- */
+
+  .add {
+    align-self: flex-start;
+    font: inherit; font-size: 12px;
+    color: var(--faint);
+    background: none;
+    border: 1px dashed var(--rule);
+    border-radius: 3px;
+    padding: .2rem .6rem;
+    cursor: pointer;
+    transition: color .2s, border-color .2s;
+  }
+  .add:hover { color: var(--dim); border-color: var(--dim); }
+</style>
+</head>
+<body>
+
+<div class="page">
+<main>
+
+  <section class="about" id="about">
+    <div class="identity">
+      <div class="portrait">
+        <img src="/portrait/portrait2026-4.jpg" alt="A medium close-up portrait photo of Bryan Min">
+      </div>
+      <div>
+        <div class="links">
+          <p>bdmin@ucsd.edu</p>
+          <marble-alt data-marble-active="v1">
+            <span class="none" data-marble-alt="v1"></span>
+            <a data-marble-alt="v2" href="https://drive.google.com/file/d/1QRxHPrn_d2tv947H3nf4uCfPLgEtRXHn/view?usp=sharing" target="_blank" rel="noreferrer"><span>CV</span><span class="arrow"><svg width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 1L1 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M2.39999 1L7.99999 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M8 6.60001L8 1.00001" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span></a>
+          </marble-alt>
+        </div>
+        <div class="rule"></div>
+        <div class="links" id="social">
+          <a href="https://scholar.google.com/citations?user=12yN6_gAAAAJ&amp;hl=en" target="_blank" rel="noreferrer"><span>Google Scholar</span><span class="arrow"><svg width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 1L1 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M2.39999 1L7.99999 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M8 6.60001L8 1.00001" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span></a>
+          <a href="https://github.com/bdhmin" target="_blank" rel="noreferrer"><span>GitHub</span><span class="arrow"><svg width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 1L1 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M2.39999 1L7.99999 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M8 6.60001L8 1.00001" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span></a>
+          <a href="https://twitter.com/bryandhmin" target="_blank" rel="noreferrer"><span>X</span><span class="arrow"><svg width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 1L1 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M2.39999 1L7.99999 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M8 6.60001L8 1.00001" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="bio">
+      <h1>Bryan Min</h1>
+      <p>I'm a Ph.D. student at <a class="tag tag-ucsd" href="https://ucsd.edu" target="_blank" rel="noreferrer">UC San Diego</a> doing research in Human-Computer Interaction. I work with <a class="tag tag-lab" href="https://hci.ucsd.edu/haijunxia" target="_blank" rel="noreferrer">Prof. <span style="font-weight: normal;">Haijun Xia</span></a> as part of the <a class="tag tag-lab" href="https://hci.ucsd.edu/" target="_blank" rel="noreferrer">Foundation Interface Lab</a>.</p>
+
+      <marble-alt class="bio-alt" data-marble-active="v1">
+        <div data-marble-alt="v1">
+          <p>My research centers on <b>malleable software</b>—interfaces that enable users to easily and expressively modify their software interface without code or a bloated list of settings.</p>
+          <p>Recently, I've been exploring malleable software under the world of generative user interfaces.</p>
+          <p>Generative UI is now building so many kinds of interfaces for us automatically. Traditional user interfaces show lists, widgets, text, images, and other forms of media. Now that generative UI is coming around, we're able to see that it can generate almost anything we envision. Yet, we're still generating the same traditional interfaces we've always had. Then, how do we design generative user interfaces that leverage the power of generative UI?</p>
+        </div>
+        <div data-marble-alt="v2">
+          <p>My research centers on <b>malleable software</b>—interfaces that enable users to easily, expressively, and broadly customize their software interface without code or a bloated list of settings. Specifically, I explore <strong>how we can bring malleable software to real-world, production-grade software systems, considering the tensions between designers, developers, and end-users.</strong> To do so, I study these three user groups, create interaction techniques, develop novel software systems, and create theoretical frameworks for bringing malleable software to more end-users.</p>
+        </div>
+        <div data-marble-alt="v3">
+          <p>My research centers on the question: <b>How can we enable end users to <u>easily</u> customize their interfaces?</b></p>
+        </div>
+      </marble-alt>
+
+      <p>I'm interning at Microsoft Research right now, working with <a class="tag tag-lab" href="https://nicmarquardt.com/" target="_blank" rel="noreferrer">Nic Marquardt</a>.</p>
+
+      <marble-alt class="bio-alt" data-marble-active="v1">
+        <div class="none" data-marble-alt="v1"></div>
+        <div class="aside" data-marble-alt="v2">
+          <h2>Research Opportunities</h2>
+          <p>Meridian is now open-source! I'm currently looking for excited developers to join me in growing <a href="https://meridian-ui.com" target="_blank" rel="noopener noreferrer">Meridian</a>. If you're interested, please <a href="https://doi.org/10.1145/3746059.3747654" target="_blank" rel="noopener noreferrer">read the paper</a> and email me!</p>
+          <p class="quiet">(Tell me about your background and why you're interested in the project.)</p>
+        </div>
+        <div class="aside" data-marble-alt="v3">
+          <h2>News</h2>
+          <p><span class="stamp">Sept 28 - Oct 1</span>I attended UIST 2025 in Busan, South Korea to present <b>Meridian</b>.</p>
+        </div>
+      </marble-alt>
+    </div>
+  </section>
+
+  <section class="papers" id="publications">
+    <div>
+      <h2>Publications</h2>
+      <div class="stack" id="stack-pubs">
+
+        <article class="paper">
+          <div class="shot"><img src="/thumbnails/maru.png" alt="Information Architecture as a Shared Language for Generating Aligned and Persistent User Interfaces"></div>
+          <div class="meta">
+            <div class="venue"><h5>UIST 2026 (To appear)</h5><h5 class="award"></h5></div>
+            <h3>Information Architecture as a Shared Language for Generating Aligned and Persistent User Interfaces</h3>
+            <div class="authors">Eunhye Kim, DaEun Choi, <span class="me">Bryan Min</span>, Hyunjung Yi, Yue Jiang, Juho Kim</div>
+            <div class="res"><p>Coming Soon</p></div>
+          </div>
+        </article>
+
+        <article class="paper">
+          <div class="shot"><img src="/thumbnails/abstraction.jpg" alt="Making Abstraction Concrete: A Design Space and Interaction Model of Abstraction in Interactive Systems"></div>
+          <div class="meta">
+            <div class="venue"><h5>arXiv (May 2026)</h5><h5 class="award"></h5></div>
+            <h3>Making Abstraction Concrete: A Design Space and Interaction Model of Abstraction in Interactive Systems</h3>
+            <div class="authors"><span class="me">Bryan Min</span>, Sangho Suh, Jim Hollan, Haijun Xia</div>
+            <div class="res">
+              <a href="https://arxiv.org/abs/2605.11344" target="_blank" rel="noreferrer">DOI</a>
+              <a href="https://hci.ucsd.edu/papers/concrete.pdf" target="_blank" rel="noopener noreferrer">Paper</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="paper">
+          <div class="shot"><img src="/thumbnails/choicemates.jpg" alt="ChoiceMates: Supporting Unfamiliar Online Decision-Making with Multi-Agent Conversational Interactions"></div>
+          <div class="meta">
+            <div class="venue"><h5>IUI 2026</h5><h5 class="award"></h5></div>
+            <h3>ChoiceMates: Supporting Unfamiliar Online Decision-Making with Multi-Agent Conversational Interactions</h3>
+            <div class="authors">Jeongeon Park, <span class="me">Bryan Min</span>, Kihoon Son, Jean Y. Song, Xiaojuan Ma, Juho Kim</div>
+            <div class="res">
+              <a href="https://doi.org/10.1145/3742413.3789107" target="_blank" rel="noreferrer">DOI</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="paper">
+          <div class="shot"><img src="/thumbnails/meridian.png" alt="Meridian: A Design Framework for Malleable Overview-Detail Interfaces"></div>
+          <div class="meta">
+            <div class="venue"><h5>UIST 2025</h5><h5 class="award"></h5></div>
+            <h3>Meridian: A Design Framework for Malleable Overview-Detail Interfaces</h3>
+            <div class="authors"><span class="me">Bryan Min</span>, Haijun Xia</div>
+            <div class="res">
+              <a href="https://doi.org/10.1145/3746059.3747654" target="_blank" rel="noreferrer">DOI</a>
+              <a href="/papers/uist25-meridian.pdf" target="_blank" rel="noopener noreferrer">Paper</a>
+              <a href="https://meridian-ui.com" target="_blank" rel="noreferrer">Website</a>
+              <a href="https://github.com/meridian-ui/meridian" target="_blank" rel="noreferrer">Package</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="paper">
+          <div class="shot"><img src="/thumbnails/annota.png" alt="Lessons from Designing a Course and Platform for Teaching Qualitative Analysis Experientially in a Large Course-Based Community Consultancy"></div>
+          <div class="meta">
+            <div class="venue"><h5>ICER 2025</h5><h5 class="award"></h5></div>
+            <h3>Lessons from Designing a Course and Platform for Teaching Qualitative Analysis Experientially in a Large Course-Based Community Consultancy</h3>
+            <div class="authors">Dustin Palea, Elijah Kirby, Madison Gruender, <span class="me">Bryan Min</span>, Jessalyn Wang, David Lee</div>
+            <div class="res">
+              <a href="https://dl.acm.org/doi/10.1145/3702652.3744206" target="_blank" rel="noreferrer">DOI</a>
+              <a href="https://icer2025.acm.org/details/icer-2025-papers/5/Lessons-from-Designing-a-Course-and-Platform-for-Teaching-Qualitative-Analysis-Experi" target="_blank" rel="noreferrer">Website</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="paper">
+          <div class="shot"><img src="/thumbnails/malleable-odi.png" alt="Malleable Overview-Detail Interfaces"></div>
+          <div class="meta">
+            <div class="venue"><h5>CHI 2025</h5><h5 class="award"></h5></div>
+            <h3>Malleable Overview-Detail Interfaces</h3>
+            <div class="authors"><span class="me">Bryan Min</span>, Allen Chen, Yining Cao, Haijun Xia</div>
+            <div class="res">
+              <a href="https://dl.acm.org/doi/10.1145/3706598.3714164" target="_blank" rel="noreferrer">DOI</a>
+              <a href="/papers/chi25-malleable-odi.pdf" target="_blank" rel="noopener noreferrer">Paper</a>
+              <a href="https://www.youtube.com/watch?v=XOlhkhsxREY" target="_blank" rel="noreferrer">Video</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="paper">
+          <div class="shot"><img src="/thumbnails/luminate.jpg" alt="Luminate: Structured Generation and Exploration of Design Space with Large Language Models for Human-AI Co-Creation"></div>
+          <div class="meta">
+            <div class="venue"><h5>CHI 2024</h5><h5 class="award"></h5></div>
+            <h3>Luminate: Structured Generation and Exploration of Design Space with Large Language Models for Human-AI Co-Creation</h3>
+            <div class="authors">Sangho Suh*, Meng Chen*, <span class="me">Bryan Min</span>, Toby Jia-Jun Li, Haijun Xia</div>
+            <div class="res">
+              <a href="https://dl.acm.org/doi/10.1145/3613904.3642400" target="_blank" rel="noreferrer">DOI</a>
+              <a href="/papers/chi24-luminate.pdf" target="_blank" rel="noopener noreferrer">Paper</a>
+              <a href="https://luminate-research.github.io/" target="_blank" rel="noreferrer">Website</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="paper">
+          <div class="shot"><img src="/thumbnails/sensecape.png" alt="Sensecape: Enabling Multilevel Exploration and Sensemaking with Large Language Models"></div>
+          <div class="meta">
+            <div class="venue"><h5>UIST 2023</h5><h5 class="award"></h5></div>
+            <h3>Sensecape: Enabling Multilevel Exploration and Sensemaking with Large Language Models</h3>
+            <div class="authors">Sangho Suh, <span class="me">Bryan Min</span>, Srishti Palani, Haijun Xia</div>
+            <div class="res">
+              <a href="https://doi.org/10.1145/3586183.3606756" target="_blank" rel="noreferrer">DOI</a>
+              <a href="/papers/uist23-sensecape.pdf" target="_blank" rel="noopener noreferrer">Paper</a>
+              <a href="https://www.youtube.com/watch?v=MIfhunAwZew&amp;t=146s" target="_blank" rel="noreferrer">Video</a>
+              <a href="https://www.youtube.com/watch?v=X3cpRVGuC2w" target="_blank" rel="noreferrer">Preview</a>
+              <a href="https://creativity.ucsd.edu/ai" target="_blank" rel="noreferrer">Website</a>
+              <a href="https://twitter.com/HaijunXia/status/1646919380704559104?s=20" target="_blank" rel="noreferrer">Twitter</a>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+
+    <div>
+      <h2>Posters, Demos, and Workshop Papers</h2>
+      <div class="stack" id="stack-other">
+
+        <article class="paper">
+          <div class="shot"><img src="/thumbnails/genUI-malleable.jpg" alt="Generative UI Alone Won't Make Software Malleable"></div>
+          <div class="meta">
+            <div class="venue"><h5>CHI 2025 Workshop on HCI for GenUI</h5><h5 class="award"></h5></div>
+            <h3>Generative UI Alone Won't Make Software Malleable</h3>
+            <div class="authors"><span class="me">Bryan Min</span></div>
+            <div class="res">
+              <a href="https://genuimeetshci.github.io/chi26-workshop/proposals/genui_wont_make_software_malleable_chi26_workshop.pdf" target="_blank" rel="noopener noreferrer">Paper</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="paper">
+          <div class="shot"><img src="/thumbnails/feedforward-genAI.png" alt="Feedforward in Generative AI: Opportunities for a Design Space"></div>
+          <div class="meta">
+            <div class="venue"><h5>CHI 2025 Workshop on Tools for Thought</h5><h5 class="award"></h5></div>
+            <h3>Feedforward in Generative AI: Opportunities for a Design Space</h3>
+            <div class="authors"><span class="me">Bryan Min</span>, Haijun Xia</div>
+            <div class="res">
+              <a href="https://arxiv.org/abs/2502.14229" target="_blank" rel="noreferrer">DOI</a>
+              <a href="/papers/chi24-workshop-feedforward-genAI.pdf" target="_blank" rel="noopener noreferrer">Paper</a>
+              <a href="https://ai-tools-for-thought.github.io/workshop/" target="_blank" rel="noreferrer">Workshop</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="paper">
+          <div class="shot"><img src="/thumbnails/masonview.jpg" alt="Demonstration of Masonview: Content-Driven Viewport Management"></div>
+          <div class="meta">
+            <div class="venue"><h5>UIST 2023 Demos</h5><h5 class="award">Best Demo Honorable Mention</h5></div>
+            <h3>Demonstration of Masonview: Content-Driven Viewport Management</h3>
+            <div class="authors"><span class="me">Bryan Min</span>, Matthew T Beaudouin-Lafon, Sangho Suh, Haijun Xia</div>
+            <div class="res">
+              <a href="https://doi.org/10.1145/3586182.3615827" target="_blank" rel="noreferrer">DOI</a>
+              <a href="/papers/uist23-demo-masonview.pdf" target="_blank" rel="noopener noreferrer">Paper</a>
+              <a href="https://www.youtube.com/watch?v=HwHb02fxe5w&amp;t=7s" target="_blank" rel="noreferrer">Video</a>
+              <a href="https://creativity.ucsd.edu/masonview" target="_blank" rel="noreferrer">Website</a>
+              <a href="https://x.com/bdhmin/status/1710326548857811044?s=20" target="_blank" rel="noreferrer">Twitter</a>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+<footer>
+  <span>Last Updated: August 17, 2026</span>
+</footer>
+</div>
+
+</body>
+</html>

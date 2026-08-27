@@ -1,0 +1,11 @@
+#!/bin/sh
+# Installed by `npm install` (see the "prepare" script), which points
+# core.hooksPath at this directory. Skip with `git commit --no-verify`; the
+# pre-push hook will catch it.
+set -e
+root=$(git rev-parse --show-toplevel)
+if [ ! -d "$root/node_modules/parse5" ]; then
+  echo "[pre-commit] dependencies are missing — run \`npm install\` (or commit with --no-verify)" >&2
+  exit 1
+fi
+exec node "$root/scripts/hooks/pre-commit.mjs"
