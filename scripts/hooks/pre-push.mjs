@@ -13,8 +13,15 @@ import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import { toHtml, verify } from '../mrbl-to-html.mjs';
 
+// stderr is captured rather than inherited: `git show` on a path a commit does
+// not have answers "no" by printing `fatal:`, and that is a question here, not
+// a failure.
 const git = (...args) =>
-  execFileSync('git', args, { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+  execFileSync('git', args, {
+    encoding: 'utf8',
+    maxBuffer: 64 * 1024 * 1024,
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
 
 const ZERO = /^0+$/;
 

@@ -14,8 +14,14 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { toHtml, verify } from '../mrbl-to-html.mjs';
 
+// stderr is captured rather than inherited: two of the calls below are asking
+// whether something exists, and `git show` answers "no" by printing `fatal:`.
 const git = (...args) =>
-  execFileSync('git', args, { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+  execFileSync('git', args, {
+    encoding: 'utf8',
+    maxBuffer: 64 * 1024 * 1024,
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
 
 const root = git('rev-parse', '--show-toplevel').trim();
 const DOC = 'portfolio.mrbl';
