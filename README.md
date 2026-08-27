@@ -36,6 +36,23 @@ npm run outline      # the shape of the file, for handing to an agent
 npm run rollback     # every write is snapshotted while the host runs
 ```
 
+## The "Last Updated" line
+
+The footer's date is stamped by a `pre-commit` hook, so it always reads the day
+the site last changed rather than the day someone last remembered to edit it.
+
+```bash
+npm install                   # also runs `git config core.hooksPath .githooks`
+npm run date                  # stamp it by hand, without committing
+SKIP_LAST_UPDATED=1 git commit -m …   # commit without touching it
+```
+
+The hook patches the *staged* copy of `portfolio.mrbl` directly rather than
+`git add`-ing the file, so a commit of something else never sweeps in whatever
+you had half-written in the document. The change it makes is one line — the
+same edit a `setText` on `foot-t` would produce. If the footer ever moves, the
+`MARBLE_ID` at the top of `scripts/update-last-updated.mjs` is what to change.
+
 ## Publishing
 
 ```bash
