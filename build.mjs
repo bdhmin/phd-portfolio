@@ -36,6 +36,6 @@ const kb = (s) => `${(Buffer.byteLength(s) / 1024).toFixed(1)} KB`;
 console.log(`dist/index.html  ${kb(html)}  from portfolio.mrbl (${kb(source)})`);
 console.log(
   `  left behind      ${counts.scripts} affordance script(s), ${counts.templates} template(s), ` +
-    `${counts.adders} adder(s), ${counts.attrs} editor attribute(s)`,
+    `${counts.attrs} editor attribute(s)`,
 );
 console.log(`dist/            public/ copied alongside it`);

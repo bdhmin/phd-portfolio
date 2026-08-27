@@ -149,7 +149,16 @@
   .venue .award { font-weight: 600; color: var(--award); }
   .venue .award:empty { display: none; }
   .paper h3 { font-size: 1rem; line-height: 1.375; font-weight: 600; margin: .25rem 0; }
-  .authors { font-size: 13px; }
+  /* An author list is a list, not a sentence. Each name is its own element so
+     it can be dragged, retitled or dropped — which means the commas cannot be
+     in the text, because a comma typed after "Suh" belongs to the list and
+     would travel with the name. Flex supplies the space, ::after supplies the
+     comma, and a reorder never leaves punctuation stranded. Flex also means
+     the whitespace between the spans in the file carries no meaning, so an
+     insert or a move cannot change the spacing by landing in the wrong gap. */
+  .authors { display: flex; flex-wrap: wrap; column-gap: .3em; font-size: 13px; }
+  .authors .author { position: relative; }
+  .authors .author:not(:last-of-type)::after { content: ","; }
   .authors .me { font-weight: 600; }
   .res { display: flex; flex-wrap: wrap; gap: 1rem; font-size: 13px; }
   .res a, .res p { margin: 0; color: var(--dim); text-decoration: none; transition: all .2s; }
@@ -185,20 +194,24 @@
      Pull it back under the block it belongs to. */
   .bio .marble-alts { margin-top: -.95rem; }
 
-  /* ---- adders --------------------------------------------------------- */
+  /* ---- where the editing controls sit --------------------------------- */
 
-  .add {
-    align-self: flex-start;
-    font: inherit; font-size: 12px;
-    color: var(--faint);
-    background: none;
-    border: 1px dashed var(--rule);
-    border-radius: 3px;
-    padding: .2rem .6rem;
-    cursor: pointer;
-    transition: color .2s, border-color .2s;
+  /* The chrome itself belongs to the script that draws it; where this page
+     wants it is this page's business, the same way the version switcher is.
+
+     A grip is drawn for a block: a column of controls in the left margin. An
+     author or a resource is a word in a row, so the margin to its left is the
+     word before it. Those go above instead, centred over the item they act on. */
+  .authors > .author > .marble-grip,
+  .res > * > .marble-grip {
+    left: 50%; top: -1.2rem; transform: translateX(-50%);
+    flex-direction: row; gap: 0;
   }
-  .add:hover { color: var(--dim); border-color: var(--dim); }
+
+  /* The heading of a list is what adds to it, so "+" sits in the margin beside
+     the heading and a new paper lands at the top. Nudged down to sit on the
+     heading's first line rather than its box. */
+  .papers h2 > .marble-grip { top: .3rem; }
 </style>
 </head>
 <body>
@@ -246,7 +259,7 @@
         </div>
       </marble-alt>
 
-      <p>I'm interning at Microsoft Research right now, working with <a class="tag tag-lab" href="https://nicmarquardt.com/" target="_blank" rel="noreferrer">Nic Marquardt</a>.</p>
+      <p><br></p>
 
       <marble-alt class="bio-alt" data-marble-active="v1">
         <div class="none" data-marble-alt="v1"></div>
@@ -259,6 +272,7 @@
           <h2>News</h2>
           <p><span class="stamp">Sept 28 - Oct 1</span>I attended UIST 2025 in Busan, South Korea to present <b>Meridian</b>.</p>
         </div>
+        <div class="none" data-marble-alt="v4"></div>
       </marble-alt>
     </div>
   </section>
@@ -273,7 +287,14 @@
           <div class="meta">
             <div class="venue"><h5>UIST 2026 (To appear)</h5><h5 class="award"></h5></div>
             <h3>Information Architecture as a Shared Language for Generating Aligned and Persistent User Interfaces</h3>
-            <div class="authors">Eunhye Kim, DaEun Choi, <span class="me">Bryan Min</span>, Hyunjung Yi, Yue Jiang, Juho Kim</div>
+            <div class="authors">
+              <span class="author">Eunhye Kim</span>
+              <span class="author">DaEun Choi</span>
+              <span class="author me">Bryan Min</span>
+              <span class="author">Hyunjung Yi</span>
+              <span class="author">Yue Jiang</span>
+              <span class="author">Juho Kim</span>
+            </div>
             <div class="res"><p>Coming Soon</p></div>
           </div>
         </article>
@@ -283,7 +304,12 @@
           <div class="meta">
             <div class="venue"><h5>arXiv (May 2026)</h5><h5 class="award"></h5></div>
             <h3>Making Abstraction Concrete: A Design Space and Interaction Model of Abstraction in Interactive Systems</h3>
-            <div class="authors"><span class="me">Bryan Min</span>, Sangho Suh, Jim Hollan, Haijun Xia</div>
+            <div class="authors">
+              <span class="author me">Bryan Min</span>
+              <span class="author">Sangho Suh</span>
+              <span class="author">Jim Hollan</span>
+              <span class="author">Haijun Xia</span>
+            </div>
             <div class="res">
               <a href="https://arxiv.org/abs/2605.11344" target="_blank" rel="noreferrer">DOI</a>
               <a href="https://hci.ucsd.edu/papers/concrete.pdf" target="_blank" rel="noopener noreferrer">Paper</a>
@@ -296,7 +322,14 @@
           <div class="meta">
             <div class="venue"><h5>IUI 2026</h5><h5 class="award"></h5></div>
             <h3>ChoiceMates: Supporting Unfamiliar Online Decision-Making with Multi-Agent Conversational Interactions</h3>
-            <div class="authors">Jeongeon Park, <span class="me">Bryan Min</span>, Kihoon Son, Jean Y. Song, Xiaojuan Ma, Juho Kim</div>
+            <div class="authors">
+              <span class="author">Jeongeon Park</span>
+              <span class="author me">Bryan Min</span>
+              <span class="author">Kihoon Son</span>
+              <span class="author">Jean Y. Song</span>
+              <span class="author">Xiaojuan Ma</span>
+              <span class="author">Juho Kim</span>
+            </div>
             <div class="res">
               <a href="https://doi.org/10.1145/3742413.3789107" target="_blank" rel="noreferrer">DOI</a>
             </div>
@@ -308,7 +341,10 @@
           <div class="meta">
             <div class="venue"><h5>UIST 2025</h5><h5 class="award"></h5></div>
             <h3>Meridian: A Design Framework for Malleable Overview-Detail Interfaces</h3>
-            <div class="authors"><span class="me">Bryan Min</span>, Haijun Xia</div>
+            <div class="authors">
+              <span class="author me">Bryan Min</span>
+              <span class="author">Haijun Xia</span>
+            </div>
             <div class="res">
               <a href="https://doi.org/10.1145/3746059.3747654" target="_blank" rel="noreferrer">DOI</a>
               <a href="/papers/uist25-meridian.pdf" target="_blank" rel="noopener noreferrer">Paper</a>
@@ -323,7 +359,14 @@
           <div class="meta">
             <div class="venue"><h5>ICER 2025</h5><h5 class="award"></h5></div>
             <h3>Lessons from Designing a Course and Platform for Teaching Qualitative Analysis Experientially in a Large Course-Based Community Consultancy</h3>
-            <div class="authors">Dustin Palea, Elijah Kirby, Madison Gruender, <span class="me">Bryan Min</span>, Jessalyn Wang, David Lee</div>
+            <div class="authors">
+              <span class="author">Dustin Palea</span>
+              <span class="author">Elijah Kirby</span>
+              <span class="author">Madison Gruender</span>
+              <span class="author me">Bryan Min</span>
+              <span class="author">Jessalyn Wang</span>
+              <span class="author">David Lee</span>
+            </div>
             <div class="res">
               <a href="https://dl.acm.org/doi/10.1145/3702652.3744206" target="_blank" rel="noreferrer">DOI</a>
               <a href="https://icer2025.acm.org/details/icer-2025-papers/5/Lessons-from-Designing-a-Course-and-Platform-for-Teaching-Qualitative-Analysis-Experi" target="_blank" rel="noreferrer">Website</a>
@@ -336,7 +379,12 @@
           <div class="meta">
             <div class="venue"><h5>CHI 2025</h5><h5 class="award"></h5></div>
             <h3>Malleable Overview-Detail Interfaces</h3>
-            <div class="authors"><span class="me">Bryan Min</span>, Allen Chen, Yining Cao, Haijun Xia</div>
+            <div class="authors">
+              <span class="author me">Bryan Min</span>
+              <span class="author">Allen Chen</span>
+              <span class="author">Yining Cao</span>
+              <span class="author">Haijun Xia</span>
+            </div>
             <div class="res">
               <a href="https://dl.acm.org/doi/10.1145/3706598.3714164" target="_blank" rel="noreferrer">DOI</a>
               <a href="/papers/chi25-malleable-odi.pdf" target="_blank" rel="noopener noreferrer">Paper</a>
@@ -350,7 +398,13 @@
           <div class="meta">
             <div class="venue"><h5>CHI 2024</h5><h5 class="award"></h5></div>
             <h3>Luminate: Structured Generation and Exploration of Design Space with Large Language Models for Human-AI Co-Creation</h3>
-            <div class="authors">Sangho Suh*, Meng Chen*, <span class="me">Bryan Min</span>, Toby Jia-Jun Li, Haijun Xia</div>
+            <div class="authors">
+              <span class="author">Sangho Suh*</span>
+              <span class="author">Meng Chen*</span>
+              <span class="author me">Bryan Min</span>
+              <span class="author">Toby Jia-Jun Li</span>
+              <span class="author">Haijun Xia</span>
+            </div>
             <div class="res">
               <a href="https://dl.acm.org/doi/10.1145/3613904.3642400" target="_blank" rel="noreferrer">DOI</a>
               <a href="/papers/chi24-luminate.pdf" target="_blank" rel="noopener noreferrer">Paper</a>
@@ -364,7 +418,12 @@
           <div class="meta">
             <div class="venue"><h5>UIST 2023</h5><h5 class="award"></h5></div>
             <h3>Sensecape: Enabling Multilevel Exploration and Sensemaking with Large Language Models</h3>
-            <div class="authors">Sangho Suh, <span class="me">Bryan Min</span>, Srishti Palani, Haijun Xia</div>
+            <div class="authors">
+              <span class="author">Sangho Suh</span>
+              <span class="author me">Bryan Min</span>
+              <span class="author">Srishti Palani</span>
+              <span class="author">Haijun Xia</span>
+            </div>
             <div class="res">
               <a href="https://doi.org/10.1145/3586183.3606756" target="_blank" rel="noreferrer">DOI</a>
               <a href="/papers/uist23-sensecape.pdf" target="_blank" rel="noopener noreferrer">Paper</a>
@@ -388,7 +447,9 @@
           <div class="meta">
             <div class="venue"><h5>CHI 2025 Workshop on HCI for GenUI</h5><h5 class="award"></h5></div>
             <h3>Generative UI Alone Won't Make Software Malleable</h3>
-            <div class="authors"><span class="me">Bryan Min</span></div>
+            <div class="authors">
+              <span class="author me">Bryan Min</span>
+            </div>
             <div class="res">
               <a href="https://genuimeetshci.github.io/chi26-workshop/proposals/genui_wont_make_software_malleable_chi26_workshop.pdf" target="_blank" rel="noopener noreferrer">Paper</a>
             </div>
@@ -400,7 +461,10 @@
           <div class="meta">
             <div class="venue"><h5>CHI 2025 Workshop on Tools for Thought</h5><h5 class="award"></h5></div>
             <h3>Feedforward in Generative AI: Opportunities for a Design Space</h3>
-            <div class="authors"><span class="me">Bryan Min</span>, Haijun Xia</div>
+            <div class="authors">
+              <span class="author me">Bryan Min</span>
+              <span class="author">Haijun Xia</span>
+            </div>
             <div class="res">
               <a href="https://arxiv.org/abs/2502.14229" target="_blank" rel="noreferrer">DOI</a>
               <a href="/papers/chi24-workshop-feedforward-genAI.pdf" target="_blank" rel="noopener noreferrer">Paper</a>
@@ -414,7 +478,12 @@
           <div class="meta">
             <div class="venue"><h5>UIST 2023 Demos</h5><h5 class="award">Best Demo Honorable Mention</h5></div>
             <h3>Demonstration of Masonview: Content-Driven Viewport Management</h3>
-            <div class="authors"><span class="me">Bryan Min</span>, Matthew T Beaudouin-Lafon, Sangho Suh, Haijun Xia</div>
+            <div class="authors">
+              <span class="author me">Bryan Min</span>
+              <span class="author">Matthew T Beaudouin-Lafon</span>
+              <span class="author">Sangho Suh</span>
+              <span class="author">Haijun Xia</span>
+            </div>
             <div class="res">
               <a href="https://doi.org/10.1145/3586182.3615827" target="_blank" rel="noreferrer">DOI</a>
               <a href="/papers/uist23-demo-masonview.pdf" target="_blank" rel="noopener noreferrer">Paper</a>

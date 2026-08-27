@@ -2,11 +2,15 @@
 //
 // The .mrbl is already valid HTML5, so "converting" it is not a compile. What it
 // is, is a subtraction: the document carries the machinery that makes it
-// editable — the affordance scripts, the ids ops address nodes by, the `+ paper`
-// buttons — and a visitor has no host to talk to, so none of that is anything
-// but weight. Two of those are worse than weight. The `+ paper` and `+ link`
-// buttons are static markup with no rule hiding them, so on the deployed site
-// they render, and clicking them does nothing.
+// editable — the affordance scripts, the templates they clone, the ids and the
+// data-marble-* markers ops and affordances address nodes by — and a visitor has
+// no host to talk to, so none of that is anything but weight.
+//
+// Nothing visible is removed. The `+` adders used to be static markup, and
+// cutting the element that carried data-marble-add was how they were kept off
+// the published page; they are injected chrome now, hung off whatever heads a
+// list, so the attribute sits on real content — a heading, an author list — and
+// cutting its element would delete the content with it. Only the attribute goes.
 //
 // The edit is done against source offsets rather than by re-serializing the
 // parse tree. A serializer would rewrite the whole file — attribute quoting,
@@ -29,9 +33,15 @@ export const EDITOR_ATTRS = new Set([
   'data-marble-sortable',
   'data-marble-add',
   'data-marble-into',
+  'data-marble-at',
   'data-marble-instruction',
   'data-marble-portrait',
   'data-marble-transient',
+  'data-marble-href',
+  'data-marble-flag',
+  'data-marble-image',
+  'data-marble-gallery',
+  'data-marble-edge',
 ]);
 
 // Both affordance scripts end in this line, and it is the honest test for "does
@@ -52,7 +62,7 @@ export function toHtml(source) {
   const doc = parse(source, { sourceCodeLocationInfo: true });
 
   const cuts = [];
-  const counts = { scripts: 0, templates: 0, adders: 0, meta: 0, comments: 0, attrs: 0 };
+  const counts = { scripts: 0, templates: 0, meta: 0, comments: 0, attrs: 0 };
 
   // A cut that is alone on its line takes the line with it, rather than leaving
   // the indentation behind as a blank one. Only whole elements are offered this;
@@ -95,13 +105,6 @@ export function toHtml(source) {
     if (node.tagName === 'template') {
       cutNode(node);
       counts.templates += 1;
-      continue;
-    }
-
-    // The adders: markup rather than injected chrome, which is why they leak.
-    if (attr(node, 'data-marble-add')) {
-      cutNode(node);
-      counts.adders += 1;
       continue;
     }
 
@@ -169,8 +172,7 @@ function visibleText(input) {
 // could read before is still there, in the same order, and nothing that speaks
 // to a host survived.
 export function verify(source, html) {
-  // The adders are the one visible thing intentionally removed.
-  const before = visibleText(source).replace(/\+ paper|\+ link/g, '').replace(/\s+/g, ' ').trim();
+  const before = visibleText(source);
   const after = visibleText(html);
 
   if (before !== after) {

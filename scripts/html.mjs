@@ -46,6 +46,6 @@ if (!quiet) {
   console.log(`index.html  ${kb(html)}  (from ${kb(source)} of portfolio.mrbl)`);
   console.log(
     `  removed  ${counts.scripts} affordance script(s), ${counts.templates} template(s), ` +
-      `${counts.adders} adder(s), ${counts.meta} host meta, ${counts.attrs} editor attribute(s)`,
+      `${counts.meta} host meta, ${counts.attrs} editor attribute(s)`,
   );
 }
