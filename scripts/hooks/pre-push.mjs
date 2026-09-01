@@ -1,4 +1,4 @@
-// Refuse to push a commit whose index.html is not what its portfolio.mrbl makes.
+// Refuse to push a commit whose index.html is not its portfolio.mrbl.
 //
 // The pre-commit hook is what normally keeps them together, and it can be
 // skipped — `--no-verify`, a merge commit, a commit made before the hook was
@@ -6,22 +6,29 @@
 // that is still cheap to notice, because after it the deployed site is a file
 // nobody wrote.
 //
+// Identical bytes are the identical blob, so the check is two object ids. No
+// file contents are read at all, which is what makes it free on a 110 KB
+// document and on every commit in a range.
+//
 // git hands a push over on stdin, one line per ref:
 //   <local ref> <local sha> <remote ref> <remote sha>
 
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
-import { toHtml, verify } from '../mrbl-to-html.mjs';
 
-// stderr is captured rather than inherited: `git show` on a path a commit does
-// not have answers "no" by printing `fatal:`, and that is a question here, not
-// a failure.
+// stderr is captured rather than inherited: `git rev-parse` on a path a commit
+// does not have answers "no" by printing `fatal:`, and that is a question here,
+// not a failure.
 const git = (...args) =>
-  execFileSync('git', args, {
-    encoding: 'utf8',
-    maxBuffer: 64 * 1024 * 1024,
-    stdio: ['ignore', 'pipe', 'pipe'],
-  });
+  execFileSync('git', args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
+
+const blob = (sha, file) => {
+  try {
+    return git('rev-parse', `${sha}:${file}`).trim();
+  } catch {
+    return null;
+  }
+};
 
 const ZERO = /^0+$/;
 
@@ -39,29 +46,16 @@ for (const line of lines) {
   const [localRef, localSha] = line.split(' ');
   if (ZERO.test(localSha)) continue; // a deletion
 
-  let source;
-  try {
-    source = git('show', `${localSha}:portfolio.mrbl`);
-  } catch {
-    continue; // no document at this tip, nothing to publish
-  }
+  const doc = blob(localSha, 'portfolio.mrbl');
+  if (!doc) continue; // no document at this tip, nothing to publish
 
-  const { html } = toHtml(source);
-  verify(source, html);
+  const out = blob(localSha, 'index.html');
+  if (out === doc) continue;
 
-  let committed = null;
-  try {
-    committed = git('show', `${localSha}:index.html`);
-  } catch {
-    // missing
-  }
-
-  if (committed !== html) {
-    problems.push(
-      `  ${localRef} (${localSha.slice(0, 8)}) — index.html is ` +
-        (committed === null ? 'missing' : 'not what portfolio.mrbl makes'),
-    );
-  }
+  problems.push(
+    `  ${localRef} (${localSha.slice(0, 8)}) — index.html is ` +
+      (out === null ? 'missing' : 'not a copy of portfolio.mrbl'),
+  );
 }
 
 if (problems.length) {

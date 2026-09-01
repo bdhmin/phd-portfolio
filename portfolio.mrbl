@@ -244,7 +244,7 @@
 
     <div class="bio" data-marble-id="bio" data-marble-sortable="bio">
       <h1 data-marble-id="name" data-marble-rich>Bryan Min</h1>
-      <p data-marble-id="bio-1" data-marble-rich>I'm a Ph.D. student at <a class="tag tag-ucsd" href="https://ucsd.edu" target="_blank" rel="noreferrer">UC San Diego</a> doing research in Human-Computer Interaction. I work with <a class="tag tag-lab" href="https://hci.ucsd.edu/haijunxia" target="_blank" rel="noreferrer">Prof. <span style="font-weight: normal;">Haijun Xia</span></a> as part of the <a class="tag tag-lab" href="https://hci.ucsd.edu/" target="_blank" rel="noreferrer">Foundation Interface Lab</a>.</p>
+      <p data-marble-id="bio-1" data-marble-rich>I'm a Ph.D. student at <a class="tag tag-ucsd" href="https://ucsd.edu" target="_blank" rel="noreferrer">UC San Diego</a> doing research in Human-Computer Interaction. I work with <a class="tag tag-lab" href="https://hci.ucsd.edu/haijunxia" target="_blank" rel="noreferrer">Prof. <span style="font-weight: normal;">Haijun Xia</span></a> as part of the <a class="tag tag-lab" href="https://hci.ucsd.edu/" target="_blank" rel="noreferrer">Foundation Interface Lab</a></p>
 
       <!-- The research statement had three drafts in the old file: one live, two
            commented out. A comment is not a candidate — nothing can switch to it
@@ -252,9 +252,8 @@
            one attribute says which is showing. -->
       <marble-alt class="bio-alt" data-marble-id="statement" data-marble-active="v1">
         <div data-marble-alt="v1" data-marble-id="stmt-v1">
-          <p data-marble-id="stmt-v1-a" data-marble-rich>My research centers on <b>malleable software</b>—interfaces that enable users to easily and expressively modify their software interface without code or a bloated list of settings.</p>
-          <p data-marble-id="stmt-v1-b" data-marble-rich>Recently, I've been exploring malleable software under the world of generative user interfaces.</p>
-          <p data-marble-id="stmt-v1-c" data-marble-rich>Generative UI is now building so many kinds of interfaces for us automatically. Traditional user interfaces show lists, widgets, text, images, and other forms of media. Now that generative UI is coming around, we're able to see that it can generate almost anything we envision. Yet, we're still generating the same traditional interfaces we've always had. Then, how do we design generative user interfaces that leverage the power of generative UI?</p>
+          <p data-marble-id="stmt-v1-a" data-marble-rich><br></p>
+          <p data-marble-id="stmt-v1-b" data-marble-rich>Recently, I've been exploring malleable software under the world of generative user interfaces (GenUI). GenUI is now building so many kinds of interfaces for us automatically. Traditional user interfaces show lists, widgets, text, images, and other forms of media. Now that generative UI is coming around, we're able to see that it can generate almost anything we envision. Yet, we're still generating the same traditional interfaces we've always had. Then, <b>how must we design generative user interfaces differently compared to the traditional user interfaces we have today?</b></p>
         </div>
         <div data-marble-alt="v2" data-marble-id="stmt-v2">
           <p data-marble-id="stmt-v2-a" data-marble-rich>My research centers on <b>malleable software</b>—interfaces that enable users to easily, expressively, and broadly customize their software interface without code or a bloated list of settings. Specifically, I explore <strong>how we can bring malleable software to real-world, production-grade software systems, considering the tensions between designers, developers, and end-users.</strong> To do so, I study these three user groups, create interaction techniques, develop novel software systems, and create theoretical frameworks for bringing malleable software to more end-users.</p>
@@ -264,10 +263,10 @@
         </div>
       </marble-alt>
 
-      <p data-marble-id="bio-2" data-marble-rich><br></p>
 
       <!-- Two blocks the old site kept commented out. Same treatment: in the
            file, with "nothing" as an ordinary candidate rather than a comment. -->
+      <p data-marble-id="bio-2" data-marble-rich>I'm open to working with undergrad and masters students! Read my papers and email me if interested.</p>
       <marble-alt class="bio-alt" data-marble-id="notice" data-marble-active="v1">
         <div class="none" data-marble-alt="v1" data-marble-id="notice-v1"></div>
         <div class="aside" data-marble-alt="v2" data-marble-id="notice-v2">

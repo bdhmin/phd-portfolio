@@ -5,37 +5,32 @@
 //
 // index.html is written here from portfolio.mrbl rather than copied from the
 // repository, even though the repository has a committed copy, because a copy
-// can be stale and a derivation cannot. The hooks in .githooks keep the
-// committed one honest for GitHub Pages and for anyone reading the repo; this
-// makes the deployed site true by construction regardless.
+// can be stale and a derivation cannot. The derivation is the identity: the
+// .mrbl is valid HTML5 and every affordance in it is gated on `window.marble`,
+// so served to a browser with no carrier it is exactly the page it describes.
+// The hooks in .githooks keep the committed copy honest for anyone reading the
+// repository; this makes the deployed site true by construction regardless.
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { toHtml, verify } from './scripts/mrbl-to-html.mjs';
 
 const OUT = path.resolve('dist');
 const DOC = path.resolve('portfolio.mrbl');
 
 const source = fs.readFileSync(DOC, 'utf8');
-const { html, counts } = toHtml(source);
-verify(source, html);
 
 fs.rmSync(OUT, { recursive: true, force: true });
 fs.cpSync(path.resolve('public'), OUT, { recursive: true });
 fs.rmSync(path.join(OUT, '.DS_Store'), { force: true });
-fs.writeFileSync(path.join(OUT, 'index.html'), html);
+fs.writeFileSync(path.join(OUT, 'index.html'), source);
 
 // If the committed copy disagrees with what a deploy would serve, the deploy is
 // still right — but say so, because it means a commit went in without the hook.
 const committed = path.resolve('index.html');
-if (fs.existsSync(committed) && fs.readFileSync(committed, 'utf8') !== html) {
+if (fs.existsSync(committed) && fs.readFileSync(committed, 'utf8') !== source) {
   console.warn('warning: the committed index.html is stale — run `npm run html` and commit it');
 }
 
-const kb = (s) => `${(Buffer.byteLength(s) / 1024).toFixed(1)} KB`;
-console.log(`dist/index.html  ${kb(html)}  from portfolio.mrbl (${kb(source)})`);
-console.log(
-  `  left behind      ${counts.scripts} affordance script(s), ${counts.templates} template(s), ` +
-    `${counts.adders} adder(s), ${counts.attrs} editor attribute(s)`,
-);
+const kb = `${(Buffer.byteLength(source) / 1024).toFixed(1)} KB`;
+console.log(`dist/index.html  ${kb}  — portfolio.mrbl, byte for byte`);
 console.log(`dist/            public/ copied alongside it`);

@@ -2,8 +2,4 @@
 # Installed by `npm install` (see the "prepare" script).
 set -e
 root=$(git rev-parse --show-toplevel)
-if [ ! -d "$root/node_modules/parse5" ]; then
-  echo "[pre-push] dependencies are missing — run \`npm install\` (or push with --no-verify)" >&2
-  exit 1
-fi
 exec node "$root/scripts/hooks/pre-push.mjs"

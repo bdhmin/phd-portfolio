@@ -4,20 +4,21 @@
   "private": true,
   "type": "module",
   "description": "Bryan Min's portfolio — one .mrbl document and its assets.",
+  "engines": {
+    "node": "24.x"
+  },
   "scripts": {
     "dev": "node dev.mjs",
     "html": "node scripts/html.mjs",
     "build": "node build.mjs",
-    "test": "node --test scripts/mrbl-to-html.test.mjs",
+    "test": "node --test scripts/publish.test.mjs",
     "doctor": "marble doctor portfolio.mrbl",
     "outline": "marble outline portfolio.mrbl",
     "rollback": "marble rollback portfolio",
     "prepare": "node scripts/install-hooks.mjs"
   },
-  "dependencies": {
-    "parse5": "^7.3.0"
-  },
   "devDependencies": {
-    "@bdhmin/marble": "^0.1.0"
+    "@bdhmin/marble": "^0.1.0",
+    "parse5": "^7.3.0"
   }
 }

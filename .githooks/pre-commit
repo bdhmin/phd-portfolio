@@ -2,10 +2,9 @@
 # Installed by `npm install` (see the "prepare" script), which points
 # core.hooksPath at this directory. Skip with `git commit --no-verify`; the
 # pre-push hook will catch it.
+#
+# No dependency check: index.html is a copy of portfolio.mrbl, so the hook is
+# git and fs and nothing else. It works in a fresh clone before npm install.
 set -e
 root=$(git rev-parse --show-toplevel)
-if [ ! -d "$root/node_modules/parse5" ]; then
-  echo "[pre-commit] dependencies are missing — run \`npm install\` (or commit with --no-verify)" >&2
-  exit 1
-fi
 exec node "$root/scripts/hooks/pre-commit.mjs"

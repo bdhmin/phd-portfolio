@@ -9,7 +9,18 @@
 //
 // This puts public/ in front and hands everything the Marble host owns to it.
 // It is development-only. In production there is no proxy and no marble host —
-// the .mrbl is index.html and public/ is the site root, and the same paths resolve.
+// the .mrbl *is* index.html and public/ is the site root, and the same paths
+// resolve.
+//
+// Because production is the same bytes with no host in front, both halves of
+// that sentence are servable here, side by side:
+//
+//   /a/portfolio   the document with a carrier   — editable
+//   /html          the document with no carrier  — what a visitor gets
+//
+// Same file, two origins for the same page. Nothing is converted between them;
+// the affordances are all gated on `window.marble`, so the second one is quiet
+// for the same reason the deployed site is.
 
 import { spawn } from 'node:child_process';
 import fs from 'node:fs';
@@ -21,7 +32,10 @@ import path from 'node:path';
 // loud but wastes a minute every time.
 const PORT = Number(process.env.PORT ?? 4380);
 const INNER = PORT + 1;
-const PUBLIC = path.resolve('public');
+const ROOT = path.resolve(import.meta.dirname);
+const PUBLIC = path.join(ROOT, 'public');
+const DOC = path.join(ROOT, 'portfolio.mrbl');
+const OUT = path.join(ROOT, 'index.html');
 const APP = 'portfolio';
 
 // Which of the two answers a request. Asked as "is there a file for this?"
@@ -47,6 +61,52 @@ const TYPES = {
   '.txt': 'text/plain; charset=utf-8',
 };
 
+// ── index.html follows portfolio.mrbl ───────────────────────────────────────
+//
+// Every save, and every op the host writes while you edit. Publishing is a
+// copy, so keeping the two in step is a copy too — there is no build to be
+// out of date, only a file that is either the same bytes or hasn't caught up
+// yet. `npm run html` does this once; this does it for as long as dev is up.
+
+const watchers = new Set();
+
+function sync() {
+  const source = fs.readFileSync(DOC, 'utf8');
+  const current = fs.existsSync(OUT) ? fs.readFileSync(OUT, 'utf8') : null;
+  if (current === source) return false;
+  fs.writeFileSync(OUT, source);
+  for (const res of watchers) res.write('data: changed\n\n');
+  return true;
+}
+
+sync();
+
+// Watched through the directory rather than the file: an editor that saves
+// atomically writes a new file and renames it over the old one, and a watch on
+// the old inode stops hearing about a file that no longer exists. Debounced
+// because one save is several events, and because the host writes the document
+// itself while an op is being applied.
+let pending;
+fs.watch(ROOT, (_event, name) => {
+  if (name !== 'portfolio.mrbl') return;
+  clearTimeout(pending);
+  pending = setTimeout(() => {
+    try {
+      if (sync()) console.log('  index.html  ← portfolio.mrbl');
+    } catch (err) {
+      console.error(`[dev] could not copy portfolio.mrbl — ${err.message}`);
+    }
+  }, 40);
+});
+
+// The published page, reloaded when the document changes. The snippet is added
+// to the response and never to the file: what is on disk stays byte-identical
+// to the .mrbl, which is the whole claim this preview exists to let you check.
+const RELOAD = `
+<!-- dev only: not in index.html, not deployed -->
+<script>new EventSource('/__dev/reload').onmessage = () => location.reload();</script>
+`;
+
 const marble = spawn(
   process.platform === 'win32' ? 'marble.cmd' : 'marble',
   ['serve', '.', '--port', String(INNER), '--app', APP],
@@ -66,6 +126,39 @@ process.on('SIGTERM', stop);
 
 const server = http.createServer((req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
+
+  // The published view. Claimed before the proxy, because the host owns
+  // everything it is not asked about and would answer 404 for these.
+  if (url.pathname === '/__dev/reload') {
+    res.writeHead(200, {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      Connection: 'keep-alive',
+    });
+    res.write('retry: 500\n\n');
+    watchers.add(res);
+    req.on('close', () => watchers.delete(res));
+    return;
+  }
+
+  if (url.pathname === '/html' || url.pathname === '/html/') {
+    const body = fs.readFileSync(OUT, 'utf8').replace(/<\/body>/i, `${RELOAD}</body>`);
+    res.writeHead(200, {
+      'Content-Type': 'text/html; charset=utf-8',
+      'Cache-Control': 'no-cache',
+    });
+    return res.end(body);
+  }
+
+  // The same bytes as text, for reading and diffing rather than rendering.
+  if (url.pathname === '/html/source') {
+    const body = fs.readFileSync(OUT);
+    res.writeHead(200, {
+      'Content-Type': 'text/plain; charset=utf-8',
+      'Cache-Control': 'no-cache',
+    });
+    return res.end(body);
+  }
 
   const file = path.join(PUBLIC, path.normalize(decodeURIComponent(url.pathname)));
   const asset = file.startsWith(PUBLIC) && fs.existsSync(file) && fs.statSync(file).isFile();
@@ -97,6 +190,8 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`\n  portfolio  http://localhost:${PORT}/a/${APP}`);
-  console.log(`  assets     public/ on the same origin\n`);
+  console.log(`\n  portfolio  http://localhost:${PORT}/a/${APP}      editable (marble host)`);
+  console.log(`  published  http://localhost:${PORT}/html           what a visitor gets`);
+  console.log(`  source     http://localhost:${PORT}/html/source    the same bytes, as text`);
+  console.log(`\n  index.html follows portfolio.mrbl on every save. assets: public/\n`);
 });
