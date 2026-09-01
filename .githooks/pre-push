@@ -1,0 +1,5 @@
+#!/bin/sh
+# Installed by `npm install` (see the "prepare" script).
+set -e
+root=$(git rev-parse --show-toplevel)
+exec node "$root/scripts/hooks/pre-push.mjs"

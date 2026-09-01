@@ -1,36 +1,25 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
 # dependencies
 /node_modules
-/.pnp
-.pnp.js
-.yarn/install-state.gz
 
-# testing
-/coverage
+# what `npm run build` copies together — nothing here is a source
+/dist
 
-# next.js
-/.next/
-/out/
+# marble keeps its snapshots beside the documents it snapshots
+/.marble
 
-# production
-/build
+# Claude Code's scratch worktrees. Each is a checkout of a branch in *this*
+# repository, so git records one as a gitlink and then cannot fetch it — the
+# "Failed to fetch one or more git submodules" in every Vercel build. The
+# branches are already here; the directories are not something to commit.
+/.claude
 
 # misc
 .DS_Store
 *.pem
-
-# debug
 npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
 
 # local env files
 .env*.local
 
 # vercel
 .vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts
