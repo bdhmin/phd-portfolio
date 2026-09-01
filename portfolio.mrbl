@@ -252,7 +252,6 @@
            one attribute says which is showing. -->
       <marble-alt class="bio-alt" data-marble-id="statement" data-marble-active="v1">
         <div data-marble-alt="v1" data-marble-id="stmt-v1">
-          <p data-marble-id="stmt-v1-a" data-marble-rich><br></p>
           <p data-marble-id="stmt-v1-b" data-marble-rich>Recently, I've been exploring malleable software under the world of generative user interfaces (GenUI). GenUI is now building so many kinds of interfaces for us automatically. Traditional user interfaces show lists, widgets, text, images, and other forms of media. Now that generative UI is coming around, we're able to see that it can generate almost anything we envision. Yet, we're still generating the same traditional interfaces we've always had. Then, <b>how must we design generative user interfaces differently compared to the traditional user interfaces we have today?</b></p>
         </div>
         <div data-marble-alt="v2" data-marble-id="stmt-v2">
