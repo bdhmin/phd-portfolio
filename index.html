@@ -168,12 +168,35 @@
   /* ---- alternatives --------------------------------------------------- */
 
   /* Which candidate shows is one attribute, and CSS reads it. Spelled out per
-     name because a selector cannot compare a child against its parent. */
+     name because a selector cannot compare a child against its parent — so the
+     names are a fixed pool rather than a counter, and the switcher's + hands out
+     the lowest one still free instead of counting past the last rule here. It
+     used to count: the fourth version you added was in the file, was switchable,
+     and rendered as nothing, because no rule down here paired "v4". Widening the
+     pool is a line here and a matching SLOTS in the script. */
   marble-alt > [data-marble-alt] { display: none; }
   marble-alt[data-marble-active="v1"] > [data-marble-alt="v1"],
   marble-alt[data-marble-active="v2"] > [data-marble-alt="v2"],
-  marble-alt[data-marble-active="v3"] > [data-marble-alt="v3"] { display: block; }
-  marble-alt:not([data-marble-active]) > [data-marble-alt]:first-child { display: block; }
+  marble-alt[data-marble-active="v3"] > [data-marble-alt="v3"],
+  marble-alt[data-marble-active="v4"] > [data-marble-alt="v4"],
+  marble-alt[data-marble-active="v5"] > [data-marble-alt="v5"],
+  marble-alt[data-marble-active="v6"] > [data-marble-alt="v6"],
+  marble-alt[data-marble-active="v7"] > [data-marble-alt="v7"],
+  marble-alt[data-marble-active="v8"] > [data-marble-alt="v8"] { display: block; }
+  /* Never chosen, or hand-edited to a name no rule above pairs: show the first
+     candidate rather than leaving a hole where the block was. Said as "show them
+     all, then hide any that follows another" because :first-child asks about the
+     first child of the alt, and with a host in front that is the drag grip. */
+  marble-alt:not(
+    [data-marble-active="v1"], [data-marble-active="v2"], [data-marble-active="v3"],
+    [data-marble-active="v4"], [data-marble-active="v5"], [data-marble-active="v6"],
+    [data-marble-active="v7"], [data-marble-active="v8"]
+  ) > [data-marble-alt] { display: block; }
+  marble-alt:not(
+    [data-marble-active="v1"], [data-marble-active="v2"], [data-marble-active="v3"],
+    [data-marble-active="v4"], [data-marble-active="v5"], [data-marble-active="v6"],
+    [data-marble-active="v7"], [data-marble-active="v8"]
+  ) > [data-marble-alt] ~ [data-marble-alt] { display: none; }
   /* The wrapper is scaffolding, not a box: the candidate that wins should sit
      in the bio column or the links column as if it were a direct child. */
   marble-alt.bio-alt, .links marble-alt { display: contents; }
@@ -1163,7 +1186,8 @@
         background: none; color: var(--faint, #a1a1aa); cursor: pointer;
         font: inherit; line-height: 1;
       }
-      .marble-alts button.marble-alts-edge:hover { color: var(--dim, #71717a); }
+      .marble-alts button.marble-alts-edge:hover:not(:disabled) { color: var(--dim, #71717a); }
+      .marble-alts button.marble-alts-edge:disabled { opacity: .4; cursor: default; }
       .marble-alts .marble-alts-drop:hover { color: #b4544f; }
     `);
     addressable.push('marble-alt', 'marble-alt > *');
@@ -1181,11 +1205,30 @@
       return versions.find((el) => nameOf(el) === alt.getAttribute(ACTIVE)) ?? versions[0] ?? null;
     }
 
-    function nextName(versions) {
-      const numbered = versions
-        .map((el) => Number(/^v(\d+)$/.exec(nameOf(el) ?? '')?.[1]))
-        .filter(Number.isFinite);
-      return `v${Math.max(versions.length, ...numbered) + 1}`;
+    // The stylesheet pairs every name against data-marble-active by hand, so the
+    // names a switcher may hand out are a pool of that size. Keep in step with
+    // the rules under "alternatives" above.
+    const SLOTS = 8;
+
+    // The lowest name the pool has free. Counting up from the highest in use is
+    // what broke: delete a version in the middle and add another and the counter
+    // steps past the last rule in the stylesheet, so the new version renders as
+    // nothing at all. Freed names come back around instead.
+    function freeName(used) {
+      for (let index = 1; index <= SLOTS; index++) {
+        if (!used.has(`v${index}`)) return `v${index}`;
+      }
+      return null;
+    }
+
+    const namesIn = (alt) => new Set(persistentChildren(alt).map(nameOf).filter(Boolean));
+
+    // A version is sometimes the editable thing itself — an <h1 data-marble-alt>
+    // — and sometimes a plain container of blocks that are. focus() on the
+    // container lands nowhere, so reach for the first place a caret can sit.
+    function caretHome(version) {
+      if (version.isContentEditable) return version;
+      return version.querySelector('[contenteditable]:not([contenteditable="false"])');
     }
 
     function wireAlternatives(root) {
@@ -1207,6 +1250,7 @@
         `;
         const track = widget.querySelector('.marble-alts-track');
         const thumb = widget.querySelector('.marble-alts-thumb');
+        const add = widget.querySelector('.marble-alts-add');
         const drop = widget.querySelector('.marble-alts-drop');
 
         // No control decides what is on screen: each one writes the attribute
@@ -1232,15 +1276,20 @@
           const versions = persistentChildren(alt);
 
           // A hand-written alternative needn't be named; naming it is a splice,
-          // exactly like the ids assigned on first sight.
-          versions.forEach((version, index) => {
-            if (nameOf(version)) return;
-            const name = `v${index + 1}`;
+          // exactly like the ids assigned on first sight. Named from the same
+          // pool as the + button, so an unnamed sibling can't be handed a name
+          // one of its neighbours already answers to.
+          const taken = namesIn(alt);
+          for (const version of versions) {
+            if (nameOf(version)) continue;
+            const name = freeName(taken);
+            if (!name) break;
+            taken.add(name);
             version.setAttribute(ALT, name);
             if (marble.id(version)) {
               marble.op({ type: 'setAttr', id: marble.id(version), name: ALT, value: name });
             }
-          });
+          }
 
           const current = activeVersion(alt);
 
@@ -1269,11 +1318,19 @@
             thumb.style.transform = `translateX(${button.offsetLeft}px)`;
           }
           drop.hidden = versions.length < 2;
+          // A + that files a version the stylesheet cannot show is worse than no
+          // + at all, so the pool running out is said rather than discovered.
+          add.disabled = !freeName(namesIn(alt));
+          add.title = add.disabled
+            ? `${SLOTS} versions is all this document spells out — delete one to add another`
+            : 'Add a version';
         }
 
-        widget.querySelector('.marble-alts-add').addEventListener('click', () => {
+        add.addEventListener('click', () => {
           const current = activeVersion(alt);
           if (!current) return;
+          const name = freeName(namesIn(alt));
+          if (!name) return;
 
           // The new version starts as a copy of the one on screen, because a
           // candidate phrasing is nearly always an edit of the current one.
@@ -1281,7 +1338,6 @@
           for (const el of [version, ...version.querySelectorAll(`[${ID}]`)]) {
             el.removeAttribute(ID);
           }
-          const name = nextName(persistentChildren(alt));
           version.setAttribute(ALT, name);
           assignIdsIn(version);
 
@@ -1296,8 +1352,11 @@
           if (undo.length && redo.length) marble.record({ redo, undo });
           render();
 
-          version.focus();
-          getSelection()?.selectAllChildren(version);
+          const home = caretHome(version);
+          if (home) {
+            home.focus();
+            getSelection()?.selectAllChildren(home);
+          }
         });
 
         drop.addEventListener('click', () => {
@@ -1428,6 +1487,13 @@
     // Addressing is one pass over the whole document, so the selectors live
     // here even though the controls do not.
     addressable.push('[data-marble-image]', '[data-marble-image] img');
+
+    // Rich blocks are wired by that script too, and they have to be here for the
+    // same reason: a version cloned by the switcher arrives with its paragraphs
+    // stripped of ids, and a block with no id is a block whose edits the file
+    // never hears about. Every rich block in the document already carries one,
+    // so this names the ones that arrive later.
+    addressable.push('[data-marble-rich]');
 
     // Anything a hand can act on has to be addressable in the file first.
     const ADDRESSABLE = addressable.join(', ');
