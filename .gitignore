@@ -7,6 +7,12 @@
 # marble keeps its snapshots beside the documents it snapshots
 /.marble
 
+# Claude Code's scratch worktrees. Each is a checkout of a branch in *this*
+# repository, so git records one as a gitlink and then cannot fetch it — the
+# "Failed to fetch one or more git submodules" in every Vercel build. The
+# branches are already here; the directories are not something to commit.
+/.claude
+
 # misc
 .DS_Store
 *.pem
