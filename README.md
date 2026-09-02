@@ -124,14 +124,15 @@ imports only `node:fs` and `node:path`, so `npm ci --omit=dev` fetches nothing.
 |---|---|
 | `<style>` in the head | the whole design, ported from the Tailwind build this replaced |
 | `#about` | portrait, links, bio |
-| `<marble-alt data-marble-id="statement">` | three drafts of the research statement; one attribute says which shows |
+| `<marble-alt data-marble-id="statement">` | the drafts of the research statement; one attribute says which shows |
 | `<marble-alt data-marble-id="notice">` | nothing / research opportunities / news |
 | `#publications` | two lists sharing the sortable group `papers`, so a paper drags between them |
 | `<template id="tpl-paper">` | what `+` beside a heading clones — `tpl-author`, `tpl-res`, `tpl-link` beside it |
 | `<template id="tpl-thumbnails">` | the thumbnails a paper's image picker offers — add a line to offer another |
 | `<script data-marble-id="richwire">` | the bio's rich block editor, link colours, and the image slots |
 | `<template id="tpl-portraits">` | the portraits the gallery offers — add a line to offer another |
-| `<script>` at the end | the affordances — a copy of Marble's template, not a dependency |
+| `<script>` after the templates | the affordances — a copy of Marble's template, not a dependency |
+| `<script data-marble-id="stampwire">` | the footer date, written by whatever change made it stale |
 
 ## Editing publications
 
@@ -181,10 +182,32 @@ typing: a `setText`'s inverse is another `setText` and cannot bring emphasis
 back, while a `setInner`'s inverse carries the previous markup and can.
 
 Select text and a small bar appears — bold, italic, underline, link, unlink.
-Enter starts a new block, Backspace in an empty one removes it.
+Enter starts a new block, Backspace in an empty one removes it. A paste arrives
+as plain text: `setInner` files markup verbatim, so the styling a sentence
+carries out of a browser or a Google Doc would land in the file, and the marks
+this document wants are the five on that bar.
 
 An inline mark inside a rich block carries no `data-marble-id`. The block is the
 piece an op names, the same way an `<svg>` is addressable and its paths are not.
+The block itself must have one, though — `setInner` names its target, so a rich
+block with no id takes typing and files nothing, silently. That is what
+`[data-marble-rich]` in the affordance script's `addressable` list is for, and
+why an unnamed block warns in the console when it is wired.
+
+## Versions
+
+The research statement and the notice below it are `<marble-alt>`: every draft
+is in the file and `data-marble-active` says which one shows. Hover the block
+and a `v1 v2 v3` row appears under it — click one to switch, `+` to add a copy
+of the one showing, `×` to drop it, and the arrow keys to cycle once the row has
+focus. Each version's tooltip is the first line of what it says, because
+switching to read a draft would write the file and change what a visitor sees.
+
+Which version *displays* is the stylesheet, pairing each name against
+`data-marble-active` by hand — a selector cannot compare a child's attribute
+against its parent's. So the names are a finite list, twelve of them, and `+`
+stops there rather than minting a `v13` that renders as nothing on the
+published page. Deleting a version frees its name for the next one.
 
 A link's hover colour is two facts, one per colour scheme. The colours this site
 uses more than once are classes (`.tag-ucsd`, `.tag-lab`, …) so the value lives in
@@ -196,3 +219,17 @@ The portrait is an image slot like a paper's thumbnail, and reads
 so it is resized on the way in — to `data-marble-edge` pixels on its longest side,
 720 for the portrait and 800 for a thumbnail — and lands as a data URI in the
 `src`; expect ~50–80KB per photo.
+
+## The footer date
+
+`Last Updated:` is typed and the date beside it is not. `stampwire` writes
+`foot-d` to today whenever the carrier records a change — which is every gesture
+in the document and no piece of bookkeeping, so opening the editor does not
+count as editing. It writes only when the date is not already today, which is
+also what stops it from answering its own write.
+
+Nothing derives the date at build time. A document cannot read a commit or an
+mtime, and a build that could would be a second copy of a fact the page already
+holds. The consequence to know: a change typed straight into `portfolio.mrbl`
+files no op, so it does not move the date — edit the sentence in the browser, or
+edit the date by hand along with it.
