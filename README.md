@@ -88,7 +88,7 @@ transient chrome, every `/…` asset the document names exists in `public/`, and
 `index.html` is byte-for-byte the `.mrbl`. A script added later that forgets the
 gate fails there instead of on the live site.
 
-The cost is that a visitor downloads 109 KB instead of the ~28 KB the
+The cost is that a visitor downloads ~170 KB instead of the ~28 KB the
 subtraction produced — the affordance scripts and templates come along, inert.
 That is the trade: one file, no derivation, nothing that can drift.
 
@@ -103,7 +103,7 @@ hooks in `.githooks/` keep that true; `npm install` points git at them.
 | `pre-push` | refuses a push whose commit's `index.html` is not its `.mrbl` |
 
 Identical bytes are the identical git blob, so both hooks are object-id
-comparisons — nothing is read, hashed or written on a 110 KB document.
+comparisons — nothing is read, hashed or written on a 170 KB document.
 
 `pre-commit` can be skipped with `--no-verify`, and does not run for merge
 commits; `pre-push` is the backstop. If it stops you:
@@ -122,41 +122,89 @@ imports only `node:fs` and `node:path`, so `npm ci --omit=dev` fetches nothing.
 
 | | |
 |---|---|
-| `<style>` in the head | the whole design, ported from the Tailwind build this replaced |
+| `<style data-marble-id="sitecss">` | the whole design, ported from the Tailwind build this replaced |
 | `#about` | portrait, links, bio |
 | `<marble-alt data-marble-id="statement">` | the drafts of the research statement; one attribute says which shows |
 | `<marble-alt data-marble-id="notice">` | nothing / research opportunities / news |
 | `#publications` | two lists sharing the sortable group `papers`, so a paper drags between them |
-| `<template id="tpl-paper">` | what `+` beside a heading clones — `tpl-author`, `tpl-res`, `tpl-link` beside it |
+| `<template id="tpl-paper">` | the shape of a new paper, which the publication sheet fills in — `tpl-author`, `tpl-res`, `tpl-link` beside it |
 | `<template id="tpl-thumbnails">` | the thumbnails a paper's image picker offers — add a line to offer another |
 | `<script data-marble-id="richwire">` | the bio's rich block editor, link colours, and the image slots |
 | `<template id="tpl-portraits">` | the portraits the gallery offers — add a line to offer another |
-| `<script>` after the templates | the affordances — a copy of Marble's template, not a dependency |
+| `<script data-marble-id="editwire">` | the editor: the control layer, dragging, adding, link addresses, versions, the publication card and its paper finder, and the notes (saved, removed, Undo) |
 | `<script data-marble-id="stampwire">` | the footer date, written by whatever change made it stale |
 
 ## Editing publications
 
-Everything a paper is made of is its own element, so everything is separately
-editable, draggable and deletable. Hover anything and its controls appear in the
-margin beside it.
+A paper is edited two ways, and both file the same ops.
+
+**The card** is for a whole paper at once, and it opens where you asked for
+it: **+ Add** beside a list's heading opens it under that button, the pencil
+in a paper's rail opens it beside the paper, with a tail pointing back at what
+opened it. It holds the list, venue, award, title, the authors as one
+comma-separated field (click a name to bold it as yours), the links as label +
+address rows, and the picture. A label like “DOI” with no address is flagged,
+because it would print as plain text. A new paper goes to the top of its list;
+an edit files only what changed, as one step for Mod+Z. Closing a card with
+changes in it asks once.
+
+**The finder** sits at the top of a new card (and behind “Look it up again”
+in an edited one). Paste a title, a DOI or arXiv link, or a few words you
+remember: it asks Crossref (for papers with your name on them), Semantic
+Scholar and OpenAlex, puts your papers first, and marks any already on the
+site. Picking one fills the card the way this page writes it — “UIST 2025”,
+“arXiv (May 2026)”, a DOI link. **Ask an agent** hands the question to one of
+the drive's agents, in a conversation called “Portfolio · Paper finder”, for
+papers the indexes don't know. It is the CV's finder (`cv.mrbl`), adapted.
+
+**In place** is for one word. Point at anything (or click into it) and its
+controls appear beside it.
 
 | | |
 |---|---|
-| `+` beside **Publications** | adds a paper **at the top of the list**, and drops you in the venue field |
-| the thumbnail | hover it for a shelf of `public/thumbnails` and an upload, plus the alt text |
-| an author | `⠿` to reorder, `○` to mark which name is yours, `×` to drop it |
-| `+` beside the author row | adds a name at the end |
-| a link (DOI, Paper, Video…) | click the text to retitle it, the chain button to set where it goes |
-| `+` beside the link row | adds a link at the end |
+| a paper | a rail in the left margin: drag handle (between the two lists too), pencil for the sheet, bin to delete |
+| the venue, title, award | click and type; an empty award shows “Add an award” while you point at the paper |
+| the thumbnail | point at it for a shelf of `public/thumbnails` and an upload, plus the alt text |
+| an author | a bar over the name: drag handle, **Me** to bold it as yours, bin to drop it |
+| **+ Author** after the last name | adds a name at the end, text selected |
+| a link (DOI, Paper, Video…) | click the text to retitle it; the bar over it has the drag handle, the link button for its address, the bin |
+| **+ Link** after the last link | adds a link and asks for its address first; the label fills in from it |
+| a contact link | the same bar, beside it; **+ Link** under the social links adds one there |
+
+⌘⇧↑ / ⌘⇧↓ moves whatever you are typing in one place up or down: a paper from
+its title, a name, a link, a bio paragraph. Pointing at a control outlines what
+it will act on, red for a delete, and every delete says what it took in a note
+at the bottom left, with **Undo**.
+
+Things move rather than jump: controls ease in and glide between items, a
+deleted item fades where it stood while its neighbours close the gap, the list
+makes room as you drag, and switching versions crossfades. None of it is in
+the file (Web Animations and `@starting-style`), and none of it runs for
+someone whose system asks for reduced motion.
+
+Inside Marble Drive the shell's header, sidebar and docked chat take part of
+the window and say how much in `--marble-shell-top`, `--marble-shell-left` and
+`--marble-dock-right`. The page lays itself out by `@container page` queries
+on `.page`, so it answers to the width it actually has; the editor keeps its
+controls, cards and notes inside that room. Published, the page is the whole
+window and nothing changes: the same pixels as before.
+
+The controls are drawn in one layer over the whole page (`.pf-layer`), not
+inside the things they act on. Inside, each was a child of its item shown on
+the item's `:hover`, which put it a few pixels outside the item's box (the
+hover ended on the way there and the control vanished under the pointer) and
+under whichever sibling came later in the document (the next link's handle
+covered this link's delete). In the layer nothing covers them, and which item
+they belong to follows the pointer's path: they stay while the pointer is
+anywhere in the box that holds the item and its controls, and for a third of a
+second after it leaves. On a touch screen a tap does the pointing.
 
 None of those controls are in the file, and that is load-bearing: the published
 site is this file, so a `+ paper` button written into the markup would be a
-button a visitor sees and clicks to no effect. An adder hangs off whatever heads
-the list instead:
-`data-marble-add="#tpl-paper" data-marble-into="#stack-pubs" data-marble-at="start"`
-on the `<h2>` says what to clone, where to put it, and which end. The button
-itself is built by the gated script and marked `data-marble-transient`. A
-visitor's page is this file exactly, and it holds no editor.
+button a visitor sees and clicks to no effect. `data-paper-list="#stack-pubs"`
+on a heading says which list it adds to; the **Add** button is built by the
+gated script and marked `data-marble-transient`. A visitor's page is this file
+exactly, and it holds no editor.
 
 Two things follow the same rule and are worth naming. An author list is a list
 rather than a sentence, so the commas are not in the text — `flex` supplies the
@@ -196,12 +244,22 @@ why an unnamed block warns in the console when it is wired.
 
 ## Versions
 
-The research statement and the notice below it are `<marble-alt>`: every draft
-is in the file and `data-marble-active` says which one shows. Hover the block
-and a `v1 v2 v3` row appears under it — click one to switch, `+` to add a copy
-of the one showing, `×` to drop it, and the arrow keys to cycle once the row has
-focus. Each version's tooltip is the first line of what it says, because
-switching to read a draft would write the file and change what a visitor sees.
+The research statement, the notice below it and the CV link are
+`<marble-alt>`: every draft is in the file and `data-marble-active` says which
+one shows. Point at the block (or put the cursor in it) and a bar appears under it
+with the block's name and its versions — click one to show it, `+` to add a copy
+of the one showing, and the list button to see every version at once with what
+it says. In that list you can rename a version, jump into it to edit, or delete
+it (with Undo); reading a draft there does not switch the live page.
+
+A block whose showing version is the empty one (the notice and the CV link are
+hidden right now) has no box to hover, so while editing it shows a dashed line
+saying what is hidden there.
+
+Names are attributes: `data-label` on the `<marble-alt>` names the block
+(“Research statement”), and `data-label` on a version names that version
+(“News”). A version with no label is called by its `v1`…`v12`. The Drive's own
+version pill is hidden on this page, because the bar is the same control.
 
 Which version *displays* is the stylesheet, pairing each name against
 `data-marble-active` by hand — a selector cannot compare a child's attribute

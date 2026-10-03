@@ -1,0 +1,2826 @@
+<!doctype html>
+<html lang="en" data-marble="1">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="marble:capabilities" content="storage; net=none">
+<title>Bryan Min — CV</title>
+<style>
+  /* The page this document is really for. Everything on screen is a preview of
+     it, so the print rules are the ones that decide the layout and the screen
+     rules only add the desk it sits on. */
+  @page { size: letter; margin: 0.75in; }
+
+  :root {
+    --ink: #000;
+    --rule: #000;
+    --desk: #f1f1f2;
+    /* The gutter holding "2026 [C7]". Measured off the source document: the
+       body column there starts 0.98in in from the text edge. */
+    --gutter: 0.86in;
+    --indent: 0.28in;
+    --gap: 0.12in;
+    --rail: 13.5rem;
+
+    /* Hover, as a system rather than a value picked per control.
+       Everything interactive settles through the same tint at the same speed,
+       and the tints are deliberately shallow — a rail beside a document should
+       answer the pointer, not compete with the page for attention. Leaving is
+       slower than arriving, which is what makes it read as settling rather
+       than blinking. */
+    --tint-1: rgba(17, 17, 20, .04);   /* hover */
+    --tint-2: rgba(17, 17, 20, .07);   /* held, or chosen */
+    --edge:   rgba(17, 17, 20, .10);
+    --ink-1:  rgba(17, 17, 20, .58);   /* resting label */
+    --ink-2:  rgba(17, 17, 20, .78);   /* hovered */
+    --ink-3:  rgba(17, 17, 20, .92);   /* chosen */
+    --ease: cubic-bezier(.32, .72, 0, 1);
+    --in: .13s;
+    --out: .22s;
+    /* Where margin furniture starts. The drag handle is the anchor, so a
+       grip and a + button share a left edge and the margin reads as one
+       column. */
+    --lane: -2.45rem;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { background: var(--desk); }
+
+  body {
+    margin: 0;
+    color: var(--ink);
+    /* Only the desk. The sheet sets its own type, because the typeface is a
+       property of the document rather than of the window it is shown in. */
+    font: 10pt/1.34 system-ui, sans-serif;
+    padding-left: var(--rail);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .sheet {
+    width: 8.5in;
+    min-height: 11in;
+    margin: 1.5rem auto 4rem;
+    padding: 0.75in;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .10), 0 8px 30px rgba(0, 0, 0, .09);
+  }
+
+  /* ---- type ----
+
+     Which face the CV is set in is one attribute on the sheet, and every rule
+     below reads it. So switching is a single setAttr, the choice survives in
+     the bytes, and the file opened with no host at all comes up in the face it
+     was left on rather than a default someone has to re-pick.
+
+     Every face is a local one. Fetching a webfont would make the document need
+     the network to look like itself, which for a CV is the wrong trade.
+
+     Each carries its own size and tracking because they do not set to the same
+     width or x-height, and a CV that reflows to five pages because you changed
+     the font has not really given you a choice. Sizes are em-based from here
+     down, so the whole hierarchy scales with the pick. */
+
+  /* Each stack is named once here, because two things need it: the sheet, and
+     the swatch in the rail that has to be set in the face it is offering. A
+     second copy in the rail would be the same fact written twice. */
+  :root {
+    --face-source:    "Source Sans 3", "Helvetica Neue", sans-serif;
+    --face-avenir:    "Avenir Next", Avenir, sans-serif;
+    --face-optima:    Optima, "Helvetica Neue", sans-serif;
+    --face-helvetica: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --face-charter:   Charter, Georgia, serif;
+    --face-newyork:   "New York", ui-serif, Georgia, serif;
+    --face-hoefler:   "Hoefler Text", Palatino, serif;
+  }
+
+  .sheet {
+    /* The default, and the fallback if the attribute names a face this
+       document does not know — it still has to look deliberate. */
+    --face: var(--face-source);
+    --fsize: 10.4pt;
+    --track: 0;
+    --leading: 1.34;
+
+    font-family: var(--face);
+    font-size: var(--fsize);
+    letter-spacing: var(--track);
+    line-height: var(--leading);
+  }
+
+  /* sans */
+  .sheet[data-font="source"]    { --face: var(--face-source);    --fsize: 10.4pt; --track: 0;       --leading: 1.34; }
+  .sheet[data-font="avenir"]    { --face: var(--face-avenir);    --fsize: 9.9pt;  --track: -.004em; --leading: 1.35; }
+  .sheet[data-font="optima"]    { --face: var(--face-optima);    --fsize: 10.6pt; --track: 0;       --leading: 1.33; }
+  .sheet[data-font="helvetica"] { --face: var(--face-helvetica); --fsize: 10pt;   --track: -.006em; --leading: 1.34; }
+
+  /* serif */
+  .sheet[data-font="charter"]   { --face: var(--face-charter);   --fsize: 10.1pt; --track: -.003em; --leading: 1.33; }
+  .sheet[data-font="newyork"]   { --face: var(--face-newyork);   --fsize: 10.4pt; --track: 0;       --leading: 1.33; }
+  .sheet[data-font="hoefler"]   { --face: var(--face-hoefler);   --fsize: 10.9pt; --track: 0;       --leading: 1.31; }
+
+  /* ---- masthead ---- */
+
+  .masthead {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.4in;
+    margin-bottom: 6pt;
+  }
+  .name {
+    margin: 0;
+    font-size: 2.3em;
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -.005em;
+  }
+  .contact { text-align: right; line-height: 1.5; }
+  .contact div { white-space: nowrap; }
+
+  /* ---- sections ---- */
+
+  h2.sec {
+    margin: 15pt 0 5pt;
+    padding-bottom: 1pt;
+    border-bottom: 1px solid var(--rule);
+    font-size: 1.35em;
+    font-weight: 400;
+    line-height: 1.25;
+    text-transform: uppercase;
+  }
+  h3.sub {
+    margin: 8pt 0 3pt;
+    font-size: 1.06em;
+    font-weight: 700;
+  }
+
+  /* A left-hand label with a right-aligned date or place opposite it. The two
+     halves are separate elements because they are separately editable. */
+  .row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.25in;
+  }
+  .row > .r { text-align: right; white-space: nowrap; }
+  .row.strong > * { font-weight: 700; }
+  .indent { margin-left: var(--indent); }
+
+  /* ---- publications ---- */
+
+  .pub {
+    display: grid;
+    grid-template-columns: var(--gutter) 1fr;
+    column-gap: var(--gap);
+    margin-bottom: 7pt;
+  }
+  .pub > .key { text-align: right; white-space: nowrap; }
+  .pub > .body > * { margin: 0; }
+  .pub .title { font-weight: 700; }
+  .pub .venue { font-style: italic; }
+  .pub .award { }
+
+  /* ---- experience, talks ---- */
+
+  .entry { margin-bottom: 7pt; }
+  .entry .org { font-weight: 700; }
+  .entry .talk { font-style: italic; }
+
+  .lines > .row { margin-bottom: 1pt; }
+
+  /* ---- the bits that are the app rather than the document ---- */
+
+  /* The rail. Fixed to the left edge and pushed off the paper by a body
+     padding, so the sheet still centres in whatever is left rather than
+     sliding under it. */
+  .rail {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    z-index: 50;
+    width: var(--rail);
+    padding: 1.1rem .85rem;
+    overflow-y: auto;
+    border-right: 1px solid rgba(0, 0, 0, .09);
+    background: #fbfbfc;
+    font: 12px/1.4 system-ui, sans-serif;
+    color: #111;
+  }
+  .rail-group + .rail-group { margin-top: 1.3rem; }
+  .rail-title {
+    margin: 0 0 .45rem;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: rgba(0, 0, 0, .4);
+  }
+  .rail-note {
+    margin: .5rem 0 0;
+    font-size: 10.5px;
+    line-height: 1.45;
+    color: rgba(0, 0, 0, .38);
+  }
+
+  /* A grip hangs off its item's left edge, which works in a page with a margin
+     and not at all in a rail pinned to the window. In here they turn inward. */
+  .rail .marble-grip {
+    left: auto;
+    right: .25rem;
+  }
+  /* The rail's own groups reorder too, so Export can sit above Typeface. Its
+     grip rides at the top, level with the group's label. */
+  .rail > .rail-group > .marble-grip { top: .05rem; }
+  .rail-group.marble-dragging { opacity: .4; }
+
+  .faces { margin: 0; padding: 0; list-style: none; display: grid; gap: 2px; }
+  .faces > li > .marble-grip { top: 50%; transform: translateY(-50%); }
+  /* The swatch's own tint already reads as "this row is live", so the knobs sit
+     straight on it. They used to carry an opaque plate, which was only ever
+     there to survive the black chosen-state and showed up as a pale rectangle
+     floating inside the row once that went away. */
+  .faces .marble-btn { opacity: .5; }
+  .faces li:hover .marble-btn { opacity: .85; }
+  .faces .marble-btn:hover { opacity: 1; }
+  .faces button {
+    display: block;
+    width: 100%;
+    padding: .4rem .5rem;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    background: none;
+    color: var(--ink-2);
+    text-align: left;
+    cursor: pointer;
+    transition:
+      background-color var(--out) var(--ease),
+      border-color var(--out) var(--ease),
+      color var(--out) var(--ease);
+  }
+  .faces button:hover {
+    background: var(--tint-1);
+    color: var(--ink-3);
+    transition-duration: var(--in);
+  }
+  .faces button:focus-visible { outline: 2px solid #5b8def; outline-offset: -1px; }
+  /* The swatch is set in the face it is offering — that is the preview. */
+  .faces .fname { display: block; font-size: 14px; line-height: 1.25; }
+  .faces .fnote {
+    display: block;
+    font: 10px/1.3 system-ui, sans-serif;
+    color: rgba(0, 0, 0, .4);
+    letter-spacing: .02em;
+  }
+  .faces [data-face="source"]    .fname { font-family: var(--face-source); }
+  .faces [data-face="avenir"]    .fname { font-family: var(--face-avenir); }
+  .faces [data-face="optima"]    .fname { font-family: var(--face-optima); }
+  .faces [data-face="helvetica"] .fname { font-family: var(--face-helvetica); }
+  .faces [data-face="charter"]   .fname { font-family: var(--face-charter); }
+  .faces [data-face="newyork"]   .fname { font-family: var(--face-newyork); }
+  .faces [data-face="hoefler"]   .fname { font-family: var(--face-hoefler); }
+
+  /* Which one is on cannot be a CSS match — it means "the child whose value
+     equals the sheet's attribute", and a selector cannot ask that. So a script
+     derives it into a marble- class, and a static default covers the case where
+     there is no host to derive anything. */
+  /* Chosen is a settled tint and a visible edge, not a black plate. Reversing
+     to white-on-black made the one thing you had already decided shout louder
+     than the six you had not. */
+  .faces .marble-on,
+  .faces:not(.marble-derived) [data-face="source"] {
+    background: var(--tint-2);
+    border-color: rgba(17, 17, 20, .17);
+  }
+  .faces .marble-on .fname,
+  .faces:not(.marble-derived) [data-face="source"] .fname { color: var(--ink-3); }
+  .faces .marble-on .fnote,
+  .faces:not(.marble-derived) [data-face="source"] .fnote { color: rgba(17, 17, 20, .5); }
+
+  .outline { margin: 0; padding: 0; list-style: none; display: grid; gap: 1px; }
+  .outline li {
+    display: flex;
+    align-items: center;
+    gap: .3rem;
+    padding: .26rem .4rem .26rem .3rem;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    color: var(--ink-1);
+    cursor: grab;
+    user-select: none;
+    transition:
+      background-color var(--out) var(--ease),
+      border-color var(--out) var(--ease),
+      color var(--out) var(--ease),
+      opacity var(--out) var(--ease);
+  }
+  .outline li:hover {
+    background: var(--tint-1);
+    color: var(--ink-3);
+    transition-duration: var(--in);
+  }
+  .outline li.marble-dragging { opacity: .35; }
+  /* The drop line is the one place a firmer edge earns itself — it has to be
+     unmistakable mid-drag — but it is still ink rather than pure black. */
+  .outline li.marble-over { border-top-color: rgba(17, 17, 20, .55); }
+  .outline li.marble-over-after { border-bottom-color: rgba(17, 17, 20, .55); }
+  .outline .dot {
+    flex: none;
+    color: rgba(17, 17, 20, .22);
+    font: 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+    transition: color var(--out) var(--ease);
+  }
+  .outline li:hover .dot { color: rgba(17, 17, 20, .42); }
+  .outline .oname { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  /* A hidden section keeps its row, or there would be no way back. */
+  .outline li.marble-off .oname { color: rgba(17, 17, 20, .34); text-decoration: line-through; }
+  .outline .eye {
+    flex: none;
+    margin-left: auto;
+    display: grid;
+    place-items: center;
+    width: 1.15rem;
+    height: 1.15rem;
+    padding: 0;
+    border: 0;
+    border-radius: 4px;
+    background: none;
+    color: rgba(17, 17, 20, .28);
+    cursor: pointer;
+    opacity: 0;
+    transition:
+      opacity var(--out) var(--ease),
+      color var(--out) var(--ease),
+      background-color var(--out) var(--ease);
+  }
+  .outline li:hover .eye,
+  .outline li.marble-off .eye,
+  .outline .eye:focus-visible { opacity: 1; transition-duration: var(--in); }
+  .outline .eye:hover { color: var(--ink-2); background: var(--tint-2); }
+  .outline .eye svg { width: 13px; height: 13px; display: block; }
+
+  .rail .print {
+    width: 100%;
+    padding: .48rem .8rem;
+    border: 1px solid rgba(0, 0, 0, .16);
+    border-radius: 7px;
+    background: #fff;
+    color: #111;
+    font: 500 12px/1 system-ui, sans-serif;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
+    cursor: pointer;
+    transition:
+      background-color var(--out) var(--ease),
+      border-color var(--out) var(--ease),
+      box-shadow var(--out) var(--ease);
+  }
+  .rail .print:hover {
+    background: #fafafb;
+    border-color: rgba(17, 17, 20, .24);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .08);
+    transition-duration: var(--in);
+  }
+
+  /* A heading and the button that adds to what follows it. The button is out in
+     the left margin, so the heading keeps the text edge to itself. */
+  .head-row { position: relative; }
+  /* Same lane and the same right edge as a grip, so the margin reads as one
+     column of controls rather than three things that happen to be left of the
+     text. `right: 100%` measures from the content edge, which is what every
+     other piece of furniture is measured from too. */
+  .add {
+    position: absolute;
+    left: var(--lane);
+    top: .12em;
+    display: grid;
+    place-items: center;
+    width: 1rem;
+    height: 1.15rem;
+    padding: 0;
+    border: 0;
+    border-radius: 4px;
+    background: none;
+    color: rgba(0, 0, 0, .3);
+    font: 400 15px/1 system-ui, sans-serif;
+    cursor: pointer;
+    transition:
+      color var(--out) var(--ease),
+      background-color var(--out) var(--ease);
+  }
+  /* Legible on its own, but it belongs to the heading it sits beside, so it
+     only comes fully forward when you are actually there. */
+  .sec-block:hover .add { color: rgba(17, 17, 20, .42); }
+  .add:hover {
+    color: var(--ink-2);
+    background: var(--tint-2);
+    transition-duration: var(--in);
+  }
+  .add:focus-visible { outline: 2px solid #5b8def; outline-offset: 1px; }
+
+  /* Printing is the point of the document, so anything belonging to the editor
+     leaves — and the sheet stops being a sheet, because @page owns the margins
+     once there is a real page under it. */
+  @media print {
+    html { background: #fff; }
+    .sheet {
+      width: auto;
+      min-height: 0;
+      margin: 0;
+      padding: 0;
+      box-shadow: none;
+    }
+    body { padding-left: 0; }
+    .rail, .add { display: none !important; }
+    .pub, .entry { break-inside: avoid; }
+    h2.sec, h3.sub { break-after: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<aside class="rail" data-marble-id="rail" data-marble-sortable="rail">
+
+
+
+
+
+  <div class="rail-group" data-marble-id="rg-out">
+    <h2 class="rail-title" data-marble-id="rt-out" data-marble-editable>Export</h2>
+    <button class="print" data-marble-id="bar-pdf" type="button">Download PDF</button>
+    <p class="rail-note" data-marble-id="rn-out" data-marble-editable>In the print dialog, untick “Headers and footers”.</p>
+  </div>
+  <div class="rail-group" data-marble-id="rg-face">
+    <h2 class="rail-title" data-marble-id="rt-face" data-marble-editable>Typeface</h2>
+    <ul class="faces" data-marble-id="faces" data-marble-sortable="faces">
+      <li data-marble-id="li-source" data-marble-removable><button type="button" data-marble-id="f-source" data-face="source"><span class="fname" data-marble-id="fn-source">Source Sans 3</span><span class="fnote" data-marble-id="fd-source">Humanist sans </span></button></li>
+      <li data-marble-id="li-charter" data-marble-removable><button type="button" data-marble-id="f-charter" data-face="charter"><span class="fname" data-marble-id="fn-charter">Charter</span><span class="fnote" data-marble-id="fd-charter">Transitional serif</span></button></li>
+      <li data-marble-id="li-newyork" data-marble-removable><button type="button" data-marble-id="f-newyork" data-face="newyork"><span class="fname" data-marble-id="fn-newyork">New York</span><span class="fnote" data-marble-id="fd-newyork">Modern serif</span></button></li>
+    </ul>
+    <p class="rail-note" data-marble-id="rn-face" data-marble-editable>Hover to try one on the page. Click to keep it.</p>
+  </div>
+  <div class="rail-group" data-marble-id="rg-outline">
+    <h2 class="rail-title" data-marble-id="rt-outline" data-marble-editable>Sections</h2>
+    <!-- Filled from the document. The names and their order are already in the
+         sheet, so writing them here too would be the same fact twice, and the
+         copy would be the one that went stale. -->
+    <ol class="outline" data-marble-id="outline"></ol>
+    <p class="rail-note" data-marble-id="rn-outline" data-marble-editable>Drag to reorder the CV. Click to jump.</p>
+  </div>
+
+</aside>
+
+<main class="sheet" data-marble-id="sheet" data-font="charter">
+
+  <header class="masthead" data-marble-id="masthead">
+    <h1 class="name" data-marble-id="name" data-marble-editable>Bryan Min</h1>
+    <div class="contact" data-marble-id="contact">
+      <div data-marble-id="email" data-marble-editable>bdmin@ucsd.edu</div>
+      <div data-marble-id="site" data-marble-editable>bryanmin.me</div>
+    </div>
+  </header>
+  <!-- The sections, as elements. Dragging one in the rail outline files a
+       move against the section it names, which is why each is one node. -->
+  <!-- Not sortable in the page. A section's grip would land in the same strip
+       of margin as the + button of the heading inside it, and hovering one
+       publication lit up two grips at once — its own and its section's. The
+       rail outline is the better gesture for something two pages long, so
+       sections are moved from there and the margin belongs to the entries. -->
+  <div class="doc" data-marble-id="doc">
+
+
+  <section class="sec-block" data-marble-id="blk-edu" aria-label="Education">
+    <!-- ================= EDUCATION ================= -->
+
+    <h2 class="sec" data-marble-id="s-edu" data-marble-editable>Education</h2>
+
+    <div data-marble-id="edu-list" data-marble-sortable="edu">
+      <div class="entry" data-marble-id="edu-ucsd" data-marble-removable>
+        <div class="org" data-marble-id="edu-ucsd-org" data-marble-editable>University of California San Diego</div>
+        <div class="row indent" data-marble-id="edu-phd">
+          <span data-marble-id="edu-phd-l" data-marble-editable>Ph.D. in Cognitive Science. Advisor: Haijun Xia</span>
+          <span class="r" data-marble-id="edu-phd-r" data-marble-editable>Expected June 2029</span>
+        </div>
+        <div class="row indent" data-marble-id="edu-bs">
+          <span data-marble-id="edu-bs-l" data-marble-editable>B.S. in Computer Science (Magna Cum Laude)</span>
+          <span class="r" data-marble-id="edu-bs-r" data-marble-editable>June 2023</span>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="sec-block" data-marble-id="blk-res" aria-label="Research Experience">
+    <!-- ================= RESEARCH EXPERIENCE ================= -->
+
+    <div class="head-row" data-marble-id="hr-s-res">
+      <button class="add" data-marble-id="add-res" type="button" data-cv-form="exp" data-marble-add="#tpl-exp" data-marble-into="next">+</button>
+      <h2 class="sec" data-marble-id="s-res" data-marble-editable>Research Experience</h2>
+    </div>
+
+    <div data-marble-id="res" data-marble-sortable="exp">
+
+      <div class="entry" data-marble-removable data-marble-id="bepu1ktw">
+    <div class="row">
+      <span class="org" data-marble-editable data-marble-id="hdzssnmf">The Allen Institute for AI</span>
+      <span class="r" data-marble-editable data-marble-id="q2u95hlu">September 2026 - Current</span>
+    </div>
+    <div class="row">
+      <span data-marble-editable data-marble-id="xio8i8lr">Research Intern</span>
+      <span class="r" data-marble-editable data-marble-id="8hg4uh4c">Seattle, WA</span>
+    </div>
+    <div class="sup" data-marble-editable data-marble-id="g13eqyia">Sangho Suh</div>
+  </div>
+      <div class="entry" data-marble-id="res-msft" data-marble-removable>
+        <div class="row" data-marble-id="res-msft-1">
+          <span class="org" data-marble-id="res-msft-org" data-marble-editable>FX and EPIC Research Group, Microsoft</span>
+          <span class="r" data-marble-id="res-msft-when" data-marble-editable>May 2026 - August 2026</span>
+        </div>
+        <div class="row" data-marble-id="res-msft-2">
+          <span data-marble-id="res-msft-role" data-marble-editable>Research Intern</span>
+          <span class="r" data-marble-id="res-msft-where" data-marble-editable>Redmond, WA</span>
+        </div>
+        <div data-marble-id="res-msft-sup" data-marble-editable>Supervisor: Nic Marquardt</div>
+      </div>
+
+      <div class="entry" data-marble-id="res-fil2" data-marble-removable>
+        <div class="row" data-marble-id="res-fil2-1">
+          <span class="org" data-marble-id="res-fil2-org" data-marble-editable>Foundation Interface Lab, UC San Diego</span>
+          <span class="r" data-marble-id="res-fil2-when" data-marble-editable>September 2023 - September 2024</span>
+        </div>
+        <div class="row" data-marble-id="res-fil2-2">
+          <span data-marble-id="res-fil2-role" data-marble-editable>Researcher</span>
+          <span class="r" data-marble-id="res-fil2-where" data-marble-editable>La Jolla, CA</span>
+        </div>
+        <div data-marble-id="res-fil2-sup" data-marble-editable>Supervisor: Haijun Xia [C3]</div>
+      </div>
+
+      <div class="entry" data-marble-id="res-kix" data-marble-removable>
+        <div class="row" data-marble-id="res-kix-1">
+          <span class="org" data-marble-id="res-kix-org" data-marble-editable>KIXLAB, KAIST</span>
+          <span class="r" data-marble-id="res-kix-when" data-marble-editable>July 2023 - September 2023</span>
+        </div>
+        <div class="row" data-marble-id="res-kix-2">
+          <span data-marble-id="res-kix-role" data-marble-editable>Undergraduate Research Intern</span>
+          <span class="r" data-marble-id="res-kix-where" data-marble-editable>Daejeon, South Korea</span>
+        </div>
+        <div data-marble-id="res-kix-sup" data-marble-editable>Supervisor: Juho Kim [P2]</div>
+      </div>
+
+      <div class="entry" data-marble-id="res-fil1" data-marble-removable>
+        <div class="row" data-marble-id="res-fil1-1">
+          <span class="org" data-marble-id="res-fil1-org" data-marble-editable>Foundation Interface Lab, UC San Diego</span>
+          <span class="r" data-marble-id="res-fil1-when" data-marble-editable>November 2022 - June 2023</span>
+        </div>
+        <div class="row" data-marble-id="res-fil1-2">
+          <span data-marble-id="res-fil1-role" data-marble-editable>Undergraduate Researcher</span>
+          <span class="r" data-marble-id="res-fil1-where" data-marble-editable>La Jolla, CA</span>
+        </div>
+        <div data-marble-id="res-fil1-sup" data-marble-editable>Supervisor: Haijun Xia [C1, C2, P1]</div>
+      </div>
+
+      <div class="entry" data-marble-id="res-t4g" data-marble-removable>
+        <div class="row" data-marble-id="res-t4g-1">
+          <span class="org" data-marble-id="res-t4g-org" data-marble-editable>Tech4Good Lab, UC Santa Cruz</span>
+          <span class="r" data-marble-id="res-t4g-when" data-marble-editable>January 2021 - January 2023</span>
+        </div>
+        <div class="row" data-marble-id="res-t4g-2">
+          <span data-marble-id="res-t4g-role" data-marble-editable>Undergraduate Researcher</span>
+          <span class="r" data-marble-id="res-t4g-where" data-marble-editable>Santa Cruz, CA</span>
+        </div>
+        <div data-marble-id="res-t4g-sup" data-marble-editable>Supervisor: David T. Lee [C4]</div>
+      </div>
+
+    </div>
+  </section>
+  <section class="sec-block" data-marble-id="blk-pub" aria-label="Publications">
+    <!-- ================= PUBLICATIONS ================= -->
+
+    <h2 class="sec" data-marble-id="s-pub" data-marble-editable>Publications</h2>
+
+    <div class="head-row" data-marble-id="hr-h-conf">
+      <button data-cv-find="" class="add" data-marble-id="add-conf" type="button" data-cv-form="pub" data-marble-add="#tpl-pub" data-marble-into="next" data-cv-prefix="C">+</button>
+      <h3 class="sub" data-marble-id="h-conf" data-marble-editable>Conference Papers</h3>
+    </div>
+    <div data-marble-id="conf" data-marble-sortable="pubs">
+
+
+      <div class="pub" data-marble-removable data-marble-id="vvuccy2k">
+    <div class="key" data-marble-editable data-marble-id="0ohuc3ch">2026 [C8]</div>
+    <div class="body">
+      <p class="title" data-marble-editable data-marble-id="i6bfzgio">Elicitive User Interfaces: Designing How Users Shape Generative Interfaces</p>
+      <p class="authors"><span data-marble-id="2ifzzjts" data-marble-editable>Eunhye Kim*, </span><strong data-marble-id="b4nqc0ji" data-marble-editable>Bryan Min*</strong><span data-marble-id="7c0dohir" data-marble-editable>, Haijun Xia, Juho Kim</span></p>
+      <p class="venue" data-marble-editable data-marble-id="to872kj4">Under Review</p>
+      
+    </div>
+  </div>
+      <div class="pub" data-marble-id="c7" data-marble-removable>
+        <div class="key" data-marble-id="c7-k" data-marble-editable>2026 [C7]</div>
+        <div class="body" data-marble-id="c7-b">
+          <p class="title" data-marble-id="c7-t" data-marble-editable>Maru: Information Architecture as a Shared Language for Generating Aligned and Persistent User Interfaces</p>
+          <p class="authors" data-marble-id="c7-a"><span data-marble-id="c7-a1" data-marble-editable>Eunhye Kim, DaEun Choi, </span><strong data-marble-id="c7-me" data-marble-editable>Bryan Min</strong><span data-marble-id="c7-a2" data-marble-editable>, Hyunjung Yi, Yue Jiang, Juho Kim</span></p>
+          <p class="venue" data-marble-id="c7-v" data-marble-editable>UIST 2026: Proceedings of the 2025 ACM Symposium on User Interface Software and Technology</p>
+        </div>
+      </div>
+      <div class="pub" data-marble-id="c6" data-marble-removable>
+        <div class="key" data-marble-id="c6-k" data-marble-editable>2026 [C6]</div>
+        <div class="body" data-marble-id="c6-b">
+          <p class="title" data-marble-id="c6-t" data-marble-editable>ChoiceMates: Supporting Unfamiliar Online Decision-Making with Multi-Agent Conversational Interactions</p>
+          <p class="authors" data-marble-id="c6-a"><span data-marble-id="c6-a1" data-marble-editable>Jeongeon Park, </span><strong data-marble-id="c6-me" data-marble-editable>Bryan Min</strong><span data-marble-id="c6-a2" data-marble-editable>, Kihoon Son, Jean Y. Song, Xiaojuan Ma, Juho Kim</span></p>
+          <p class="venue" data-marble-id="c6-v" data-marble-editable>IUI 2026: Proceedings of the 2026 ACM Conference on Intelligent User Interfaces</p>
+        </div>
+      </div>
+
+      <div class="pub" data-marble-id="c5" data-marble-removable>
+        <div class="key" data-marble-id="c5-k" data-marble-editable>2025 [C5]</div>
+        <div class="body" data-marble-id="c5-b">
+          <p class="title" data-marble-id="c5-t" data-marble-editable>Meridian: A Design Framework for Malleable Overview-Detail Interfaces</p>
+          <p class="authors" data-marble-id="c5-a"><strong data-marble-id="c5-me" data-marble-editable>Bryan Min</strong><span data-marble-id="c5-a2" data-marble-editable> and Haijun Xia</span></p>
+          <p class="venue" data-marble-id="c5-v" data-marble-editable>UIST 2025: Proceedings of the 2025 ACM Symposium on User Interface Software and Technology</p>
+        </div>
+      </div>
+
+      <div class="pub" data-marble-id="c4" data-marble-removable>
+        <div class="key" data-marble-id="c4-k" data-marble-editable>2025 [C4]</div>
+        <div class="body" data-marble-id="c4-b">
+          <p class="title" data-marble-id="c4-t" data-marble-editable>Lessons from Designing a Course and Platform for Teaching Qualitative Analysis Experientially in a Large Course-Based Community Consultancy</p>
+          <p class="authors" data-marble-id="c4-a"><span data-marble-id="c4-a1" data-marble-editable>Dustin Palea, Elijah Kirby, Madison Gruender, </span><strong data-marble-id="c4-me" data-marble-editable>Bryan Min</strong><span data-marble-id="c4-a2" data-marble-editable>, Jessalyn Wang, David T. Lee</span></p>
+          <p class="venue" data-marble-id="c4-v" data-marble-editable>ICER 2025: Proceedings of the ACM Conference on International Computing Education Research</p>
+        </div>
+      </div>
+
+      <div class="pub" data-marble-id="c3" data-marble-removable>
+        <div class="key" data-marble-id="c3-k" data-marble-editable>2025 [C3]</div>
+        <div class="body" data-marble-id="c3-b">
+          <p class="title" data-marble-id="c3-t" data-marble-editable>Malleable Overview-Detail Interfaces</p>
+          <p class="authors" data-marble-id="c3-a"><strong data-marble-id="c3-me" data-marble-editable>Bryan Min</strong><span data-marble-id="c3-a2" data-marble-editable>, Allen Chen, Yining Cao, Haijun Xia</span></p>
+          <p class="venue" data-marble-id="c3-v" data-marble-editable>CHI 2025: Proceedings of the 2025 CHI Conference on Human Factors in Computing Systems</p>
+        </div>
+      </div>
+
+      <div class="pub" data-marble-id="c2" data-marble-removable>
+        <div class="key" data-marble-id="c2-k" data-marble-editable>2024 [C2]</div>
+        <div class="body" data-marble-id="c2-b">
+          <p class="title" data-marble-id="c2-t" data-marble-editable>Luminate: Structured Generation and Exploration of Design Space with Large Language Models for Human-AI Co-Creation</p>
+          <p class="authors" data-marble-id="c2-a"><span data-marble-id="c2-a1" data-marble-editable>Sangho Suh, Meng Chen, </span><strong data-marble-id="c2-me" data-marble-editable>Bryan Min</strong><span data-marble-id="c2-a2" data-marble-editable>, Toby Jia-Jun Li, Haijun Xia</span></p>
+          <p class="venue" data-marble-id="c2-v" data-marble-editable>CHI 2024: Proceedings of the 2024 CHI Conference on Human Factors in Computing Systems</p>
+        </div>
+      </div>
+
+      <div class="pub" data-marble-id="c1" data-marble-removable>
+        <div class="key" data-marble-id="c1-k" data-marble-editable>2023 [C1]</div>
+        <div class="body" data-marble-id="c1-b">
+          <p class="title" data-marble-id="c1-t" data-marble-editable>Sensecape: Enabling Multilevel Exploration and Sensemaking with Large Language Models</p>
+          <p class="authors" data-marble-id="c1-a"><span data-marble-id="c1-a1" data-marble-editable>Sangho Suh, </span><strong data-marble-id="c1-me" data-marble-editable>Bryan Min</strong><span data-marble-id="c1-a2" data-marble-editable>, Srishti Palani, Haijun Xia</span></p>
+          <p class="venue" data-marble-id="c1-v" data-marble-editable>UIST 2023: Proceedings of the 2023 ACM Symposium on User Interface Software and Technology</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="head-row" data-marble-id="hr-h-pre">
+      <button class="add" data-marble-id="add-pre" type="button" data-cv-form="pub" data-marble-add="#tpl-pub" data-marble-into="next" data-cv-prefix="R">+</button>
+      <h3 class="sub" data-marble-id="h-pre" data-marble-editable>Preprints</h3>
+    </div>
+    <div data-marble-id="pre" data-marble-sortable="pubs">
+
+      <div class="pub" data-marble-id="r2" data-marble-removable>
+        <div class="key" data-marble-id="r2-k" data-marble-editable>2026 [R1]</div>
+        <div class="body" data-marble-id="r2-b">
+          <p class="title" data-marble-id="r2-t" data-marble-editable>Making Abstraction Concrete: A Design Space and Interaction Model of Abstraction in Interactive Systems</p>
+          <p class="authors" data-marble-id="r2-a"><strong data-marble-id="r2-me" data-marble-editable>Bryan Min</strong><span data-marble-id="r2-a2" data-marble-editable>, Sangho Suh, Jim Hollan, Haijun Xia</span></p>
+          <p class="venue" data-marble-id="r2-v" data-marble-editable>May 2026 - arXiv:2605.11344</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="head-row" data-marble-id="hr-h-pos">
+      <button class="add" data-marble-id="add-pos" type="button" data-cv-form="pub" data-marble-add="#tpl-pub" data-marble-into="next" data-cv-prefix="P">+</button>
+      <h3 class="sub" data-marble-id="h-pos" data-marble-editable>Posters, Demos, Workshop Papers</h3>
+    </div>
+    <div data-marble-id="pos" data-marble-sortable="pubs">
+
+      <div class="pub" data-marble-id="r1" data-marble-removable>
+        <div class="key" data-marble-id="r1-k" data-marble-editable>2026 [P8]</div>
+        <div class="body" data-marble-id="r1-b">
+          <p class="title" data-marble-id="r1-t" data-marble-editable>Gradual Generation of User Interfaces as a Design Method for Malleable Software</p>
+          <p class="authors" data-marble-id="r1-a"><strong data-marble-id="r1-me" data-marble-editable>Bryan Min</strong><span data-marble-id="r1-a2" data-marble-editable>, Peiling Jiang, Zhicheng Huang, Haijun Xia</span></p>
+          <p class="venue" data-marble-id="r1-v" data-marble-editable>January 2026 - arXiv:2601.17975</p>
+        </div>
+      </div>
+
+      <div class="pub" data-marble-id="p7" data-marble-removable>
+        <div class="key" data-marble-id="p7-k" data-marble-editable>2026 [P7]</div>
+        <div class="body" data-marble-id="p7-b">
+          <p class="title" data-marble-id="p7-t" data-marble-editable>Jacaranda: Grafting User-Editable Web Experiences Across Sites</p>
+          <p class="authors" data-marble-id="p7-a"><span data-marble-id="p7-a1" data-marble-editable>Xinqi Zhang, Mingyuan Zhong, Longjie Guo, </span><strong data-marble-id="p7-me" data-marble-editable>Bryan Min</strong><span data-marble-id="p7-a2" data-marble-editable>, Yuanhao Zhang, Kai Lukoff</span></p>
+          <p class="venue" data-marble-id="p7-v" data-marble-editable>UIST 2026 Posters</p>
+        </div>
+      </div>
+
+      <div class="pub" data-marble-id="p6" data-marble-removable>
+        <div class="key" data-marble-id="p6-k" data-marble-editable>2026 [P6]</div>
+        <div class="body" data-marble-id="p6-b">
+          <p class="title" data-marble-id="p6-t" data-marble-editable>Generative UI Alone Won’t Make Software Malleable</p>
+          <p class="authors" data-marble-id="p6-a"><strong data-marble-id="p6-me" data-marble-editable>Bryan Min</strong></p>
+          <p class="venue" data-marble-id="p6-v" data-marble-editable>CHI 2025 Workshop on HCI for GenUI</p>
+        </div>
+      </div>
+
+      <div class="pub" data-marble-id="p5" data-marble-removable>
+        <div class="key" data-marble-id="p5-k" data-marble-editable>2026 [P5]</div>
+        <div class="body" data-marble-id="p5-b">
+          <p class="title" data-marble-id="p5-t" data-marble-editable>User-Constructed Information Architecture as a Persistence Layer for GenUI</p>
+          <p class="authors" data-marble-id="p5-a"><span data-marble-id="p5-a1" data-marble-editable>Eunhye Kim, Hyunjung Yi, Daeun Choi, </span><strong data-marble-id="p5-me" data-marble-editable>Bryan Min</strong><span data-marble-id="p5-a2" data-marble-editable>, Yue Jiang, Juho Kim</span></p>
+          <p class="venue" data-marble-id="p5-v" data-marble-editable>CHI 2025 Workshop on HCI for GenUI</p>
+        </div>
+      </div>
+
+      <div class="pub" data-marble-id="p4" data-marble-removable>
+        <div class="key" data-marble-id="p4-k" data-marble-editable>2026 [P4]</div>
+        <div class="body" data-marble-id="p4-b">
+          <p class="title" data-marble-id="p4-t" data-marble-editable>User Agency in Runtime Malleable Software Under Change Aversion</p>
+          <p class="authors" data-marble-id="p4-a"><span data-marble-id="p4-a1" data-marble-editable>Xinqi Zhang, </span><strong data-marble-id="p4-me" data-marble-editable>Bryan Min</strong><span data-marble-id="p4-a2" data-marble-editable>, Shizhao L. Liu, Kai Lukoff</span></p>
+          <p class="venue" data-marble-id="p4-v" data-marble-editable>CHI 2025 Workshop on HCI for GenUI</p>
+        </div>
+      </div>
+
+      <div class="pub" data-marble-id="p3" data-marble-removable>
+        <div class="key" data-marble-id="p3-k" data-marble-editable>2025 [P3]</div>
+        <div class="body" data-marble-id="p3-b">
+          <p class="title" data-marble-id="p3-t" data-marble-editable>Feedforward in Generative AI: Opportunities for a Design Space</p>
+          <p class="authors" data-marble-id="p3-a"><strong data-marble-id="p3-me" data-marble-editable>Bryan Min</strong><span data-marble-id="p3-a2" data-marble-editable> and Haijun Xia</span></p>
+          <p class="venue" data-marble-id="p3-v" data-marble-editable>CHI 2025 Workshop on Tools for Thought</p>
+        </div>
+      </div>
+
+      <div class="pub" data-marble-id="p2" data-marble-removable>
+        <div class="key" data-marble-id="p2-k" data-marble-editable>2024 [P2]</div>
+        <div class="body" data-marble-id="p2-b">
+          <p class="title" data-marble-id="p2-t" data-marble-editable>How do multiple LLM-powered conversational agents assist sensemaking and decision-making in an unfamiliar domain?</p>
+          <p class="authors" data-marble-id="p2-a"><span data-marble-id="p2-a1" data-marble-editable>Jeongeon Park, </span><strong data-marble-id="p2-me" data-marble-editable>Bryan Min</strong><span data-marble-id="p2-a2" data-marble-editable>, Jean Y. Song, Xiaojuan Ma, Juho Kim</span></p>
+          <p class="venue" data-marble-id="p2-v" data-marble-editable>CHI 2024 Sensemaking Workshop</p>
+        </div>
+      </div>
+
+      <div class="pub" data-marble-id="p1" data-marble-removable>
+        <div class="key" data-marble-id="p1-k" data-marble-editable>2023 [P1]</div>
+        <div class="body" data-marble-id="p1-b">
+          <p class="title" data-marble-id="p1-t" data-marble-editable>Demonstration of Masonview: Content-Driven Viewport Management</p>
+          <p class="authors" data-marble-id="p1-a"><strong data-marble-id="p1-me" data-marble-editable>Bryan Min</strong><span data-marble-id="p1-a2" data-marble-editable>, Matthew T. Beaudouin-Lafon, Sangho Suh, Haijun Xia</span></p>
+          <p class="venue" data-marble-id="p1-v" data-marble-editable>UIST 2023 Demos</p>
+          <p class="award" data-marble-id="p1-w" data-marble-editable>🏅Best Demo Honorable Mention Award</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="head-row" data-marble-id="hr-h-pat">
+      <button class="add" data-marble-id="add-pat" type="button" data-cv-form="pub" data-marble-add="#tpl-pub" data-marble-into="next" data-cv-prefix="A">+</button>
+      <h3 class="sub" data-marble-id="h-pat" data-marble-editable>Patents</h3>
+    </div>
+    <div data-marble-id="pat" data-marble-sortable="pubs">
+
+      <div class="pub" data-marble-id="a1" data-marble-removable>
+        <div class="key" data-marble-id="a1-k" data-marble-editable>2026 [A1]</div>
+        <div class="body" data-marble-id="a1-b">
+          <p class="title" data-marble-id="a1-t" data-marble-editable>Methods and systems for generating malleable overview-detail user interfaces</p>
+          <p class="authors" data-marble-id="a1-a"><span data-marble-id="a1-a1" data-marble-editable>Haijun Xia and </span><strong data-marble-id="a1-me" data-marble-editable>Bryan Min</strong></p>
+          <p class="venue" data-marble-id="a1-v" data-marble-editable>US Patent App. 19/376,807</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <section class="sec-block" data-marble-id="blk-pro" aria-label="Professional Experience">
+    <!-- ================= PROFESSIONAL EXPERIENCE ================= -->
+
+    <div class="head-row" data-marble-id="hr-s-pro">
+      <button class="add" data-marble-id="add-pro" type="button" data-cv-form="exp" data-marble-add="#tpl-exp" data-marble-into="next">+</button>
+      <h2 class="sec" data-marble-id="s-pro" data-marble-editable>Professional Experience</h2>
+    </div>
+
+    <div data-marble-id="pro" data-marble-sortable="exp">
+
+      <div class="entry" data-marble-id="pro-comm" data-marble-removable>
+        <div class="row" data-marble-id="pro-comm-1">
+          <span class="org" data-marble-id="pro-comm-org" data-marble-editable>Communications Department, UC San Diego</span>
+          <span class="r" data-marble-id="pro-comm-when" data-marble-editable>October 2022 - July 2023</span>
+        </div>
+        <div class="row" data-marble-id="pro-comm-2">
+          <span data-marble-id="pro-comm-role" data-marble-editable>Data Visualization Developer</span>
+          <span class="r" data-marble-id="pro-comm-where" data-marble-editable>La Jolla, CA</span>
+        </div>
+      </div>
+
+      <div class="entry" data-marble-id="pro-att" data-marble-removable>
+        <div class="row" data-marble-id="pro-att-1">
+          <span class="org" data-marble-id="pro-att-org" data-marble-editable>AT&amp;T</span>
+          <span class="r" data-marble-id="pro-att-when" data-marble-editable>June 2022 - September 2022</span>
+        </div>
+        <div class="row" data-marble-id="pro-att-2">
+          <span data-marble-id="pro-att-role" data-marble-editable>Software Engineer Intern</span>
+          <span class="r" data-marble-id="pro-att-where" data-marble-editable>Chicago, IL</span>
+        </div>
+      </div>
+
+      <div class="entry" data-marble-id="pro-cse" data-marble-removable>
+        <div class="row" data-marble-id="pro-cse-1">
+          <span class="org" data-marble-id="pro-cse-org" data-marble-editable>CSE Department, UC San Diego</span>
+          <span class="r" data-marble-id="pro-cse-when" data-marble-editable>June 2022 - October 2022</span>
+        </div>
+        <div class="row" data-marble-id="pro-cse-2">
+          <span data-marble-id="pro-cse-role" data-marble-editable>Undergraduate Research Assistant</span>
+          <span class="r" data-marble-id="pro-cse-where" data-marble-editable>La Jolla, CA</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="sec-block" data-marble-id="blk-hon" aria-label="Honors and Awards">
+    <!-- ================= HONORS ================= -->
+
+    <div class="head-row" data-marble-id="hr-s-hon">
+      <button class="add" data-marble-id="add-hon" type="button" data-cv-form="line" data-marble-add="#tpl-line" data-marble-into="next">+</button>
+      <h2 class="sec" data-marble-id="s-hon" data-marble-editable>Honors and Awards</h2>
+    </div>
+
+    <div class="lines" data-marble-id="hon" data-marble-sortable="lines">
+      <div class="row" data-marble-id="hon-uist" data-marble-removable>
+        <span data-marble-id="hon-uist-l" data-marble-editable>Best Demo Honorable Mention Award (UIST 2023)</span>
+        <span class="r" data-marble-id="hon-uist-r" data-marble-editable>2023</span>
+      </div>
+      <div class="row" data-marble-id="hon-sdh" data-marble-removable>
+        <span data-marble-id="hon-sdh-l" data-marble-editable>SD Hacks Winner (UC San Diego)</span>
+        <span class="r" data-marble-id="hon-sdh-r" data-marble-editable>2022</span>
+      </div>
+    </div>
+  </section>
+  <section class="sec-block" data-marble-id="blk-tea" aria-label="Teaching">
+    <!-- ================= TEACHING ================= -->
+
+    <div class="head-row" data-marble-id="hr-s-tea">
+      <button class="add" data-marble-id="add-tea" type="button" data-cv-form="line" data-marble-add="#tpl-line" data-marble-into="next">+</button>
+      <h2 class="sec" data-marble-id="s-tea" data-marble-editable>Teaching</h2>
+    </div>
+
+    <div class="lines" data-marble-id="tea" data-marble-sortable="lines">
+      <div class="row" data-marble-id="tea-1" data-marble-removable>
+        <span data-marble-id="tea-1-l" data-marble-editable>TA, COGS 10: Cognitive Consequences of Technology – Instructor: Jim Hollan</span>
+        <span class="r" data-marble-id="tea-1-r" data-marble-editable>Winter 2026</span>
+      </div>
+      <div class="row" data-marble-id="tea-2" data-marble-removable>
+        <span data-marble-id="tea-2-l" data-marble-editable>TA, COGS 10: Cognitive Consequences of Technology – Instructor: Amy R. Fox</span>
+        <span class="r" data-marble-id="tea-2-r" data-marble-editable>Fall 2025</span>
+      </div>
+      <div class="row" data-marble-id="tea-3" data-marble-removable>
+        <span data-marble-id="tea-3-l" data-marble-editable>TA, DSGN 2: Designing your Future Self – Instructor: Jim Hollan</span>
+        <span class="r" data-marble-id="tea-3-r" data-marble-editable>Spring 2025</span>
+      </div>
+      <div class="row" data-marble-id="tea-4" data-marble-removable>
+        <span data-marble-id="tea-4-l" data-marble-editable>TA, COGS 126: Thinking with Computers – Instructor: Jim Hollan</span>
+        <span class="r" data-marble-id="tea-4-r" data-marble-editable>Winter 2025</span>
+      </div>
+      <div class="row" data-marble-id="tea-5" data-marble-removable>
+        <span data-marble-id="tea-5-l" data-marble-editable>TA, DSGN 119: Design@Large Speaker Series – Instructor: Jim Hollan</span>
+        <span class="r" data-marble-id="tea-5-r" data-marble-editable>Spring 2024</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-block" data-marble-id="blk-men" aria-label="Mentoring">
+    <!-- ================= MENTORING ================= -->
+
+    <div class="head-row" data-marble-id="hr-s-men">
+      <button class="add" data-marble-id="add-men" type="button" data-cv-form="line" data-marble-add="#tpl-line" data-marble-into="next">+</button>
+      <h2 class="sec" data-marble-id="s-men" data-marble-editable>Mentoring</h2>
+    </div>
+
+    <div class="lines" data-marble-id="men" data-marble-sortable="lines">
+      <div class="row" data-marble-id="men-1" data-marble-removable>
+        <span data-marble-id="men-1-l" data-marble-editable>Erin Law (UCSD B.S. in Cognitive Science)</span>
+        <span class="r" data-marble-id="men-1-r" data-marble-editable>2026 – Ongoing</span>
+      </div>
+      <div class="row" data-marble-id="men-2" data-marble-removable>
+        <span data-marble-id="men-2-l" data-marble-editable>Tony Li (UCSD B.S. in Mathematics-Computer Science)</span>
+        <span class="r" data-marble-id="men-2-r" data-marble-editable>2026 – Ongoing</span>
+      </div>
+      <div class="row" data-marble-id="men-3" data-marble-removable>
+        <span data-marble-id="men-3-l" data-marble-editable>Jordan Chen (UCSD B.S. in Mathematics-Computer Science)</span>
+        <span class="r" data-marble-id="men-3-r" data-marble-editable>2026 – Ongoing</span>
+      </div>
+      <div class="row" data-marble-id="men-4" data-marble-removable>
+        <span data-marble-id="men-4-l" data-marble-editable>Shamita Goyal (UCSD B.S. in Cognitive Science)</span>
+        <span class="r" data-marble-id="men-4-r" data-marble-editable>2025</span>
+      </div>
+      <div class="row" data-marble-id="men-5" data-marble-removable>
+        <span data-marble-id="men-5-l" data-marble-editable>Shubham Patil (UCSD B.S. in Computer Engineering) – Now Co-founder of Emergent Computing</span>
+        <span class="r" data-marble-id="men-5-r" data-marble-editable>2025</span>
+      </div>
+      <div class="row" data-marble-id="men-6" data-marble-removable>
+        <span data-marble-id="men-6-l" data-marble-editable>Vincent Hsieh (UCSD M.S. in Computer Science)</span>
+        <span class="r" data-marble-id="men-6-r" data-marble-editable>2025</span>
+      </div>
+      <div class="row" data-marble-id="men-7" data-marble-removable>
+        <span data-marble-id="men-7-l" data-marble-editable>Keshav Tiwari (UCSD B.S. in Cognitive Science) – Now MS Student at UC Berkeley</span>
+        <span class="r" data-marble-id="men-7-r" data-marble-editable>2024</span>
+      </div>
+      <div class="row" data-marble-id="men-8" data-marble-removable>
+        <span data-marble-id="men-8-l" data-marble-editable>Allen Chen (UCSD B.S. in Cognitive Science) – Now MHCI Student at CMU</span>
+        <span class="r" data-marble-id="men-8-r" data-marble-editable>2024</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-block" data-marble-id="blk-tal" aria-label="Invited Talks">
+    <!-- ================= INVITED TALKS ================= -->
+
+    <div class="head-row" data-marble-id="hr-s-tal">
+      <button class="add" data-marble-id="add-tal" type="button" data-cv-form="talk" data-marble-add="#tpl-talk" data-marble-into="next">+</button>
+      <h2 class="sec" data-marble-id="s-tal" data-marble-editable>Invited Talks</h2>
+    </div>
+
+    <div data-marble-id="tal" data-marble-sortable="talks">
+
+      <div class="entry" data-marble-id="tal-1" data-marble-removable>
+        <div class="row" data-marble-id="tal-1-1">
+          <span class="org" data-marble-id="tal-1-org" data-marble-editable>Dynamic Abstractions Reading Group</span>
+          <span class="r" data-marble-id="tal-1-when" data-marble-editable>February 2026</span>
+        </div>
+        <div class="talk" data-marble-id="tal-1-t" data-marble-editable>What is Malleable Software Now?</div>
+      </div>
+
+      <div class="entry" data-marble-id="tal-2" data-marble-removable>
+        <div class="row" data-marble-id="tal-2-1">
+          <span class="org" data-marble-id="tal-2-org" data-marble-editable>CHI 2025 Workshop on Tools for Thought, Selected Lightning Talk</span>
+          <span class="r" data-marble-id="tal-2-when" data-marble-editable>April 2025</span>
+        </div>
+        <div class="talk" data-marble-id="tal-2-t" data-marble-editable>Feedforward for GenAI: Opportunities for a Design Space</div>
+      </div>
+
+      <div class="entry" data-marble-id="tal-3" data-marble-removable>
+        <div class="row" data-marble-id="tal-3-1">
+          <span class="org" data-marble-id="tal-3-org" data-marble-editable>Cognitive Science Student Association 2024 Conference</span>
+          <span class="r" data-marble-id="tal-3-when" data-marble-editable>May 2024</span>
+        </div>
+        <div class="talk" data-marble-id="tal-3-t" data-marble-editable>Towards Malleable and Proactive Information Spaces with Generative AI</div>
+      </div>
+
+    </div>
+  </section>
+
+
+
+
+    <section class="sec-block" data-marble-id="blk-ser" aria-label="Service">
+    <!-- ================= SERVICE ================= -->
+
+    <div class="head-row" data-marble-id="hr-s-ser">
+      <button class="add" data-marble-id="add-ser" type="button" data-cv-form="line" data-marble-add="#tpl-line" data-marble-into="next">+</button>
+      <h2 class="sec" data-marble-id="s-ser" data-marble-editable>Service</h2>
+    </div>
+
+    <div class="lines" data-marble-id="ser" data-marble-sortable="lines">
+      <div class="row" data-marble-id="ser-1" data-marble-removable>
+        <span data-marble-id="ser-1-l" data-marble-editable>Design Lab Research Meeting Organizer</span>
+        <span class="r" data-marble-id="ser-1-r" data-marble-editable>2024 - 2025</span>
+      </div>
+      <div class="row" data-marble-id="ser-2" data-marble-removable>
+        <span data-marble-id="ser-2-l" data-marble-editable>Reviewer (CHI 2024-2026, UIST 2024-2026 – 6x Special Recognition for Outstanding Reviews)</span>
+        <span class="r" data-marble-id="ser-2-r" data-marble-editable></span>
+      </div>
+    </div>
+  </section>
+    <section class="sec-block" data-marble-id="blk-ski" aria-label="Skills">
+    <!-- ================= SKILLS ================= -->
+
+    <div class="head-row" data-marble-id="hr-s-ski">
+      <button class="add" data-marble-id="add-ski" type="button" data-cv-form="line" data-marble-add="#tpl-line" data-marble-into="next">+</button>
+      <h2 class="sec" data-marble-id="s-ski" data-marble-editable>Skills</h2>
+    </div>
+
+    <div class="lines" data-marble-id="ski" data-marble-sortable="lines">
+      <div class="row" data-marble-id="ski-1" data-marble-removable>
+        <span data-marble-id="ski-1-l" data-marble-editable>Coding Languages: JavaScript/TypeScript, HTML, CSS, SQL, Python, Swift, Java, C/C++</span>
+        <span class="r" data-marble-id="ski-1-r" data-marble-editable></span>
+      </div>
+    </div>
+  </section>
+  </div>
+  <p data-marble-id="anm5zz6o" class="footnote" style="margin: 2.2em 0 0; font-size: .85em; font-style: italic;" data-marble-editable>* Equal contribution</p>
+</main>
+
+<!-- What the + buttons clone. Ids are minted at insert time, not copied. -->
+<template id="tpl-pub">
+  <div class="pub" data-marble-removable>
+    <div class="key" data-marble-editable>2026 [X0]</div>
+    <div class="body">
+      <p class="title" data-marble-editable>Title</p>
+      <p class="authors">Bryan Min</p>
+      <p class="venue" data-marble-editable>Venue</p>
+      <p class="award" data-marble-editable>Award</p>
+    </div>
+  </div>
+</template>
+
+<template id="tpl-exp">
+  <div class="entry" data-marble-removable>
+    <div class="row">
+      <span class="org" data-marble-editable>Organization</span>
+      <span class="r" data-marble-editable>Month Year - Month Year</span>
+    </div>
+    <div class="row">
+      <span data-marble-editable>Role</span>
+      <span class="r" data-marble-editable>City, ST</span>
+    </div>
+    <div class="sup" data-marble-editable>Supervisor:</div>
+  </div>
+</template>
+
+<template id="tpl-talk">
+  <div class="entry" data-marble-removable>
+    <div class="row">
+      <span class="org" data-marble-editable>Venue</span>
+      <span class="r" data-marble-editable>Month Year</span>
+    </div>
+    <div class="talk" data-marble-editable>Talk title</div>
+  </div>
+</template>
+
+<template id="tpl-line">
+  <div class="row" data-marble-removable>
+    <span data-marble-editable>Description</span>
+    <span class="r" data-marble-editable>Year</span>
+  </div>
+</template>
+
+<script>
+// The affordances this document carries. Copied in rather than imported: a
+// host that shipped them would be deciding how every document it opens behaves.
+// With no host there is no window.marble, none of this runs, and the file is
+// still a CV you can read and print — which is most of what a CV is for.
+(() => {
+  const begin = (marble) => {
+    const TRANSIENT = 'data-marble-transient';
+    const ID = 'data-marble-id';
+
+    const isTransient = (el) => el.hasAttribute(TRANSIENT);
+    const persistentChildren = (el) => [...el.children].filter((c) => !isTransient(c));
+
+    function nextPersistentSibling(el) {
+      let sibling = el.nextElementSibling;
+      while (sibling && isTransient(sibling)) sibling = sibling.nextElementSibling;
+      return sibling;
+    }
+
+    const roles = new WeakMap();
+    function claim(el, role) {
+      const held = roles.get(el) ?? new Set();
+      if (held.has(role)) return false;
+      held.add(role);
+      roles.set(el, held);
+      return true;
+    }
+
+    const within = (root, selector) => [
+      ...(root.matches?.(selector) ? [root] : []),
+      ...root.querySelectorAll(selector),
+    ];
+
+    const css = [];
+    const wirers = [];
+    const addressable = [];
+
+    function assignIdsIn(root) {
+      for (const el of [root, ...root.querySelectorAll('*')]) {
+        if (isTransient(el) || marble.id(el)) continue;
+        if (el === root || el.matches(ADDRESSABLE)) el.setAttribute(ID, marble.newId());
+      }
+    }
+
+    // ---- grip ----
+
+    css.push(`
+      .marble-item { position: relative; }
+      .marble-item.marble-dragging { opacity: .4; }
+      /* Margin furniture.
+         Laid out against the item's own left edge rather than a fixed offset,
+         so one row of controls ends the same distance from the text whatever
+         is holding it — and a grip with one button lines up with a grip with
+         two. Side by side, not stacked: stacking put the delete button down
+         beside the second line of whatever it deletes. */
+      .marble-item { position: relative; }
+      .marble-item.marble-dragging { opacity: .4; }
+      .marble-grip {
+        position: absolute; left: var(--lane); top: 0;
+        display: flex; flex-direction: row; gap: 1px;
+        opacity: 0;
+        transition: opacity var(--out) var(--ease);
+      }
+      .marble-item:hover > .marble-grip, .marble-grip:focus-within {
+        opacity: 1;
+        transition-duration: var(--in);
+      }
+      .marble-btn {
+        display: grid; place-items: center;
+        width: 1rem; height: 1.15rem; padding: 0; border: 0; border-radius: 4px;
+        background: none; color: var(--ink-1); opacity: .55;
+        font: 400 13px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+        cursor: pointer;
+        transition:
+          opacity var(--out) var(--ease),
+          color var(--out) var(--ease),
+          background-color var(--out) var(--ease);
+      }
+      .marble-btn:hover {
+        opacity: 1;
+        color: var(--ink-3);
+        background: var(--tint-2);
+        transition-duration: var(--in);
+      }
+      .marble-btn:focus-visible { opacity: 1; outline: 2px solid #5b8def; outline-offset: 1px; }
+      .marble-handle { font-size: 14px; }
+      .marble-remove { font-size: 15px; }
+      @media print { .marble-grip { display: none !important; } }
+    `);
+
+    function grip(item) {
+      let grip = item.querySelector(':scope > .marble-grip');
+      if (!grip) {
+        grip = document.createElement('div');
+        grip.className = 'marble-grip';
+        grip.setAttribute(TRANSIENT, '');
+        grip.setAttribute('contenteditable', 'false');
+        item.prepend(grip);
+        item.classList.add('marble-item');
+      }
+      return grip;
+    }
+
+    // ---- editable ----
+
+    marble.pageOnly('contenteditable', 'spellcheck');
+    addressable.push('[data-marble-editable]');
+    wirers.push(wireEditable);
+
+    function wireEditable(root) {
+      for (const el of within(root, '[data-marble-editable]')) {
+        if (!claim(el, 'editable')) continue;
+
+        el.setAttribute('contenteditable', 'plaintext-only');
+        if (el.contentEditable !== 'plaintext-only') el.setAttribute('contenteditable', 'true');
+        el.spellcheck = false;
+
+        let prior = null;
+        el.addEventListener('focus', () => {
+          prior = marble.text(el);
+        });
+        el.addEventListener('input', () => {
+          const id = marble.id(el);
+          const text = marble.text(el);
+          const op = { type: 'setText', id, text };
+          if (prior !== null && text !== prior) {
+            marble.record(
+              { redo: [op], undo: [{ type: 'setText', id, text: prior }] },
+              { coalesce: true },
+            );
+          }
+          marble.op(op);
+        });
+        el.addEventListener('blur', () => {
+          prior = null;
+          marble.flush();
+        });
+
+        el.addEventListener('keydown', (event) => {
+          if (event.key === 'Escape' || (event.key === 'Enter' && !event.shiftKey)) {
+            event.preventDefault();
+            el.blur();
+          }
+        });
+      }
+    }
+
+    // ---- removable ----
+
+    // Muted rather than alarm-red: it is an undoable delete, not a warning.
+    css.push(`.marble-remove:hover { color: #9c5b57; background: rgba(156, 91, 87, .10); }`);
+    addressable.push('[data-marble-removable]');
+    wirers.push(wireRemovable);
+
+    function wireRemovable(root) {
+      for (const el of within(root, '[data-marble-removable]')) {
+        if (!claim(el, 'removable')) continue;
+
+        const button = document.createElement('button');
+        button.className = 'marble-btn marble-remove';
+        button.setAttribute(TRANSIENT, '');
+        button.setAttribute('aria-label', 'Delete');
+        button.title = 'Delete';
+        button.textContent = '×';
+        button.addEventListener('click', () => {
+          const id = marble.id(el);
+          const inverse = marble.invert({ type: 'remove', id });
+          el.remove();
+          const op = { type: 'remove', id };
+          if (inverse) marble.record({ redo: [op], undo: [inverse] });
+          marble.op(op, { immediate: true });
+        });
+        grip(el).append(button);
+      }
+    }
+
+    // ---- sortable ----
+
+    css.push(`
+      .marble-handle { cursor: grab; }
+      .marble-handle:active { cursor: grabbing; }
+    `);
+    marble.pageOnly('draggable');
+    addressable.push('[data-marble-sortable]', '[data-marble-sortable] > *');
+    wirers.push(wireSortable);
+
+    let dragging = null;
+    let origin = null;
+
+    const group = (el) => el?.getAttribute('data-marble-sortable') ?? null;
+
+    function wireSortableItem(item) {
+      if (!claim(item, 'sortable-item')) return;
+
+      const handle = document.createElement('button');
+      handle.className = 'marble-btn marble-handle';
+      handle.setAttribute(TRANSIENT, '');
+      handle.setAttribute('draggable', 'true');
+      handle.setAttribute('aria-label', 'Reorder');
+      handle.title = 'Drag to reorder';
+      handle.textContent = '⠿';
+
+      handle.addEventListener('dragstart', (event) => {
+        dragging = item;
+        origin = { parent: item.parentElement, before: nextPersistentSibling(item) };
+        item.classList.add('marble-dragging');
+        event.dataTransfer.effectAllowed = 'move';
+        event.dataTransfer.setData('text/plain', marble.id(item));
+        event.dataTransfer.setDragImage(item, 12, 12);
+      });
+
+      handle.addEventListener('dragend', () => {
+        if (!dragging) return;
+        dragging.classList.remove('marble-dragging');
+        commitMove();
+        dragging = null;
+        origin = null;
+      });
+
+      grip(item).prepend(handle);
+    }
+
+    function wireSortable(root) {
+      for (const container of within(root, '[data-marble-sortable]')) {
+        for (const item of persistentChildren(container)) wireSortableItem(item);
+        if (!claim(container, 'sortable')) continue;
+
+        container.addEventListener('dragover', (event) => {
+          if (!dragging || group(container) !== group(origin.parent)) return;
+          event.stopPropagation();
+          event.preventDefault();
+          event.dataTransfer.dropEffect = 'move';
+
+          const target = persistentChildren(container)
+            .filter((child) => child !== dragging)
+            .find((child) => {
+              const rect = child.getBoundingClientRect();
+              return event.clientY < rect.top + rect.height / 2;
+            });
+
+          const settled =
+            dragging.parentElement === container &&
+            (target ?? null) === nextPersistentSibling(dragging);
+          if (!settled) container.insertBefore(dragging, target ?? null);
+        });
+
+        container.addEventListener('drop', (event) => event.preventDefault());
+      }
+    }
+
+    function commitMove() {
+      const parent = dragging.parentElement;
+      const before = nextPersistentSibling(dragging);
+      if (parent === origin.parent && before === origin.before) return;
+
+      const op = {
+        type: 'move',
+        id: marble.id(dragging),
+        parentId: marble.id(parent),
+        beforeId: marble.id(before),
+      };
+      const inverse = {
+        type: 'move',
+        id: marble.id(dragging),
+        parentId: marble.id(origin.parent),
+        beforeId: marble.id(origin.before),
+      };
+      marble.record({ redo: [op], undo: [inverse] });
+      marble.op(op, { immediate: true });
+    }
+
+    // ---- add ----
+
+    // A CV entry has a shape worth filling in rather than a blank to type over,
+    // so the generic "clone a template and let them retype it" adder is
+    // replaced by a composer: a button opens a small form, the form fills the
+    // document's own <template>, and it lands as one insert at the top of the
+    // list. The templates stay the authority on structure — the form only knows
+    // which slots to write, by class.
+    //
+    // Everything the form draws is transient. A half-typed paper is not part of
+    // the CV, and nothing about the act of adding one belongs in the diff.
+
+    css.push(`
+      .cv-form {
+        position: absolute; z-index: 60; width: 25rem; max-width: calc(100vw - 2rem);
+        padding: .7rem; border: 1px solid rgba(0,0,0,.14); border-radius: 9px;
+        background: #fff; box-shadow: 0 8px 30px rgba(0,0,0,.16);
+        font: 12px/1.4 system-ui, sans-serif; color: #111;
+        display: grid; grid-template-columns: 5.2rem 1fr; gap: .32rem .5rem; align-items: center;
+      }
+      .cv-form h4 { grid-column: 1 / -1; margin: 0 0 .1rem; font-size: 11px; letter-spacing: .06em;
+        text-transform: uppercase; color: rgba(0,0,0,.45); font-weight: 600; }
+      .cv-form label { color: rgba(0,0,0,.55); }
+      .cv-form input, .cv-form select {
+        width: 100%; padding: .3rem .4rem; border: 1px solid rgba(0,0,0,.18);
+        border-radius: 5px; font: 12px/1.3 system-ui, sans-serif; background: #fff; color: #111;
+      }
+      .cv-form input:focus, .cv-form select:focus { outline: 2px solid #5b8def; outline-offset: -1px; }
+      .cv-form .cv-actions { grid-column: 1 / -1; display: flex; justify-content: flex-end; gap: .4rem; margin-top: .3rem; }
+      .cv-form .cv-actions button {
+        padding: .35rem .7rem; border: 1px solid rgba(0,0,0,.16); border-radius: 6px;
+        background: #fff; font: 500 12px/1 system-ui, sans-serif; cursor: pointer;
+      }
+      .cv-form .cv-actions .cv-go { background: #111; border-color: #111; color: #fff; }
+      .cv-form .cv-key { color: rgba(0,0,0,.45); font: 500 12px ui-monospace, SFMono-Regular, Menlo, monospace; }
+      @media print { .cv-form { display: none !important; } }
+    `);
+
+    wirers.push(wireComposers);
+
+    // What each form asks for. `slot` is the class the value is written into
+    // inside the cloned template; a field with no slot is only used to build
+    // another one.
+    const FORMS = {
+      pub: [
+        { name: 'year', label: 'Year', type: 'number' },
+        { name: 'title', label: 'Title', slot: '.title' },
+        { name: 'authors', label: 'Authors', slot: '.authors' },
+        { name: 'preset', label: 'Venue', type: 'preset' },
+        { name: 'venue', label: '', slot: '.venue' },
+        { name: 'award', label: 'Award', slot: '.award', optional: true },
+      ],
+      exp: [
+        { name: 'org', label: 'Organization', slot: '.org' },
+        { name: 'when', label: 'Dates', slot: ':scope > .row:first-child > .r' },
+        { name: 'role', label: 'Role', slot: ':scope > .row:nth-child(2) > :first-child' },
+        { name: 'where', label: 'Location', slot: ':scope > .row:nth-child(2) > .r' },
+        { name: 'sup', label: 'Supervisor', slot: '.sup', optional: true },
+      ],
+      talk: [
+        { name: 'org', label: 'Venue', slot: '.org' },
+        { name: 'when', label: 'Date', slot: '.r' },
+        { name: 'title', label: 'Title', slot: '.talk' },
+      ],
+      line: [
+        { name: 'left', label: 'Description', slot: ':scope > :first-child' },
+        { name: 'right', label: 'Right', slot: ':scope > .r', optional: true },
+      ],
+    };
+
+    // Venue boilerplate, by reference prefix. {y} is the year off the form. The
+    // preset only fills the venue box — what actually lands is whatever is in
+    // that box when you hit Add, so an unlisted venue is just typing.
+    const VENUES = {
+      C: [
+        ['UIST', 'UIST {y}: Proceedings of the {y} ACM Symposium on User Interface Software and Technology'],
+        ['CHI', 'CHI {y}: Proceedings of the {y} CHI Conference on Human Factors in Computing Systems'],
+        ['IUI', 'IUI {y}: Proceedings of the {y} ACM Conference on Intelligent User Interfaces'],
+        ['ICER', 'ICER {y}: Proceedings of the ACM Conference on International Computing Education Research'],
+        ['CSCW', 'CSCW {y}: Proceedings of the ACM on Human-Computer Interaction'],
+        ['DIS', 'DIS {y}: Proceedings of the {y} ACM Designing Interactive Systems Conference'],
+        ['C&C', 'C&C {y}: Proceedings of the {y} ACM Conference on Creativity and Cognition'],
+        ['VL/HCC', 'VL/HCC {y}: IEEE Symposium on Visual Languages and Human-Centric Computing'],
+      ],
+      R: [['arXiv', '{y} - arXiv:']],
+      P: [
+        ['UIST Posters', 'UIST {y} Posters'],
+        ['UIST Demos', 'UIST {y} Demos'],
+        ['CHI Workshop', 'CHI {y} Workshop on '],
+        ['CHI Late-Breaking Work', 'CHI {y} Extended Abstracts (Late-Breaking Work)'],
+        ['Sensemaking Workshop', 'CHI {y} Sensemaking Workshop'],
+      ],
+      A: [['US Patent App.', 'US Patent App. ']],
+    };
+
+    // The next [C8] is read off the keys already in the document rather than
+    // stored anywhere. A counter would be the same fact in a second place, and
+    // it would be wrong the moment an entry was deleted by hand.
+    function nextKey(prefix) {
+      let top = 0;
+      for (const key of document.querySelectorAll('.pub > .key')) {
+        const found = new RegExp(`\\[${prefix}(\\d+)\\]`).exec(key.textContent ?? '');
+        if (found) top = Math.max(top, Number(found[1]));
+      }
+      return `${prefix}${top + 1}`;
+    }
+
+    // The owner's name is the masthead's, read at compose time — so a CV that
+    // gets renamed keeps bolding the right person without this knowing anything.
+    const owner = () => document.querySelector('.name')?.textContent?.trim() || '';
+
+    const escapeHtml = (s) =>
+      s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+    // "A, Bryan Min, B" becomes three nodes so the name can be bold and each
+    // run stays separately editable — a <strong> inside one editable would be
+    // flattened by the first keystroke.
+    function authorsHtml(text) {
+      const me = owner();
+      const at = me ? text.indexOf(me) : -1;
+      const span = (t) =>
+        `<span data-marble-id="${marble.newId()}" data-marble-editable>${escapeHtml(t)}</span>`;
+      if (at === -1) return span(text);
+      const out = [];
+      if (at > 0) out.push(span(text.slice(0, at)));
+      out.push(`<strong data-marble-id="${marble.newId()}" data-marble-editable>${escapeHtml(me)}</strong>`);
+      const rest = text.slice(at + me.length);
+      if (rest) out.push(span(rest));
+      return out.join('');
+    }
+
+    // ---- finder ----
+    //
+    // A paper you have already published exists somewhere else in full, so
+    // typing it out field by field is copying by hand. A composer whose button
+    // carries data-cv-find opens with one loose box on top: say anything you
+    // remember about the paper and Search looks it up — your own papers first
+    // (the indexes are asked with the masthead's name as author), then
+    // everything else. Picking a hit fills the fields below; the fields are
+    // still what Add writes, so a wrong guess is one correction away.
+    //
+    // Live Format does the same while you type, without the button: the loose
+    // text is read into the entry's slots as you go, shown the way the CV
+    // will print it, and once the text points at one paper strongly enough the
+    // indexed record replaces the guess. A field you have edited by hand is
+    // yours, and nothing live writes over it.
+    //
+    // Agent search goes further than the indexes can: see "asking an agent".
+
+    css.push(`
+      .cv-form.marble-cv-find { width: 34rem; }
+      .marble-cv-find .cv-loose {
+        grid-column: 1 / -1; width: 100%; min-height: 3.6rem; resize: vertical;
+        padding: .45rem .5rem; border: 1px solid rgba(0,0,0,.18); border-radius: 6px;
+        font: 13px/1.4 system-ui, sans-serif; color: #111; background: #fff;
+      }
+      .marble-cv-find .cv-loose:focus { outline: 2px solid #5b8def; outline-offset: -1px; }
+      .marble-cv-find .cv-bar { grid-column: 1 / -1; display: flex; align-items: center; gap: .5rem; }
+      .marble-cv-find .cv-bar .cv-grow { flex: 1; }
+      .marble-cv-find .cv-live { display: inline-flex; align-items: center; gap: .4rem; cursor: pointer; color: rgba(0,0,0,.7); user-select: none; }
+      .marble-cv-find .cv-live input { position: absolute; opacity: 0; pointer-events: none; }
+      .marble-cv-find .cv-switch {
+        position: relative; width: 1.7rem; height: 1rem; border-radius: 999px;
+        background: rgba(0,0,0,.18); transition: background-color .15s ease;
+      }
+      .marble-cv-find .cv-switch::after {
+        content: ''; position: absolute; top: 2px; left: 2px; width: calc(1rem - 4px); height: calc(1rem - 4px);
+        border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.25); transition: transform .15s ease;
+      }
+      .marble-cv-find .cv-live input:checked + .cv-switch { background: #5b8def; }
+      .marble-cv-find .cv-live input:checked + .cv-switch::after { transform: translateX(.7rem); }
+      .marble-cv-find .cv-live input:focus-visible + .cv-switch { outline: 2px solid #5b8def; outline-offset: 2px; }
+      .marble-cv-find .cv-agent {
+        padding: .35rem .7rem; border: 1px solid rgba(0,0,0,.2); border-radius: 6px; background: #fff; color: #111;
+        font: 500 12px/1 system-ui, sans-serif; cursor: pointer;
+      }
+      .marble-cv-find .cv-agent:hover { background: rgba(17,17,20,.04); }
+      .marble-cv-find .cv-agent[data-running] { border-color: #5b8def; color: #2f5fc4; }
+      .marble-cv-find .cv-status[data-tone="busy"]::before {
+        content: ''; display: inline-block; width: .5rem; height: .5rem; margin-right: .4rem; border-radius: 50%;
+        background: #5b8def; vertical-align: .05rem; animation: cv-pulse 1s ease-in-out infinite alternate;
+      }
+      @keyframes cv-pulse { from { opacity: .25; } to { opacity: 1; } }
+      .marble-cv-find .cv-search {
+        padding: .35rem .7rem; border: 1px solid #111; border-radius: 6px; background: #111; color: #fff;
+        font: 500 12px/1 system-ui, sans-serif; cursor: pointer;
+      }
+      .marble-cv-find .cv-search[disabled] { opacity: .5; cursor: default; }
+      .marble-cv-find .cv-status { grid-column: 1 / -1; min-height: 1em; color: rgba(0,0,0,.55); }
+      .marble-cv-find .cv-status:empty { display: none; }
+      .marble-cv-find .cv-status[data-tone="good"] { color: #1d6b3a; }
+      .marble-cv-find .cv-status[data-tone="warn"] { color: #8a5a00; }
+      .marble-cv-find .cv-hits { grid-column: 1 / -1; display: grid; gap: .3rem; max-height: 17rem; overflow: auto; }
+      .marble-cv-find .cv-hits:empty { display: none; }
+      .marble-cv-find .cv-hit {
+        display: block; width: 100%; text-align: left; padding: .45rem .55rem; cursor: pointer;
+        border: 1px solid rgba(0,0,0,.12); border-radius: 7px; background: #fff; color: #111;
+      }
+      .marble-cv-find .cv-hit:hover { background: rgba(17,17,20,.04); }
+      .marble-cv-find .cv-hit[aria-pressed="true"] { border-color: #5b8def; box-shadow: 0 0 0 1px #5b8def inset; }
+      .marble-cv-find .cv-meta { display: flex; gap: .4rem; margin-top: .25rem; font: 11px/1.2 system-ui, sans-serif; color: rgba(0,0,0,.5); }
+      .marble-cv-find .cv-mine { color: #1d6b3a; font-weight: 600; }
+      .marble-cv-find .cv-preview {
+        grid-column: 1 / -1; display: grid; grid-template-columns: 4.6rem 1fr; gap: .6rem;
+        padding: .55rem .6rem; border-radius: 7px; background: rgba(17,17,20,.04);
+      }
+      .marble-cv-find .cv-preview[hidden] { display: none; }
+      .cv-entry { font-size: 12.5px; line-height: 1.35; }
+      .cv-entry p { margin: 0; }
+      .cv-entry .t { font-weight: 700; }
+      .cv-entry .v { font-style: italic; }
+      .cv-preview .k { text-align: right; white-space: nowrap; font-size: 12.5px; }
+      .marble-cv-find input[data-live] { background: #f3f7ff; }
+      .marble-cv-find .cv-rule { grid-column: 1 / -1; height: 1px; background: rgba(0,0,0,.08); margin: .2rem 0; }
+    `);
+
+    const STOP = new Set([
+      'the', 'and', 'for', 'with', 'from', 'into', 'via', 'paper', 'using', 'our', 'about',
+      'that', 'this', 'its', 'are', 'was', 'proceedings', 'conference', 'acm', 'ieee',
+      'symposium', 'annual', 'international', 'best', 'award', 'honorable', 'mention', 'demo', 'poster',
+    ]);
+    const SMALL = new Set([
+      'a', 'an', 'the', 'and', 'but', 'or', 'nor', 'for', 'so', 'yet', 'as', 'at', 'by',
+      'in', 'of', 'on', 'to', 'up', 'via', 'with', 'from', 'into', 'over', 'per', 'vs',
+    ]);
+
+    const norm = (s) =>
+      String(s ?? '').toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '')
+        .replace(/[^a-z0-9]+/g, ' ').trim();
+    const keywords = (s) => norm(s).split(' ').filter((w) => w.length > 2 && !STOP.has(w));
+    const stripTags = (s) => String(s ?? '').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+    const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+    // Title Case the way the titles already in the CV are cased: small words
+    // stay small unless they open the title or follow a colon, and a word you
+    // cased yourself (LLMs, iPhone, UIST) is left alone.
+    function titleCase(text) {
+      let opens = true;
+      return text.split(/(\s+)/).map((tok) => {
+        if (!tok.trim()) return tok;
+        const out = tok.split('-').map((part, i) => {
+          if (/[A-Z]/.test(part.slice(1)) || /\d/.test(part)) return part;
+          const lower = part.toLowerCase();
+          if (!opens && i === 0 && SMALL.has(lower.replace(/[^a-z]/g, ''))) return lower;
+          return lower.replace(/[a-z]/, (c) => c.toUpperCase());
+        }).join('-');
+        opens = /[:?!—–]$/.test(tok);
+        return out;
+      }).join('');
+    }
+
+    // The people already on the CV. Typing "with haijun" means Haijun Xia,
+    // and the only place that is written down is here.
+    function knownPeople() {
+      const seen = new Map();
+      for (const line of document.querySelectorAll('.sheet .authors')) {
+        for (const name of splitNames(marble.text(line))) {
+          if (name.split(' ').length >= 2) seen.set(norm(name), name);
+        }
+      }
+      return [...seen.values()];
+    }
+
+    const splitNames = (s) =>
+      String(s).split(/\s*(?:,|;|&|\band\b)\s*/i).map((n) => n.trim()).filter(Boolean);
+
+    function sameName(a, b) {
+      const x = norm(a).split(' '), y = norm(b).split(' ');
+      if (!x[0] || !y[0]) return false;
+      if (x.join(' ') === y.join(' ')) return true;
+      return x.at(-1) === y.at(-1) && x[0][0] === y[0][0];
+    }
+    const isMe = (name) => Boolean(owner()) && sameName(name, owner());
+
+    // A name as typed becomes a name as printed: you, a co-author the CV
+    // already knows (by full name, or by a first or last name only one of them
+    // has), or failing both, the typed name capitalised.
+    function canonName(raw, people) {
+      const typed = raw.trim();
+      if (/^(me|i|myself)$/i.test(typed)) return owner();
+      const n = norm(typed);
+      if (!n) return '';
+      if (isMe(typed) || n === norm(owner()).split(' ')[0]) return owner();
+      const exact = people.find((p) => norm(p) === n || sameName(p, typed));
+      if (exact) return exact;
+      const parts = n.split(' ');
+      if (parts.length === 1) {
+        const by = people.filter((p) => norm(p).split(' ').includes(n));
+        if (by.length === 1) return by[0];
+      }
+      return typed.split(/\s+/).map((w) => (/[A-Z]/.test(w) ? w : w.replace(/[a-z]/, (c) => c.toUpperCase()))).join(' ');
+    }
+
+    const joinAuthors = (names) => {
+      const list = names.map((n) => (isMe(n) ? owner() : n)).filter(Boolean);
+      return list.length === 2 ? list.join(' and ') : list.join(', ');
+    };
+
+    const VENUE_HINTS = [
+      [/user interface software/i, 'UIST'],
+      [/human factors in computing/i, 'CHI'],
+      [/intelligent user interfaces/i, 'IUI'],
+      [/computing education research/i, 'ICER'],
+      [/designing interactive systems/i, 'DIS'],
+      [/creativity (and|&) cognition/i, 'C&C'],
+      [/visual languages/i, 'VL/HCC'],
+      [/computer.supported cooperative|acm on human.computer interaction/i, 'CSCW'],
+      [/\barxiv\b/i, 'arXiv'],
+    ];
+
+    // Every label the presets know, longest first so "CHI Workshop" is found
+    // before "CHI" inside it.
+    const venueLabels = (prefix) =>
+      [...new Set([...(VENUES[prefix] ?? []), ...Object.values(VENUES).flat()].map((v) => v[0]))]
+        .sort((a, b) => b.length - a.length);
+
+    function acronymIn(text, prefix) {
+      if (!text) return null;
+      for (const label of venueLabels(prefix)) {
+        const re = new RegExp(`(^|[^A-Za-z0-9])${escapeRe(label)}(?=[^A-Za-z0-9]|$)`, 'i');
+        const m = re.exec(text);
+        if (m) return { label, at: m.index + m[1].length, length: label.length };
+      }
+      return null;
+    }
+    function acronymOf(...names) {
+      for (const name of names.flat()) {
+        if (!name) continue;
+        const bare = String(name).replace(/\s*'?\d{2,4}\s*$/, '').trim();
+        const known = venueLabels('').find((l) => l.toLowerCase() === bare.toLowerCase());
+        if (known) return known;
+        const hint = VENUE_HINTS.find(([re]) => re.test(name));
+        if (hint) return hint[1];
+      }
+      return null;
+    }
+
+    // The venue line is written the way the section's presets write it, so a
+    // found paper reads like the ones typed in by hand.
+    function venueLine(prefix, { acronym, year, name, arxiv }) {
+      const y = year ? String(year) : '';
+      const preset = (VENUES[prefix] ?? []).find(([label]) => label.toLowerCase() === (acronym ?? '').toLowerCase());
+      if (preset) {
+        const line = preset[1].replaceAll('{y}', y);
+        return arxiv && /arXiv:$/.test(line) ? line + arxiv : line;
+      }
+      const long = stripTags(name).replace(/^proceedings of the\s+/i, (m) => m[0].toUpperCase() + m.slice(1));
+      if (acronym && long && !long.startsWith(acronym)) return `${acronym}${y ? ` ${y}` : ''}: ${long}`;
+      if (acronym) return `${acronym}${y ? ` ${y}` : ''}`;
+      return long;
+    }
+
+    // ---- reading loose text ----
+    //
+    // No model is at hand in a page, so this is a reader for the ways people
+    // actually jot a paper down: a pasted ACM reference, a quoted title,
+    // "with so-and-so", a venue and a year somewhere, an award. What it cannot
+    // place is taken as the title. It is a first guess; the lookup is the
+    // second, better one.
+
+    function readLoose(text, prefix) {
+      const out = {};
+      const people = knownPeople();
+      let rest = ` ${String(text).replace(/\s+/g, ' ').trim()} `;
+      const take = (re) => {
+        const m = re.exec(rest);
+        if (m) rest = rest.slice(0, m.index) + ' ' + rest.slice(m.index + m[0].length);
+        return m;
+      };
+
+      // "A, B, and C. 2025. Title. In Proceedings of …"
+      const acm = /^\s*(.+?)\.\s+((?:19|20)\d{2})\.\s+(.+?)[.?!]\s+In\s+(.+?)\s*$/.exec(rest);
+      if (acm) {
+        out.authors = splitNames(acm[1].replace(/,?\s+and\s+/g, ', ')).map((n) => canonName(n, people));
+        out.year = acm[2];
+        out.title = acm[3].trim();
+        rest = ` ${acm[4]} `;
+      }
+
+      const quoted = take(/["“”‘’]([^"“”]{4,}?)["“”‘’]/);
+      if (quoted) out.title = quoted[1].trim();
+
+      const award = take(/best\s+(?:paper|demo|poster|artifact|short\s+paper)(?:\s+honou?rable\s+mention)?(?:\s+award)?|honou?rable\s+mention(?:\s+award)?/i);
+      if (award) {
+        const said = titleCase(award[0].toLowerCase().replace(/honour/, 'honor'));
+        out.award = `🏅${said}${/award$/i.test(said) ? '' : ' Award'}`;
+      }
+
+      const venue = acronymIn(rest, prefix);
+      if (venue) {
+        out.acronym = venue.label;
+        rest = rest.slice(0, venue.at) + ' ' + rest.slice(venue.at + venue.length);
+      } else {
+        const hint = VENUE_HINTS.find(([re]) => re.test(rest));
+        if (hint) out.acronym = hint[1];
+      }
+      rest = rest.replace(/\bin\s+proceedings\s+of\b.*$/i, ' ');
+
+      if (!out.year) {
+        const year = take(/\b(?:19|20)\d{2}\b/) ?? take(/'(\d{2})\b/);
+        if (year) out.year = year[1] ? `20${year[1]}` : year[0];
+      }
+
+      if (!out.authors) {
+        // "by …" and "authors: …" always introduce people. "with …" does too
+        // often to trust blindly — "Sensemaking with Large Language Models" —
+        // so it counts only after a break, or when it names someone the CV
+        // already knows.
+        const ended = String.raw`(?=\s+(?:at|in|for|published|appeared|accepted|won|got)\s|[;|()\n.]|\s*$)`;
+        const firm = new RegExp(String.raw`(?:^|\s)(?:by|authors?:|co-?authors?:?|w\/)\s+(.+?)${ended}`, 'i').exec(rest);
+        const soft = new RegExp(String.raw`(^|[,;—–\-]\s*|\s)with\s+(.+?)${ended}`, 'i').exec(rest);
+        let found = null;
+        if (firm) found = { m: firm, names: firm[1] };
+        else if (soft) {
+          const names = splitNames(soft[2]);
+          const knows = names.some((n) => /^(me|i)$/i.test(n) || people.some((p) => canonName(n, people) === p));
+          if (soft[1].trim() || knows) found = { m: soft, names: soft[2] };
+        }
+        if (found) {
+          out.authors = splitNames(found.names).map((n) => canonName(n, people)).filter(Boolean);
+          rest = rest.slice(0, found.m.index) + ' ' + rest.slice(found.m.index + found.m[0].length);
+        }
+      }
+      if (out.authors && owner() && !out.authors.some(isMe)) out.authors.unshift(owner());
+
+      if (!out.title) {
+        const left = rest
+          .replace(/\b(?:my|our|a|the)?\s*(?:(?:new|recent|latest|upcoming)\s+)?(?:paper|work|project|submission)\b\s*(?:on|about|called|titled|named)?/gi, ' ')
+          .replace(/\b(?:titled|called|named|published|accepted|appeared|at|in)\s*$/i, ' ')
+          .replace(/\s+/g, ' ')
+          .replace(/^[\s,;:.\-–—]+|[\s,;.\-–—]+$/g, '')
+          .replace(/\s+(?:at|in|for|published|accepted)$/i, '');
+        if (left) out.title = left;
+      }
+      if (out.title) out.title = titleCase(out.title.replace(/\s+/g, ' ').trim());
+      return out;
+    }
+
+    // ---- looking it up ----
+
+    async function getJson(url, ms = 9000) {
+      const ac = new AbortController();
+      const timer = setTimeout(() => ac.abort(), ms);
+      try {
+        const res = await fetch(url, { signal: ac.signal });
+        if (!res.ok) throw new Error(res.status === 429 ? 'busy' : `HTTP ${res.status}`);
+        return await res.json();
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+
+    const fromCrossref = (data) =>
+      (data?.message?.items ?? [])
+        .filter((it) => !['component', 'peer-review', 'dataset', 'grant'].includes(it.type))
+        .map((it) => ({
+          title: stripTags(it.title?.[0]),
+          authors: (it.author ?? []).map((a) => [a.given, a.family].filter(Boolean).join(' ') || a.name).filter(Boolean),
+          year: it.issued?.['date-parts']?.[0]?.[0] ?? it.published?.['date-parts']?.[0]?.[0] ?? null,
+          acronym: acronymOf(it.event?.acronym, it['container-title']?.[0], it.event?.name),
+          name: it['container-title']?.[0] ?? it.event?.name ?? '',
+          doi: it.DOI ?? null,
+        }));
+
+    const fromOpenAlex = (data) =>
+      (data?.results ?? []).map((w) => {
+        const where = w.primary_location ?? {};
+        const name = where.source?.display_name ?? where.raw_source_name ?? '';
+        return {
+          title: stripTags(w.title),
+          authors: (w.authorships ?? []).map((a) => a.author?.display_name).filter(Boolean),
+          year: w.publication_year ?? null,
+          acronym: acronymOf(name),
+          name,
+          doi: w.doi ? w.doi.replace(/^https?:\/\/doi\.org\//, '') : null,
+        };
+      });
+
+    const fromSemanticScholar = (data) =>
+      (data?.data ?? []).map((p) => ({
+        title: stripTags(p.title),
+        authors: (p.authors ?? []).map((a) => a.name).filter(Boolean),
+        year: p.year ?? null,
+        acronym: acronymOf(p.publicationVenue?.alternate_names ?? [], p.venue, p.publicationVenue?.name),
+        name: p.venue || p.publicationVenue?.name || '',
+        doi: p.externalIds?.DOI ?? null,
+        arxiv: p.externalIds?.ArXiv ?? null,
+      }));
+
+    // How well a record answers what was typed: mostly how much of its title
+    // you said, a little for the year and venue agreeing, and a real lift if
+    // it is yours — this is a CV.
+    function rank(hit, text, guess) {
+      // Years and venue names say where, not what, so they do not count
+      // towards a title match.
+      const venues = new Set(venueLabels('').map(norm));
+      const said = new Set(keywords(text).filter((w) => !/^\d+$/.test(w) && !venues.has(w)));
+      const title = keywords(hit.title);
+      if (!title.length) return 0;
+      const inTitle = title.filter((w) => said.has(w)).length;
+      const overlap = inTitle / Math.max(1, Math.min(said.size, title.length));
+      const cover = inTitle / title.length;
+      const surnames = hit.authors.filter((a) => said.has(norm(a).split(' ').at(-1))).length;
+      let score = 0.6 * overlap + 0.4 * cover + Math.min(0.15, 0.05 * surnames);
+      if (hit.mine) score += 0.3;
+      if (guess.year && String(hit.year) === String(guess.year)) score += 0.05;
+      if (guess.acronym && hit.acronym === guess.acronym) score += 0.05;
+      return score;
+    }
+
+    async function lookUp(text, prefix) {
+      const guess = readLoose(text, prefix);
+      const me = owner();
+      const loose = encodeURIComponent(text.slice(0, 300));
+      const titled = encodeURIComponent(
+        (guess.title && guess.title.split(' ').length >= 3 ? guess.title : text).slice(0, 300),
+      );
+      const asks = [
+        ['Crossref', fromCrossref,
+          `https://api.crossref.org/works?query.bibliographic=${loose}` +
+          `${me ? `&query.author=${encodeURIComponent(me)}` : ''}` +
+          `&rows=8&select=DOI,title,author,container-title,event,issued,published,type`],
+        ['Semantic Scholar', fromSemanticScholar,
+          `https://api.semanticscholar.org/graph/v1/paper/search?query=${titled}&limit=6` +
+          `&fields=title,authors,year,venue,publicationVenue,externalIds`],
+        ['OpenAlex', fromOpenAlex,
+          `https://api.openalex.org/works?search=${titled}&per-page=6` +
+          `&select=title,publication_year,authorships,primary_location,doi`],
+      ];
+      const settled = await Promise.allSettled(asks.map(([, read, url]) => getJson(url).then(read)));
+
+      const failed = [];
+      const byTitle = new Map();
+      settled.forEach((result, i) => {
+        const source = asks[i][0];
+        if (result.status === 'rejected') { failed.push(source); return; }
+        for (const hit of result.value) {
+          if (!hit.title) continue;
+          hit.mine = hit.authors.some(isMe);
+          const key = norm(hit.title);
+          const held = byTitle.get(key);
+          if (!held) { byTitle.set(key, { ...hit, sources: [source] }); continue; }
+          // The same paper from two indexes: keep whichever knows its venue,
+          // and remember everyone who had it.
+          held.sources.push(source);
+          held.mine ||= hit.mine;
+          if (!held.acronym && hit.acronym) Object.assign(held, { ...hit, sources: held.sources, mine: held.mine });
+          held.doi ||= hit.doi;
+          held.arxiv ||= hit.arxiv;
+        }
+      });
+
+      const hits = [...byTitle.values()]
+        .map((hit) => ({ ...hit, score: rank(hit, text, guess) }))
+        // A record sharing one word with what you typed is noise, not a lead.
+        .filter((hit) => hit.score >= 0.4)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 6);
+      return { hits, failed, guess, asked: asks.length };
+    }
+
+    // ---- asking an agent ----
+    //
+    // The indexes answer in a second but only know what they index. For
+    // anything else the finder hands the question to one of the drive's own
+    // agents, which can search the web the way you would — Google Scholar, the
+    // ACM Digital Library, DBLP, arXiv, your site — and read what it finds.
+    // It is a turn like any other: it runs in one conversation kept for this
+    // ("CV · Paper finder"), so you can open it beside the drive and watch, and
+    // what it sends back is a list of papers, not an edit. The page shows each
+    // step as it happens and puts the papers in the same list Search fills.
+
+    const AGENT_KEY = 'cv:finder-agent';
+    const AGENT_SEQ = 'cv:finder-agent-seq';
+    const remembered = (key) => { try { return localStorage.getItem(key); } catch { return null; } };
+    const remember = (key, value) => { try { localStorage.setItem(key, String(value)); } catch {} };
+
+    async function drive(url, init = {}) {
+      const res = await fetch(url, {
+        credentials: 'same-origin',
+        ...init,
+        headers: { 'Content-Type': 'application/json', ...(init.headers ?? {}) },
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) throw Object.assign(new Error(body.error || `HTTP ${res.status}`), { status: res.status });
+      return body;
+    }
+
+    async function finderConversation() {
+      const kept = remembered(AGENT_KEY);
+      if (kept) {
+        try {
+          const { meta } = await drive(`/agent/conversations/${kept}?after=${Number(remembered(AGENT_SEQ)) || 0}`);
+          if (meta && !meta.archived) return kept;
+        } catch (err) {
+          if (err.status !== 404) throw err;
+        }
+      }
+      // Sonnet, medium effort: a lookup wants to be quick more than it wants
+      // to be deep, and a wrong answer is one click from being replaced.
+      const made = await drive('/agent/conversations', {
+        method: 'POST',
+        body: JSON.stringify({ provider: 'claude-subscription', model: 'sonnet', effort: 'medium' }),
+      });
+      await drive(`/agent/conversations/${made.id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ title: 'CV · Paper finder' }),
+      }).catch(() => {});
+      remember(AGENT_KEY, made.id);
+      remember(AGENT_SEQ, 0);
+      return made.id;
+    }
+
+    function agentPrompt(text) {
+      const me = owner() || 'the CV’s owner';
+      const contact = [...document.querySelectorAll('.contact > *')].map((el) => marble.text(el)).filter(Boolean).join(', ');
+      return [
+        `Find a paper for ${me}'s CV${contact ? ` (${contact})` : ''}. What they typed about it:`,
+        `"""${text}"""`,
+        `Search the web for it — Google Scholar, the ACM Digital Library, DBLP, arXiv, Semantic Scholar, and ${me}'s own site — and work out which paper they mean. Prefer papers ${me} is an author of.`,
+        'Do not edit any document or file. Do not ask questions. Reply with nothing but one fenced ```json block of this shape:',
+        '{"papers":[{"title":"","authors":["Given Family"],"year":2025,"venue_acronym":"UIST","venue":"full proceedings or journal name","doi":"","url":"","award":"","mine":true}]}',
+        'Best match first, at most 5. Authors complete and in published order. "award" only if the paper won one (e.g. "Best Paper Award"), otherwise "".',
+      ].join('\n\n');
+    }
+
+    function papersIn(texts) {
+      for (const text of [...texts].reverse()) {
+        const fenced = /```(?:json)?\s*([\s\S]*?)```/.exec(text);
+        const raw = fenced ? fenced[1] : text.slice(text.indexOf('{'), text.lastIndexOf('}') + 1);
+        try {
+          const parsed = JSON.parse(raw);
+          const list = Array.isArray(parsed) ? parsed : parsed.papers;
+          if (Array.isArray(list)) return list;
+        } catch {}
+      }
+      return null;
+    }
+
+    const hostOf = (url) => { try { return new URL(url).hostname.replace(/^www\./, ''); } catch { return ''; } };
+
+    // What the agent is doing, in words: its searches and the pages it reads.
+    function describeStep(event) {
+      if (event.type === 'turn.queued') return 'Waiting for the agent…';
+      if (event.type === 'turn.started') return 'The agent is on it…';
+      if (event.type !== 'tool.call') return null;
+      const input = event.input ?? {};
+      if (/^web_?search$/i.test(event.name) && input.query) return `Agent searching: “${input.query}”`;
+      if (/^web_?fetch$/i.test(event.name) && input.url) return `Agent reading ${hostOf(input.url)}…`;
+      return 'The agent is working…';
+    }
+
+    // Starts the turn and follows it to the end. `onStep` hears progress;
+    // the promise settles with the papers, or throws with what went wrong.
+    async function askAgent(text, { onStep, onTurn, stillWanted }) {
+      const id = await finderConversation();
+      const { turnId } = await drive(`/agent/conversations/${id}/turns`, {
+        method: 'POST',
+        body: JSON.stringify({
+          prompt: agentPrompt(text),
+          context: { viewing: marble.app, target: marble.app, surface: 'chat' },
+        }),
+      });
+      onTurn?.(turnId);
+
+      let after = Number(remembered(AGENT_SEQ)) || 0;
+      const said = [];
+      const started = Date.now();
+      for (;;) {
+        await new Promise((resolve) => setTimeout(resolve, 1200));
+        if (!stillWanted()) {
+          drive(`/agent/turns/${turnId}/cancel`, { method: 'POST' }).catch(() => {});
+          throw Object.assign(new Error('stopped'), { stopped: true });
+        }
+        if (Date.now() - started > 5 * 60_000) throw new Error('the agent took longer than five minutes');
+        const { events = [] } = await drive(`/agent/conversations/${id}?after=${after}`);
+        for (const event of events) {
+          after = Math.max(after, event.seq ?? 0);
+          if (event.turn !== turnId) continue;
+          const step = describeStep(event);
+          if (step) onStep(step);
+          if (event.type === 'text') said.push(String(event.text ?? ''));
+          if (event.type === 'turn.failed') throw new Error(event.error || 'the agent’s turn failed');
+          if (event.type === 'turn.removed') throw Object.assign(new Error('stopped'), { stopped: true });
+          if (event.type === 'turn.completed') {
+            remember(AGENT_SEQ, after);
+            const papers = papersIn(said);
+            if (!papers) throw new Error('the agent answered, but not with a list of papers');
+            return papers;
+          }
+        }
+        remember(AGENT_SEQ, after);
+      }
+    }
+
+    const fromAgent = (papers) =>
+      papers.filter((p) => p && p.title).map((p) => {
+        const authors = (Array.isArray(p.authors) ? p.authors : splitNames(p.authors ?? '')).map(String);
+        return {
+          title: stripTags(p.title),
+          authors,
+          year: Number(p.year) || null,
+          acronym: acronymOf(p.venue_acronym, p.venue),
+          name: p.venue ?? '',
+          doi: p.doi ? String(p.doi).replace(/^https?:\/\/doi\.org\//, '') : null,
+          url: p.url || null,
+          award: p.award ? String(p.award).trim() : '',
+          mine: Boolean(p.mine) || authors.some(isMe),
+          sources: ['Agent'],
+        };
+      });
+
+    // ---- the box ----
+
+    const LIVE_KEY = 'cv:live-format';
+    const liveWanted = () => { try { return localStorage.getItem(LIVE_KEY) === '1'; } catch { return false; } };
+    const rememberLive = (on) => { try { localStorage.setItem(LIVE_KEY, on ? '1' : '0'); } catch {} };
+
+    function entryHtml({ title, authors, venue, award }, blanks = true) {
+      const me = owner();
+      let people = escapeHtml(authors ?? '');
+      if (me) people = people.replace(escapeHtml(me), `<strong>${escapeHtml(me)}</strong>`);
+      return (
+        `<p class="t">${escapeHtml(title || (blanks ? 'Title' : ''))}</p>` +
+        `<p class="a">${people}</p>` +
+        `<p class="v">${escapeHtml(venue || (blanks ? 'Venue' : ''))}</p>` +
+        (award ? `<p class="w">${escapeHtml(award)}</p>` : '')
+      );
+    }
+
+    function drawFinder({ form, inputs, prefix, key }) {
+      form.classList.add('marble-cv-find');
+      const face = getComputedStyle(document.querySelector('.sheet') ?? document.body).fontFamily;
+      const head = form.querySelector('h4');
+
+      const box = document.createElement('textarea');
+      box.className = 'cv-loose';
+      box.rows = 2;
+      box.placeholder = 'Anything about the paper — a few title words, the venue, the year, who you wrote it with. Or paste a citation.';
+      box.setAttribute('aria-label', 'Describe the paper');
+
+      const bar = document.createElement('div');
+      bar.className = 'cv-bar';
+      bar.innerHTML =
+        `<label class="cv-live" title="Format what you type into the entry as you type it">` +
+        `<input type="checkbox"><span class="cv-switch"></span>Live Format</label>` +
+        `<span class="cv-grow"></span>` +
+        `<button type="button" class="cv-agent" title="Have one of the drive’s agents search the web for it">Agent search</button>` +
+        `<button type="button" class="cv-search">Search</button>`;
+      const live = bar.querySelector('input');
+      const agentButton = bar.querySelector('.cv-agent');
+      const searchButton = bar.querySelector('.cv-search');
+
+      const status = document.createElement('div');
+      status.className = 'cv-status';
+      status.setAttribute('aria-live', 'polite');
+
+      const hitsList = document.createElement('div');
+      hitsList.className = 'cv-hits';
+
+      const preview = document.createElement('div');
+      preview.className = 'cv-preview';
+      preview.hidden = true;
+      preview.style.fontFamily = face;
+      preview.innerHTML = `<div class="k"></div><div class="cv-entry"></div>`;
+
+      const rule = document.createElement('div');
+      rule.className = 'cv-rule';
+
+      head.after(box, bar, status, hitsList, preview, rule);
+
+      const say = (text, tone = '') => { status.textContent = text; status.dataset.tone = tone; };
+
+      // What is on screen in the fields is the entry; the preview only draws it.
+      function drawPreview() {
+        const title = inputs.title.value.trim();
+        preview.hidden = !title;
+        preview.querySelector('.k').textContent = `${inputs.year.value} [${key}]`;
+        preview.querySelector('.cv-entry').innerHTML = entryHtml({
+          title, authors: inputs.authors.value.trim(), venue: inputs.venue.value.trim(), award: inputs.award.value.trim(),
+        });
+      }
+
+      // A field you typed into is yours from then on. Values set from here
+      // fire no input event, so only your own keystrokes mark one.
+      const fieldNames = ['year', 'title', 'authors', 'venue', 'award'];
+      for (const name of fieldNames) {
+        inputs[name].addEventListener('input', () => {
+          inputs[name].dataset.touched = '1';
+          delete inputs[name].dataset.live;
+          drawPreview();
+        });
+      }
+      inputs.preset?.addEventListener('change', () => { inputs.venue.dataset.touched = '1'; drawPreview(); });
+
+      // What each field holds before anything is said about the paper — and
+      // goes back to when Live Format stops seeing what it had put there.
+      const blank = { year: inputs.year.value, authors: inputs.authors.value, title: '', venue: '', award: '' };
+
+      function put(values, { force = false, clear = false } = {}) {
+        for (const name of fieldNames) {
+          const value = values[name];
+          const input = inputs[name];
+          if (value == null || value === '') {
+            if (clear && 'live' in input.dataset && !input.dataset.touched) {
+              input.value = blank[name];
+              delete input.dataset.live;
+            }
+            continue;
+          }
+          if (!force && input.dataset.touched) continue;
+          if (force) delete input.dataset.touched;
+          input.value = String(value);
+          input.dataset.live = '';
+        }
+        if (inputs.preset) {
+          const i = (VENUES[prefix] ?? []).findIndex(([label]) => label === values.acronym);
+          if (!inputs.venue.dataset.touched || force) inputs.preset.value = i >= 0 ? String(i) : '';
+        }
+        drawPreview();
+      }
+
+      function valuesFromHit(hit) {
+        return {
+          year: hit.year,
+          title: hit.title,
+          authors: joinAuthors(hit.authors),
+          venue: venueLine(prefix, hit),
+          acronym: hit.acronym,
+          award: hit.award ? `🏅${hit.award.replace(/^🏅\s*/, '')}` : null,
+        };
+      }
+
+      function valuesFromGuess(guess) {
+        const year = guess.year || inputs.year.value;
+        return {
+          year: guess.year,
+          title: guess.title,
+          authors: guess.authors ? joinAuthors(guess.authors) : null,
+          venue: guess.acronym ? venueLine(prefix, { acronym: guess.acronym, year }) : null,
+          acronym: guess.acronym,
+          award: guess.award,
+        };
+      }
+
+      function drawHits(hits, chosen) {
+        hitsList.replaceChildren(...hits.map((hit) => {
+          const values = valuesFromHit(hit);
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'cv-hit';
+          button.setAttribute('aria-pressed', String(hit === chosen));
+          button.innerHTML =
+            `<div class="cv-entry" style="font-family:${escapeHtml(face).replace(/"/g, '&quot;')}">${entryHtml(values, false)}</div>` +
+            `<div class="cv-meta">${hit.mine ? '<span class="cv-mine">Yours</span>' : ''}` +
+            `<span>${escapeHtml(String(hit.year ?? ''))}</span><span>${escapeHtml(hit.sources.join(' · '))}</span>` +
+            `${hit.doi ? `<span>doi:${escapeHtml(hit.doi)}</span>` : hit.url ? `<span>${escapeHtml(hostOf(hit.url))}</span>` : ''}</div>`;
+          button.addEventListener('click', () => {
+            const award = inputs.award.value;
+            put(valuesFromHit(hit), { force: true });
+            if (award) inputs.award.value = award;
+            for (const other of hitsList.children) other.setAttribute('aria-pressed', String(other === button));
+            say(`Filled from ${hit.sources[0]}. Check the fields, then Add.`, 'good');
+            drawPreview();
+          });
+          return button;
+        }));
+      }
+
+      function describeMiss(failed, asked) {
+        if (failed.length === asked) return 'Couldn’t reach the paper indexes. Try again, or try Agent search.';
+        const busy = failed.length ? ` (${failed.join(', ')} didn’t answer)` : '';
+        return `Nothing matched${busy}. Try the title’s most distinctive words, or Agent search.`;
+      }
+
+      let asking = 0;
+      let formatTimer = null, lookTimer = null;
+      async function search() {
+        const text = box.value.trim();
+        if (!text) { box.focus(); return; }
+        if (searchButton.disabled) return;
+        // You asked; the quiet lookup Live Format had queued is now redundant.
+        clearTimeout(lookTimer);
+        const ticket = ++asking;
+        searchButton.disabled = true;
+        say('Searching your papers, then Crossref, Semantic Scholar and OpenAlex…');
+        try {
+          const { hits, failed, asked } = await lookUp(text, prefix);
+          if (ticket !== asking) return;
+          if (!hits.length) { hitsList.replaceChildren(); say(describeMiss(failed, asked), 'warn'); return; }
+          const mine = hits.filter((h) => h.mine).length;
+          const top = hits[0];
+          drawHits(hits, top);
+          const award = inputs.award.value;
+          put(valuesFromHit(top), { force: true });
+          if (award) inputs.award.value = award;
+          say(
+            `${hits.length} match${hits.length === 1 ? '' : 'es'}${mine ? `, ${mine} yours` : ''}` +
+            `${failed.length ? ` · ${failed.join(', ')} didn’t answer` : ''}. The best is filled in — pick another to swap.`,
+            'good',
+          );
+        } catch (err) {
+          console.error('[cv] finder', err);
+          if (ticket === asking) say('The search broke. Try again.', 'warn');
+        } finally {
+          searchButton.disabled = false;
+        }
+      }
+
+      // Live: read the text into the fields at typing speed, and once it has
+      // settled for a moment, look it up quietly. A lookup only takes over
+      // when it is sure — your own paper, or a title you have nearly typed out.
+      async function lookQuietly() {
+        const text = box.value.trim();
+        if (!live.checked || keywords(text).length < 2) return;
+        const ticket = ++asking;
+        say('Looking it up…');
+        try {
+          const { hits } = await lookUp(text, prefix);
+          if (ticket !== asking || !live.checked) return;
+          const top = hits[0];
+          if (top && top.score >= (top.mine ? 0.75 : 0.95)) {
+            const guess = readLoose(text, prefix);
+            put({ ...valuesFromHit(top), award: guess.award });
+            say(`Matched ${top.mine ? 'your paper ' : ''}on ${top.sources[0]}. Search shows the others.`, 'good');
+          } else {
+            say('Formatted from what you typed. Keep going, or press Search.');
+          }
+        } catch {
+          if (ticket === asking) say('Formatted from what you typed.');
+        }
+      }
+
+      function onType() {
+        if (!live.checked) return;
+        clearTimeout(formatTimer);
+        clearTimeout(lookTimer);
+        formatTimer = setTimeout(() => put(valuesFromGuess(readLoose(box.value, prefix)), { clear: true }), 120);
+        lookTimer = setTimeout(lookQuietly, 900);
+      }
+
+      box.addEventListener('input', onType);
+      box.addEventListener('keydown', (event) => {
+        if (event.key !== 'Enter' || event.shiftKey) return;
+        event.preventDefault();
+        if (event.metaKey || event.ctrlKey) form.requestSubmit();
+        else search();
+      });
+      searchButton.addEventListener('click', search);
+
+      // One agent run at a time per form. Pressing the button again stops it;
+      // closing the form stops it too, since nobody is left to read the answer.
+      let agentRun = null;
+      async function agentSearch() {
+        if (agentRun) { agentRun.wanted = false; return; }
+        const text = box.value.trim();
+        if (!text) { box.focus(); return; }
+        const run = (agentRun = { wanted: true });
+        clearTimeout(lookTimer);
+        agentButton.dataset.running = '';
+        agentButton.textContent = 'Stop agent';
+        say('Handing it to an agent…', 'busy');
+        try {
+          const papers = await askAgent(text, {
+            onStep: (step) => { if (run.wanted) say(step, 'busy'); },
+            stillWanted: () => run.wanted && form.isConnected,
+          });
+          const hits = fromAgent(papers);
+          if (!hits.length) { say('The agent couldn’t find it. Add a detail it can search on — a title word, a co-author.', 'warn'); return; }
+          drawHits(hits, hits[0]);
+          const award = inputs.award.value;
+          put(valuesFromHit(hits[0]), { force: true });
+          if (award) inputs.award.value = award;
+          const mine = hits.filter((h) => h.mine).length;
+          say(`The agent found ${hits.length}${mine ? `, ${mine} yours` : ''}. The first is filled in — pick another to swap.`, 'good');
+        } catch (err) {
+          if (err.stopped) say('Stopped the agent.');
+          else if (err.status === 401 || err.status === 403) say('The drive’s agents aren’t reachable from this page.', 'warn');
+          else { console.error('[cv] agent search', err); say(`Agent search didn’t finish: ${err.message}.`, 'warn'); }
+        } finally {
+          agentRun = null;
+          delete agentButton.dataset.running;
+          agentButton.textContent = 'Agent search';
+        }
+      }
+      agentButton.addEventListener('click', agentSearch);
+      live.checked = liveWanted();
+      live.addEventListener('change', () => {
+        rememberLive(live.checked);
+        if (live.checked) onType();
+        else say('');
+      });
+
+      onType();
+      return box;
+    }
+
+    let openForm = null;
+    const closeForm = () => { openForm?.remove(); openForm = null; };
+
+    function wireComposers(root) {
+      for (const button of within(root, '[data-cv-form]')) {
+        if (!claim(button, 'composer')) continue;
+        // A bare "+" needs a name for anyone not looking at it. Taken from the
+        // heading beside it, so renaming the section renames the button.
+        const near = button.closest('.head-row')?.querySelector('h2, h3');
+        const label = `Add to ${marble.text(near) || 'this section'}`;
+        button.setAttribute('aria-label', label);
+        button.title = label;
+        button.addEventListener('click', (event) => {
+          event.stopPropagation();
+          const wasMine = openForm?.dataset.owner === marble.id(button);
+          closeForm();
+          if (!wasMine) drawForm(button);
+        });
+      }
+    }
+
+    function drawForm(button) {
+      // data-marble-add / data-marble-into are the ordinary add affordance.
+      // This document forks how it behaves — a form rather than a blank clone —
+      // which is what the affordance template is for. The attributes stay the
+      // standard ones so the markup still says plainly what the button does.
+      //
+      // "next" is the list after the heading this button sits beside, which is
+      // where the button lives now that it is out in the margin.
+      const into = button.dataset.marbleInto;
+      const list =
+        into === 'next' ? button.closest('.head-row')?.nextElementSibling
+        : into === 'prev' ? button.previousElementSibling
+        : document.querySelector(into);
+      const template = document.querySelector(button.dataset.marbleAdd);
+      const kind = button.dataset.cvForm;
+      const prefix = button.dataset.cvPrefix || '';
+      const fields = FORMS[kind];
+      if (!list || !template || !fields) {
+        console.error('[cv] compose: nothing to build from', button.dataset);
+        return;
+      }
+
+      const form = document.createElement('form');
+      form.className = 'cv-form';
+      form.setAttribute(TRANSIENT, '');
+      form.dataset.owner = marble.id(button);
+
+      // The form is titled from the heading beside the button rather than from
+      // the button, which now says only "+". One name, in one place.
+      const key = prefix ? nextKey(prefix) : '';
+      const heading = button.closest('.head-row')?.querySelector('h2, h3');
+      form.innerHTML =
+        `<h4>${escapeHtml(marble.text(heading) || 'New entry')}` +
+        `${key ? ` &middot; <span class="cv-key">[${key}]</span>` : ''}</h4>`;
+
+      const inputs = {};
+      for (const field of fields) {
+        const label = document.createElement('label');
+        label.textContent = field.label;
+        form.append(label);
+
+        let input;
+        if (field.type === 'preset') {
+          input = document.createElement('select');
+          input.innerHTML = `<option value="">Choose a venue…</option>` +
+            (VENUES[prefix] ?? []).map((v, i) => `<option value="${i}">${escapeHtml(v[0])}</option>`).join('');
+        } else {
+          input = document.createElement('input');
+          input.type = field.type ?? 'text';
+        }
+        form.append(input);
+        inputs[field.name] = input;
+      }
+
+      if (inputs.year) inputs.year.value = String(new Date().getFullYear());
+      if (inputs.authors) inputs.authors.value = owner();
+
+      // Picking a preset writes the venue box; it does not remember that it was
+      // picked, because the venue text is the thing that matters and you are
+      // free to edit it afterwards.
+      inputs.preset?.addEventListener('change', () => {
+        const chosen = (VENUES[prefix] ?? [])[Number(inputs.preset.value)];
+        if (!chosen) return;
+        inputs.venue.value = chosen[1].replaceAll('{y}', inputs.year?.value || '');
+        inputs.venue.focus();
+        inputs.venue.setSelectionRange(inputs.venue.value.length, inputs.venue.value.length);
+      });
+
+      const actions = document.createElement('div');
+      actions.className = 'cv-actions';
+      actions.innerHTML =
+        `<button type="button" class="cv-cancel">Cancel</button><button type="submit" class="cv-go">Add</button>`;
+      form.append(actions);
+      actions.querySelector('.cv-cancel').addEventListener('click', closeForm);
+
+      // A section that asks for it gets the loose box and lookup on top.
+      const finder = button.hasAttribute('data-cv-find') && inputs.title && inputs.venue
+        ? drawFinder({ form, inputs, prefix, key })
+        : null;
+
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        commit({ list, template, fields, inputs, key });
+        closeForm();
+      });
+      form.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') { event.preventDefault(); closeForm(); }
+      });
+
+      // Anchored under the button it came from, in page coordinates so it stays
+      // put while the document scrolls under it.
+      const box = button.getBoundingClientRect();
+      form.style.left = `${Math.round(box.left + scrollX)}px`;
+      form.style.top = `${Math.round(box.bottom + scrollY + 6)}px`;
+      document.body.append(form);
+      openForm = form;
+      (finder ?? form.querySelector('input, select'))?.focus();
+    }
+
+    function commit({ list, template, fields, inputs, key }) {
+      const node = template.content.firstElementChild.cloneNode(true);
+
+      for (const field of fields) {
+        if (!field.slot) continue;
+        const value = inputs[field.name].value.trim();
+        const target = node.querySelector(field.slot);
+        if (!target) continue;
+        // An optional field left blank takes its slot with it, so a talk with
+        // no supervisor line does not carry an empty one.
+        if (!value && field.optional) { target.remove(); continue; }
+        target.textContent = value;
+      }
+
+      if (key) {
+        const slot = node.querySelector('.key');
+        if (slot) slot.textContent = `${inputs.year?.value ?? ''} [${key}]`.trim();
+      }
+
+      assignIdsIn(node);
+
+      // The authors line is the one slot that is not plain text, so it is
+      // rebuilt from markup after the ids are minted.
+      const authors = node.querySelector('.authors');
+      if (authors && inputs.authors) {
+        authors.innerHTML = authorsHtml(inputs.authors.value.trim());
+      }
+
+      const html = marble.source.outer(node);
+      const before = persistentChildren(list)[0] ?? null;
+      list.prepend(node);
+      marble.adopt(node);
+
+      const op = {
+        type: 'insert',
+        html,
+        parentId: marble.id(list),
+        beforeId: before ? marble.id(before) : null,
+      };
+      const inverse = marble.invert(op);
+      if (inverse) marble.record({ redo: [op], undo: [inverse] });
+      marble.op(op, { immediate: true });
+    }
+
+    addEventListener('click', (event) => {
+      if (openForm && !openForm.contains(event.target)) closeForm();
+    });
+
+    // ---- history ----
+
+    addEventListener('keydown', (event) => {
+      const mod = event.metaKey || event.ctrlKey;
+      if (!mod || event.altKey) return;
+      const key = event.key.toLowerCase();
+      const isUndo = key === 'z' && !event.shiftKey;
+      const isRedo = (key === 'z' && event.shiftKey) || key === 'y';
+      if (!isUndo && !isRedo) return;
+
+      const target = event.target;
+      if (
+        target instanceof HTMLInputElement ||
+        target instanceof HTMLTextAreaElement ||
+        (target instanceof HTMLElement &&
+          target.isContentEditable &&
+          !target.hasAttribute('data-marble-editable') &&
+          !target.closest('[data-marble-editable]'))
+      ) {
+        return;
+      }
+
+      if (isUndo && typeof marble.discardStaged === 'function' && marble.discardStaged()) {
+        event.preventDefault();
+        return;
+      }
+
+      if (isUndo && marble.canUndo) {
+        event.preventDefault();
+        marble.undo();
+      } else if (isRedo && marble.canRedo) {
+        event.preventDefault();
+        marble.redo();
+      }
+    });
+
+    // ---- status ----
+
+    css.push(`
+      .marble-status {
+        position: fixed; right: 1rem; bottom: 1rem; z-index: 9999;
+        padding: .3rem .6rem; border-radius: 999px;
+        font: 500 11px ui-monospace, SFMono-Regular, Menlo, monospace;
+        letter-spacing: .04em; pointer-events: none;
+        opacity: 0; transition: opacity .25s ease;
+        background: rgba(20, 22, 26, .92); color: #b7c0cc; border: 1px solid rgba(255,255,255,.12);
+      }
+      .marble-status[data-state="saving"] { opacity: 1; }
+      .marble-status[data-state="saved"]  { opacity: .55; }
+      .marble-status[data-state="error"]  { opacity: 1; background: #46201f; color: #ff9b9b; }
+      @media print { .marble-status { display: none !important; } }
+    `);
+
+    const status = document.createElement('div');
+    status.className = 'marble-status';
+    status.setAttribute(TRANSIENT, '');
+    document.body.append(status);
+
+    let statusTimer = null;
+    document.addEventListener('marble:status', ({ detail }) => {
+      status.dataset.state = detail.state;
+      status.textContent =
+        detail.state === 'saving'
+          ? 'saving…'
+          : detail.state === 'saved'
+            ? 'saved'
+            : `error — ${detail.message}`;
+      clearTimeout(statusTimer);
+      if (detail.state === 'saved') {
+        statusTimer = setTimeout(() => (status.dataset.state = 'idle'), 1200);
+      }
+    });
+
+    // ---- tail ----
+
+    const style = document.createElement('style');
+    style.setAttribute(TRANSIENT, '');
+    style.textContent = css.join('\n');
+    document.head.append(style);
+
+    const ADDRESSABLE = addressable.join(', ');
+    marble.address(document.querySelectorAll(ADDRESSABLE));
+
+    marble.register((root) => {
+      for (const wirer of wirers) wirer(root);
+    });
+  };
+
+  if (window.marble) begin(window.marble);
+  else addEventListener('marble:ready', (event) => begin(event.detail), { once: true });
+})();
+
+// Export. The print stylesheet above is what makes the printed page match the
+// original document, so "download a PDF" is the browser's own Save as PDF and
+// needs no host, no service and no second renderer.
+// Selected by class rather than id: data-marble-id is the carrier's addressing
+// key, not a DOM id, so getElementById would find nothing here.
+document.querySelector('.rail .print')?.addEventListener('click', () => window.print());
+
+// The section outline.
+//
+// Every row is drawn from a section that is already in the document, so the
+// rail holds no copy of the CV's structure — reading it wrong is not possible,
+// because there is nothing to read but the sections themselves. The rows are
+// transient: an overview of the file is not part of it.
+//
+// Dragging a row files exactly the move a drag in the page would. The outline
+// is a second way to reach the same operation, not a second place it lives.
+(() => {
+  const doc = document.querySelector('.doc');
+  const outline = document.querySelector('.outline');
+  if (!doc || !outline) return;
+
+  const sections = () => [...doc.querySelectorAll(':scope > .sec-block')];
+  const titleOf = (section) => section.querySelector('h2.sec')?.textContent?.trim() || 'Untitled';
+
+  const svg = (d) =>
+    `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"` +
+    ` stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+  const EYE = svg('<path d="M1 8s2.6-4.6 7-4.6S15 8 15 8s-2.6 4.6-7 4.6S1 8 1 8z"/><circle cx="8" cy="8" r="1.9"/>');
+  const EYE_OFF = svg(
+    '<path d="M6.5 3.6A7.7 7.7 0 0 1 8 3.4c4.4 0 7 4.6 7 4.6a13 13 0 0 1-2.2 2.8"/>' +
+    '<path d="M4.1 4.6A12.7 12.7 0 0 0 1 8s2.6 4.6 7 4.6a7.4 7.4 0 0 0 2.5-.4"/>' +
+    '<path d="M2.2 2.2l11.6 11.6"/>');
+
+  // Whether a section is in the CV is the standard `hidden` attribute on the
+  // section itself. One fact, in the place it describes — so a hidden section
+  // is hidden with no host, no script and no stylesheet, and it does not print.
+  function hide(section, off) {
+    section.toggleAttribute('hidden', off);
+    draw();
+    const id = window.marble?.id(section);
+    if (!id) return;
+    const redo = { type: 'setAttr', id, name: 'hidden', value: off ? '' : null };
+    const undo = { type: 'setAttr', id, name: 'hidden', value: off ? null : '' };
+    window.marble.record({ redo: [redo], undo: [undo] });
+    window.marble.op(redo, { immediate: true });
+  }
+
+  let held = null;
+
+  function draw() {
+    outline.textContent = '';
+    for (const section of sections()) {
+      const row = document.createElement('li');
+      row.setAttribute('data-marble-transient', '');
+      row.draggable = true;
+      row.dataset.for = window.marble?.id(section) ?? '';
+      const off = section.hasAttribute('hidden');
+      row.classList.toggle('marble-off', off);
+      row.innerHTML =
+        `<span class="dot">⠿</span><span class="oname"></span>` +
+        `<button type="button" class="eye">${off ? EYE_OFF : EYE}</button>`;
+      row.querySelector('.oname').textContent = titleOf(section);
+
+      const eye = row.querySelector('.eye');
+      eye.title = off ? 'Show in the CV' : 'Hide from the CV';
+      eye.setAttribute('aria-pressed', String(off));
+      eye.addEventListener('click', (event) => {
+        event.stopPropagation();   // the row means "jump to it"
+        hide(section, !off);
+      });
+
+      row.addEventListener('click', () => {
+        if (section.hasAttribute('hidden')) return;   // nothing to scroll to
+        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+
+      row.addEventListener('dragstart', (event) => {
+        held = { row, section };
+        row.classList.add('marble-dragging');
+        event.dataTransfer.effectAllowed = 'move';
+        event.dataTransfer.setData('text/plain', row.dataset.for);
+      });
+      row.addEventListener('dragend', () => {
+        row.classList.remove('marble-dragging');
+        for (const l of outline.children) l.classList.remove('marble-over', 'marble-over-after');
+        held = null;
+      });
+      // Which half of the row you are over decides above or below it. Without
+      // that there is no gesture for "make this the last section", because
+      // there is no row after the last one to drop in front of.
+      const after = (event) => {
+        const box = row.getBoundingClientRect();
+        return event.clientY > box.top + box.height / 2;
+      };
+
+      row.addEventListener('dragover', (event) => {
+        if (!held || held.row === row) return;
+        event.preventDefault();
+        event.dataTransfer.dropEffect = 'move';
+        for (const l of outline.children) l.classList.remove('marble-over', 'marble-over-after');
+        row.classList.add(after(event) ? 'marble-over-after' : 'marble-over');
+      });
+      row.addEventListener('drop', (event) => {
+        if (!held || held.row === row) return;
+        event.preventDefault();
+        move(held.section, after(event) ? section.nextElementSibling : section);
+      });
+
+      outline.append(row);
+    }
+  }
+
+  // Moving the section *is* the change; the op records it. The outline is then
+  // redrawn from where the sections actually ended up rather than from what the
+  // drag intended, so the two can never disagree.
+  function move(section, before) {
+    const id = window.marble?.id(section);
+    const parentId = window.marble?.id(doc);
+    if (!id || !parentId) { doc.insertBefore(section, before); draw(); return; }
+
+    const wasBefore = section.nextElementSibling;
+    doc.insertBefore(section, before);
+
+    const op = { type: 'move', id, parentId, beforeId: window.marble.id(before) };
+    const undo = {
+      type: 'move', id, parentId,
+      beforeId: wasBefore ? window.marble.id(wasBefore) : null,
+    };
+    window.marble.record({ redo: [op], undo: [undo] });
+    window.marble.op(op, { immediate: true });
+    draw();
+  }
+
+  draw();
+
+  // An overview is only worth having if it cannot disagree with the thing it
+  // overviews, so it is redrawn from whatever the sections currently say rather
+  // than from whatever last changed them. Watching the document catches every
+  // route in: a drag in the page, a heading typed over, an undo — which moves
+  // the DOM without going through register, and was how the two first drifted
+  // apart. Coalesced to a frame, because a rename fires this per keystroke.
+  let queued = false;
+  const schedule = () => {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(() => { queued = false; draw(); });
+  };
+  new MutationObserver(schedule).observe(doc, {
+    childList: true,
+    subtree: true,
+    characterData: true,
+    // Narrowed to `hidden` on purpose: watching every attribute would fire on
+    // the contenteditable the editor puts on half the document.
+    attributes: true,
+    attributeFilter: ['hidden'],
+  });
+
+  // And after a reconcile against the file, which replaces nodes wholesale.
+  window.marble
+    ? window.marble.register(schedule)
+    : addEventListener('marble:ready', (event) => event.detail.register(schedule), { once: true });
+})();
+
+// The typeface rail.
+//
+// One fact: data-font on the sheet. Hovering a swatch retypes the whole document
+// so you are previewing the CV rather than a specimen line — but a hover is not a
+// decision, so it only moves the page. Nothing is filed until you click, which is
+// the difference between trying a face on and choosing it.
+//
+// That works because the DOM is not the write path: marble.op is. Setting the
+// attribute changes what you see and nothing else, so a hundred mouseovers cost
+// the file nothing.
+(() => {
+  const sheet = document.querySelector('.sheet');
+  const list = document.querySelector('.faces');
+  if (!sheet || !list) return;
+
+  const DEFAULT = 'source';
+  const chosen = () => sheet.getAttribute('data-font') || DEFAULT;
+
+  // What the file says, held across a hover so leaving can put it back. Read
+  // fresh on entry rather than cached at load, because a click — or an edit
+  // arriving from somewhere else — may have moved it since.
+  let committed = null;
+
+  const preview = (name) => sheet.setAttribute('data-font', name);
+
+  list.addEventListener('pointerover', (event) => {
+    const button = event.target.closest('[data-face]');
+    if (!button) return;
+    if (committed === null) committed = chosen();
+    preview(button.dataset.face);
+  });
+
+  list.addEventListener('pointerleave', () => {
+    if (committed === null) return;
+    preview(committed);
+    committed = null;
+  });
+
+  list.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-face]');
+    if (!button) return;
+    const value = button.dataset.face;
+    const was = committed ?? chosen();   // the face before the hover started
+    committed = value;                   // so leaving does not undo the choice
+    sheet.setAttribute('data-font', value);
+    derive();
+
+    const id = window.marble?.id(sheet);
+    if (!id) return;                     // no host: the page still changes, it forgets
+    const undo = { type: 'setAttr', id, name: 'data-font', value: was };
+    const redo = { type: 'setAttr', id, name: 'data-font', value };
+    window.marble.record({ redo: [redo], undo: [undo] });
+    window.marble.op(redo, { immediate: true });
+  });
+
+  // Which swatch reads as on is derived, never stored: it is "the button whose
+  // value equals the sheet's attribute", which no selector can ask. The class is
+  // marble-prefixed so the carrier keeps it out of the file and puts it back
+  // after a reconcile.
+  function derive() {
+    const on = committed ?? chosen();
+    list.classList.add('marble-derived');
+    for (const button of list.querySelectorAll('[data-face]')) {
+      button.classList.toggle('marble-on', button.dataset.face === on);
+      button.setAttribute('aria-pressed', String(button.dataset.face === on));
+    }
+  }
+
+  derive();
+  // Re-run after the page is reconciled against the file — exactly when a
+  // derived class has just been replaced by the file's idea of the markup.
+  window.marble
+    ? window.marble.register(derive)
+    : addEventListener('marble:ready', (event) => event.detail.register(derive), { once: true });
+})();
+</script>
+</body>
+</html>
