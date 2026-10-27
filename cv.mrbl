@@ -448,6 +448,84 @@
     <h2 class="rail-title" data-marble-id="rt-out" data-marble-editable>Export</h2>
     <button class="print" data-marble-id="bar-pdf" type="button">Download PDF</button>
     <p class="rail-note" data-marble-id="rn-out" data-marble-editable>In the print dialog, untick “Headers and footers”.</p>
+    <style data-marble-id="x8o5ibse">
+      /* The drive docks its own bar, file tree and chat around this page. It
+         makes room for them with margins on <html> and says how much it took
+         in --marble-shell-top, --marble-shell-left and --marble-dock-right.
+         These rules keep the CV's own parts inside the room that is left, and
+         keep all of the drive's parts out of the PDF. */
+      html { container: page / inline-size; }
+
+      /* The rail is pinned to the window, which the margins do not move, so it
+         is placed below the bar and beside the tree itself. */
+      .rail {
+        top: var(--marble-shell-top, 0px);
+        left: var(--marble-shell-left, 0px);
+      }
+      /* A section reached from the outline stops below the bar. */
+      .sec-block { scroll-margin-top: calc(var(--marble-shell-top, 0px) + 1.5rem); }
+      /* The save status stays clear of the chat. */
+      body > .marble-status { right: calc(var(--marble-dock-right, 0px) + 1rem); }
+
+      /* The sheet stays a letter page. When the room beside the rail is
+         narrower than one, the whole page is shown smaller rather than running
+         under the chat. The script after this measures the room. */
+      @media screen { .sheet { zoom: var(--sheet-fit, 1); } }
+
+      /* With the tree and the chat both open there is no room for the rail and
+         a readable page side by side, so the rail moves above the sheet and
+         packs itself flat: the faces in a row, the sections in columns. */
+      @container page (max-width: 800px) {
+        body { padding-left: 0; }
+        .rail {
+          position: static;
+          width: auto;
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+          gap: 1rem 1.5rem;
+          overflow: visible;
+          border-right: 0;
+          border-bottom: 1px solid rgba(0, 0, 0, .09);
+        }
+        .rail-group + .rail-group { margin-top: 0; }
+        .rail-group:has(> .outline) { grid-column: 1 / -1; }
+        .faces { grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr)); }
+        .outline { display: block; columns: 9rem; column-gap: .75rem; }
+        .outline li { break-inside: avoid; }
+      }
+      @container page (max-width: 520px) {
+        .rail { grid-template-columns: minmax(0, 1fr); }
+      }
+
+      @media print {
+        :root { margin: 0 !important; margin-inline: 0 !important; height: auto !important; }
+        html > :not(head, body), body > :not(.sheet) { display: none !important; }
+      }
+    </style>
+    <script data-marble-id="d3dojpmu">
+      // How large the sheet can be shown. The room is what the drive's tree and
+      // chat leave beside the rail, which changes as they open, close and are
+      // dragged wider, so it is measured again whenever <html> changes size.
+      // The answer goes in a style the page keeps for itself: none of it is
+      // saved, because the CV is the same CV at any size.
+      (() => {
+        const PAGE = 816;   // 8.5in, in CSS pixels
+        const fit = document.createElement('style');
+        fit.setAttribute('data-marble-transient', '');
+        document.head.append(fit);
+        const measure = () => {
+          const body = document.body;
+          const width = body.clientWidth;
+          const gap = width < 600 ? 12 : 24;
+          const room = width - parseFloat(getComputedStyle(body).paddingLeft) - 2 * gap;
+          const scale = Math.max(.3, Math.min(1, room / PAGE)).toFixed(3);
+          const text = `:root { --sheet-fit: ${scale}; }`;
+          if (fit.textContent !== text) fit.textContent = text;
+        };
+        measure();
+        new ResizeObserver(measure).observe(document.documentElement);
+      })();
+    </script>
   </div>
   <div class="rail-group" data-marble-id="rg-face">
     <h2 class="rail-title" data-marble-id="rt-face" data-marble-editable>Typeface</h2>
@@ -603,7 +681,7 @@
 
 
       <div class="pub" data-marble-removable data-marble-id="vvuccy2k">
-    <div class="key" data-marble-editable data-marble-id="0ohuc3ch">2026 [C8]</div>
+    <div class="key" data-marble-editable data-marble-id="0ohuc3ch">2026 [C9]</div>
     <div class="body">
       <p class="title" data-marble-editable data-marble-id="i6bfzgio">Elicitive User Interfaces: Designing How Users Shape Generative Interfaces</p>
       <p class="authors"><span data-marble-id="2ifzzjts" data-marble-editable>Eunhye Kim*, </span><strong data-marble-id="b4nqc0ji" data-marble-editable>Bryan Min*</strong><span data-marble-id="7c0dohir" data-marble-editable>, Haijun Xia, Juho Kim</span></p>
@@ -611,6 +689,14 @@
       
     </div>
   </div>
+      <div data-marble-id="wl7d386k" class="pub" data-marble-removable>
+        <div data-marble-id="gl4mpx2n" class="key" data-marble-editable>2026 [C8]</div>
+        <div data-marble-id="zs4we11b" class="body">
+          <p data-marble-id="jfh68vsn" class="title" data-marble-editable>Who Composes the Web? Exploring User and System Roles in Feature-Level Composition</p>
+          <p data-marble-id="btluchbn" class="authors"><span data-marble-id="6iibkqqx" data-marble-editable>Xinqi Zhang, Mingyuan Zhong, Longjie Guo, </span><strong data-marble-id="ohna3dq4" data-marble-editable>Bryan Min</strong><span data-marble-id="43xydiuj" data-marble-editable>, Yuanhao Zhang, Kai Lukoff</span></p>
+          <p data-marble-id="jejobxep" class="venue" data-marble-editable>Under Review</p>
+        </div>
+      </div>
       <div class="pub" data-marble-id="c7" data-marble-removable>
         <div class="key" data-marble-id="c7-k" data-marble-editable>2026 [C7]</div>
         <div class="body" data-marble-id="c7-b">
@@ -767,7 +853,7 @@
           <p class="title" data-marble-id="p1-t" data-marble-editable>Demonstration of Masonview: Content-Driven Viewport Management</p>
           <p class="authors" data-marble-id="p1-a"><strong data-marble-id="p1-me" data-marble-editable>Bryan Min</strong><span data-marble-id="p1-a2" data-marble-editable>, Matthew T. Beaudouin-Lafon, Sangho Suh, Haijun Xia</span></p>
           <p class="venue" data-marble-id="p1-v" data-marble-editable>UIST 2023 Demos</p>
-          <p class="award" data-marble-id="p1-w" data-marble-editable>🏅Best Demo Honorable Mention Award</p>
+          <p class="award" data-marble-id="p1-w" data-marble-editable>🏅 Best Demo Honorable Mention Award</p>
         </div>
       </div>
 
