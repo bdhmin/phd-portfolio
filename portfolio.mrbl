@@ -362,7 +362,9 @@
               <span class="author" data-marble-id="p-maru-a5" data-marble-removable data-marble-editable>Juho Kim</span>
             </div>
             <div class="res" data-marble-id="p-maru-r" data-marble-sortable="res" data-marble-add="#tpl-res" data-marble-instruction="Add a link.">
-              <a data-marble-removable data-marble-editable data-marble-href href="https://arxiv.org/abs/2608.25565" target="_blank" rel="noreferrer" data-marble-id="12l65jsp">DOI</a>
+              <a data-marble-removable data-marble-editable data-marble-href href="https://dl.acm.org/doi/10.1145/3830398.3830621" target="_blank" rel="noreferrer" data-marble-id="12l65jsp">DOI</a>
+              <a data-marble-id="xgdwrj0o" data-marble-removable data-marble-editable data-marble-href href="/papers/uist26-maru.pdf" target="_blank" rel="noopener">Paper</a>
+              <a data-marble-id="5h4zfdwd" data-marble-removable data-marble-editable data-marble-href href="https://github.com/kixlab/Maru" target="_blank" rel="noreferrer">Repo</a>
             </div>
           </div>
         </article>
@@ -588,7 +590,7 @@
   <!-- The label is typed and the date is not, so they are two elements. The
        script at the end of the file writes the date and nothing else, which
        is what keeps the wording here and only here. -->
-  <span data-marble-id="foot-t"><span data-marble-id="foot-l" data-marble-editable>Last Updated:</span> <span data-marble-id="foot-d">October 27, 2026</span></span>
+  <span data-marble-id="foot-t"><span data-marble-id="foot-l" data-marble-editable>Last Updated:</span> <span data-marble-id="foot-d">November 2, 2026</span></span>
 </footer>
   <script data-marble-id="flowwire">
 // The bio, as one page to write on.
