@@ -364,7 +364,7 @@
             <div class="res" data-marble-id="p-maru-r" data-marble-sortable="res" data-marble-add="#tpl-res" data-marble-instruction="Add a link.">
               <a data-marble-removable data-marble-editable data-marble-href href="https://dl.acm.org/doi/10.1145/3830398.3830621" target="_blank" rel="noreferrer" data-marble-id="12l65jsp">DOI</a>
               <a data-marble-id="xgdwrj0o" data-marble-removable data-marble-editable data-marble-href href="/papers/uist26-maru.pdf" target="_blank" rel="noopener">Paper</a>
-              <a data-marble-id="5h4zfdwd" data-marble-removable data-marble-editable data-marble-href href="https://github.com/kixlab/Maru" target="_blank" rel="noreferrer">Repo</a>
+              <a data-marble-id="5h4zfdwd" data-marble-removable data-marble-editable data-marble-href href="https://maru.kixlab.org/" target="_blank" rel="noreferrer">Website</a>
             </div>
           </div>
         </article>
@@ -1328,6 +1328,762 @@
   };
 
   // No carrier, no editor: a visitor gets paragraphs to read.
+  if (window.marble) begin(window.marble);
+  else addEventListener('marble:ready', (event) => begin(event.detail), { once: true });
+})();
+</script>
+  <script data-marble-id="vs-core">
+// Versions of a paragraph: what can be done to them.
+//
+// The bio is one page to write on (flowwire). A paragraph on it can have
+// other versions, kept the way this file has always kept them: a <marble-alt>
+// with one version on show. This script is the gestures on them (show one,
+// step to the next, start another as a copy, hide the block, rename or delete
+// a version) and draws nothing. The pager under each block (vs-bar) and the
+// list of every version (vs-list) both call it through window.bioVersions, so
+// a gesture does the same thing from either and is one undo step.
+//
+// These replace versewire's lines in the margin. Those were 2px targets in a
+// gutter that is 30px wide on a desk and gone on a phone, and pointing at one
+// swapped the paragraph's words under the pointer, which moved the lines under
+// it: crossing the stack flickered between versions. versewire is still in the
+// file further down; it stands down when vs-bar has drawn first.
+(() => {
+  const begin = (marble) => {
+    const flow = document.querySelector('.bio[data-marble-id]');
+    if (!flow) return;
+
+    const ID = 'data-marble-id';
+    const ALT = 'data-marble-alt';
+    const ACTIVE = 'data-marble-active';
+    const LABEL = 'data-label';
+    const RICH = 'data-marble-rich';
+    // The stylesheet pairs version names with data-marble-active up to v12.
+    const MOST = 12;
+    const MAC = /Mac|iPhone|iPad/.test(navigator.platform);
+    const KEYS = { fork: MAC ? '⌘↵' : 'Ctrl+Enter', up: MAC ? '⌥↑' : 'Alt+↑', down: MAC ? '⌥↓' : 'Alt+↓' };
+
+    const isTransient = (n) => n?.nodeType === 1 && n.hasAttribute('data-marble-transient');
+    const kids = (el) => [...el.children].filter((c) => !isTransient(c));
+    const isAlt = (el) => el?.tagName === 'MARBLE-ALT';
+    const units = () => kids(flow).filter((el) => marble.id(el));
+    const nameOf = (v) => v?.getAttribute(ALT) ?? null;
+    const versionsOf = (alt) => (isAlt(alt) ? kids(alt).filter((c) => c.hasAttribute(ALT)) : []);
+    const shownIn = (alt) => {
+      const all = versionsOf(alt);
+      return all.find((v) => nameOf(v) === alt.getAttribute(ACTIVE)) ?? all[0] ?? null;
+    };
+    const isHidden = (v) => Boolean(v?.classList.contains('none'));
+    const wordsOf = (el) => (el ? marble.text(el).split(/\s+/).filter(Boolean) : []);
+    const clip = (s, n) => (s.length > n ? `${s.slice(0, n - 1).trimEnd()}…` : s);
+    const labelOf = (v) => v.getAttribute(LABEL) || (isHidden(v) ? 'Hidden' : nameOf(v));
+    const whatOf = (alt) => alt.getAttribute(LABEL) || 'Versions';
+    const esc = (s) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+
+    function unitAt(node) {
+      let el = node?.nodeType === 1 ? node : node?.parentElement;
+      while (el && el.parentElement !== flow) el = el.parentElement;
+      return el && marble.id(el) ? el : null;
+    }
+    function caretUnit() {
+      const s = getSelection();
+      return document.activeElement === flow && s.rangeCount ? unitAt(s.anchorNode) : null;
+    }
+    function nextName(alt) {
+      const taken = new Set(versionsOf(alt).map(nameOf));
+      for (let n = 1; n <= MOST; n += 1) if (!taken.has(`v${n}`)) return `v${n}`;
+      return null;
+    }
+
+    const changed = () => document.dispatchEvent(new Event('bio:versions'));
+    const say = (text) => document.dispatchEvent(new CustomEvent('bio:say', { detail: text }));
+
+    // Several ops, one step. What was being typed is settled into its own
+    // step first, so undoing a switch takes back only the switch.
+    function play(ops) {
+      document.dispatchEvent(new Event('bio:settle'));
+      const undo = [];
+      for (const op of ops) {
+        const inverse = marble.invert(op);
+        if (inverse) undo.unshift(inverse);
+        marble.apply(op);
+        marble.op(op);
+      }
+      if (ops.length && undo.length) marble.record({ redo: ops, undo });
+      marble.flush();
+    }
+
+    // ---------------------------------------------------------------- caret
+
+    // Into the words, not the box: a caret left at the end of a version's
+    // <div> would start a stray line after its last paragraph.
+    function caretTo(el, start = false) {
+      if (!el) return;
+      const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, {
+        acceptNode: (n) => (n.nodeValue.trim() && !n.parentElement.closest('[data-marble-transient]')
+          ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP),
+      });
+      let text = walker.nextNode();
+      if (!start) while (walker.nextNode()) text = walker.currentNode;
+      const r = document.createRange();
+      if (text) r.setStart(text, start ? 0 : text.nodeValue.length);
+      else r.selectNodeContents(el.querySelector('p, h1, h2, h3, h4, h5, h6') ?? el);
+      r.collapse(start || Boolean(text));
+      getSelection().removeAllRanges();
+      getSelection().addRange(r);
+    }
+    function focusIn(el) {
+      if (!el) return;
+      flow.focus({ preventScroll: true });
+      caretTo(el);
+    }
+    // When the version you were writing in leaves the site, the caret goes
+    // with the one on show, or on to the next words there are.
+    function keepCaret(unit) {
+      const s = getSelection();
+      if (document.activeElement !== flow || !s.rangeCount || !unit.contains(s.anchorNode)) return;
+      const shown = isAlt(unit) ? shownIn(unit) : unit;
+      if (shown && !isHidden(shown)) return caretTo(shown);
+      const list = units();
+      const next = list[list.indexOf(unit) + 1];
+      const prev = list[list.indexOf(unit) - 1];
+      const body = (u) => (isAlt(u) ? shownIn(u) : u);
+      if (next) caretTo(body(next), true);
+      else if (prev) caretTo(body(prev));
+    }
+
+    // ---------------------------------------------------------------- gestures
+
+    function show(unit, v) {
+      const from = shownIn(unit);
+      if (!isAlt(unit) || !v || from === v) return;
+      play([{ type: 'setAttr', id: marble.id(unit), name: ACTIVE, value: nameOf(v) }]);
+      keepCaret(unit);
+      document.dispatchEvent(new CustomEvent('bio:switched', { detail: { alt: unit, from } }));
+      changed();
+    }
+
+    function step(unit, by, { skipHidden = false } = {}) {
+      const all = versionsOf(unit).filter((v) => !skipHidden || !isHidden(v));
+      const to = all[all.indexOf(shownIn(unit)) + by];
+      if (to) show(unit, to);
+    }
+
+    // A copy for a new version: it and every block in it get new ids; the
+    // marks inside a rich paragraph travel in its markup and have none.
+    function copyOf(el) {
+      const copy = marble.clone(el);
+      for (const n of [copy, ...copy.querySelectorAll(`[${ID}]`)]) n.removeAttribute(ID);
+      for (const n of [copy, ...copy.querySelectorAll('*')]) {
+        if (n !== copy && n.parentElement.closest(`[${RICH}]`)) continue;
+        n.setAttribute(ID, marble.newId());
+      }
+      return copy;
+    }
+
+    // A plain paragraph becomes a versioned block where it stands: a
+    // <marble-alt> goes in before it, the paragraph moves in as v1 with its own
+    // id, and v2 is a copy of it, or hidden.
+    function wrap(unit, second) {
+      const alt = marble.newId();
+      const v1 = marble.newId();
+      const v2 = marble.newId();
+      const label = clip(wordsOf(unit).slice(0, 5).join(' '), 36);
+      let inner = `<div class="none" data-marble-alt="v2" data-marble-id="${v2}" data-label="Hidden"></div>`;
+      if (second === 'copy') {
+        const copy = copyOf(unit);
+        copy.setAttribute(RICH, '');
+        inner = `<div data-marble-alt="v2" data-marble-id="${v2}">${marble.source.outer(copy)}</div>`;
+      }
+      play([
+        {
+          type: 'insert', parentId: marble.id(flow), beforeId: marble.id(unit),
+          html: `<marble-alt data-marble-id="${alt}" data-label="${esc(label)}" data-marble-active="v2"><div data-marble-alt="v1" data-marble-id="${v1}"></div>${inner}</marble-alt>`,
+        },
+        { type: 'move', id: marble.id(unit), parentId: v1, beforeId: null },
+      ]);
+      return marble.byId(alt);
+    }
+
+    function another(unit) {
+      if (!unit) return;
+      if (!isAlt(unit)) {
+        focusIn(shownIn(wrap(unit, 'copy')));
+        return changed();
+      }
+      const name = nextName(unit);
+      if (!name) return say('A block keeps twelve versions at most. Delete one to make room.');
+      const all = versionsOf(unit);
+      const worded = (v) => v && !isHidden(v) && wordsOf(v).length;
+      const source = worded(shownIn(unit)) ? shownIn(unit) : [...all].reverse().find(worded);
+      const copy = source
+        ? copyOf(source)
+        : Object.assign(document.createElement('div'), { innerHTML: `<p ${RICH} ${ID}="${marble.newId()}"><br></p>` });
+      if (!source) copy.setAttribute(ID, marble.newId());
+      copy.setAttribute(ALT, name);
+      copy.removeAttribute(LABEL);
+      let after = all[all.length - 1]?.nextElementSibling ?? null;
+      while (after && isTransient(after)) after = after.nextElementSibling;
+      play([
+        { type: 'insert', parentId: marble.id(unit), beforeId: after ? marble.id(after) : null, html: marble.source.outer(copy) },
+        { type: 'setAttr', id: marble.id(unit), name: ACTIVE, value: name },
+      ]);
+      focusIn(versionsOf(unit).find((v) => nameOf(v) === name));
+      changed();
+    }
+
+    function hide(unit) {
+      if (!isAlt(unit)) {
+        keepCaret(wrap(unit, 'hidden'));
+        return changed();
+      }
+      const empty = versionsOf(unit).find(isHidden);
+      if (empty) return show(unit, empty);
+      const name = nextName(unit);
+      if (!name) return say('A block keeps twelve versions at most. Delete one to make room.');
+      play([
+        {
+          type: 'insert', parentId: marble.id(unit), beforeId: marble.id(versionsOf(unit)[0]),
+          html: `<div class="none" data-marble-alt="${name}" data-marble-id="${marble.newId()}" data-label="Hidden"></div>`,
+        },
+        { type: 'setAttr', id: marble.id(unit), name: ACTIVE, value: name },
+      ]);
+      keepCaret(unit);
+      changed();
+    }
+
+    function drop(unit, v) {
+      const all = versionsOf(unit);
+      if (all.length < 2) return;
+      const ops = [];
+      if (shownIn(unit) === v) {
+        const at = all.indexOf(v);
+        ops.push({ type: 'setAttr', id: marble.id(unit), name: ACTIVE, value: nameOf(all[at + 1] ?? all[at - 1]) });
+      }
+      ops.push({ type: 'remove', id: marble.id(v) });
+      const label = isHidden(v) ? 'the hidden version' : labelOf(v);
+      play(ops);
+      keepCaret(unit);
+      say(`Deleted ${label} of ${whatOf(unit).toLowerCase()}`);
+      changed();
+    }
+
+    function rename(v, text) {
+      const next = text.trim() || null;
+      if ((v.getAttribute(LABEL) || null) === next) return;
+      play([{ type: 'setAttr', id: marble.id(v), name: LABEL, value: next }]);
+      changed();
+    }
+
+    // While writing: ⌘↵ starts another version of this paragraph; ⌥↑ / ⌥↓
+    // turn to the version before or after it.
+    flow.addEventListener('keydown', (e) => {
+      const unit = caretUnit();
+      if (!unit) return;
+      const mod = e.metaKey || e.ctrlKey;
+      if (mod && !e.shiftKey && !e.altKey && e.key === 'Enter') {
+        e.preventDefault();
+        another(unit);
+      } else if (e.altKey && !mod && !e.shiftKey && isAlt(unit) && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) {
+        e.preventDefault();
+        step(unit, e.key === 'ArrowDown' ? 1 : -1, { skipHidden: true });
+      }
+    }, true);
+
+    window.bioVersions = {
+      flow, KEYS, units, unitAt, caretUnit, isAlt, versionsOf, shownIn, isHidden, wordsOf, clip,
+      labelOf, whatOf, show, step, another, hide, drop, rename,
+    };
+  };
+
+  // No carrier, no versions to manage: a visitor reads the one on the site.
+  if (window.marble) begin(window.marble);
+  else addEventListener('marble:ready', (event) => begin(event.detail), { once: true });
+})();
+</script>
+  <script data-marble-id="vs-bar">
+// The pager under each versioned paragraph.
+//
+// ‹ 2 / 4 ›, the way a chat shows the other answers it gave: the pattern
+// people already know for "this text has other versions; step through them".
+// It is drawn inside the block, under its last line, so it moves with the text
+// as you type instead of being placed after it. It is always there while
+// editing, so it never has to appear under a moving pointer, and the one part
+// that waits for the pointer or the caret ("New version") fades in without
+// moving anything. A visitor sees none of it.
+//
+// A plain paragraph has no pager. When you pause while writing in one, a quiet
+// "New version" waits in the gap under it; ⌘↵ does the same from the keys.
+(() => {
+  const begin = (marble) => {
+    const V = window.bioVersions;
+    if (!V) return;
+    const { flow, KEYS } = V;
+
+    const svg = (d) => `<svg viewBox='0 0 16 16' width='14' height='14' fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='${d}'/></svg>`;
+    const ICON = { prev: svg('M10 3.5 5.5 8l4.5 4.5'), next: svg('M6 3.5 10.5 8 6 12.5'), plus: svg('M8 3.5v9M3.5 8h9') };
+
+    const style = document.createElement('style');
+    marble.transient(style);
+    style.textContent = `
+      .vs-bar {
+        display: flex; align-items: center; gap: 2px; height: 24px; margin: 6px 0 0 -6px;
+        font: 400 12px/1 var(--sans, system-ui, sans-serif); color: var(--dim, #71717a);
+        user-select: none; -webkit-user-select: none;
+      }
+      .vs-bar button, .vs-plus {
+        height: 24px; min-width: 24px; padding: 0 6px; border: 0; border-radius: 4px;
+        display: inline-flex; align-items: center; justify-content: center; gap: 4px;
+        background: none; color: inherit; font: inherit; cursor: pointer;
+        transition: background-color .12s ease, color .12s ease, opacity .15s ease;
+      }
+      .vs-bar button:hover:not(:disabled), .vs-plus:hover { color: var(--foreground, #171717); background: rgba(127,127,127,.12); }
+      .vs-bar button:disabled { opacity: .3; cursor: default; }
+      .vs-bar button:focus-visible, .vs-plus:focus-visible { outline: 1px solid var(--dim, #71717a); outline-offset: 1px; }
+      .vs-count { font-variant-numeric: tabular-nums; min-width: 44px; }
+      .vs-count[aria-expanded=true] { color: var(--foreground, #171717); background: rgba(127,127,127,.12); }
+      .vs-name { margin-left: 6px; min-width: 0; color: var(--faint, #a1a1aa); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .vs-bar .vs-new { margin-left: auto; flex: none; opacity: 0; }
+      marble-alt:hover > .vs-bar .vs-new, marble-alt[data-vs-caret] > .vs-bar .vs-new, .vs-bar .vs-new:focus-visible { opacity: 1; }
+      ::highlight(vs-fresh) { background-color: rgba(127,127,127,.24); }
+
+      .vs-layer { position: absolute; left: 0; top: 0; width: 0; height: 0; z-index: 44; pointer-events: none; }
+      .vs-plus {
+        position: absolute; height: 20px; white-space: nowrap; font: 400 12px/1 var(--sans, system-ui, sans-serif);
+        color: var(--dim, #71717a); pointer-events: none; opacity: 0;
+      }
+      .vs-plus[data-on] { pointer-events: auto; opacity: 1; }
+      @media (hover: none), (pointer: coarse) {
+        .vs-bar { height: 36px; }
+        .vs-bar button { height: 36px; min-width: 36px; }
+        .vs-bar .vs-new { opacity: 1; }
+      }
+      @media (prefers-reduced-motion: reduce) { .vs-bar button, .vs-plus { transition: none; } }
+    `;
+    document.head.append(style);
+    marble.pageOnly('data-vs-caret');
+
+    // editwire draws a bar of version buttons under every <marble-alt> on
+    // hover. In the bio this pager is that control, so that bar would be a
+    // second one for the same choice.
+    const quiet = document.createElement('style');
+    marble.transient(quiet);
+    document.head.append(quiet);
+
+    function chrome(tag, cls, html = '') {
+      const el = document.createElement(tag);
+      el.className = cls;
+      marble.transient(el);
+      el.setAttribute('contenteditable', 'false');
+      el.innerHTML = html;
+      return el;
+    }
+    function button(cls, html, label, run) {
+      const b = chrome('button', cls, html);
+      b.type = 'button';
+      b.title = label;
+      b.setAttribute('aria-label', label);
+      b.addEventListener('click', (e) => { e.preventDefault(); run(); });
+      return b;
+    }
+
+    // ---------------------------------------------------------------- the pager
+
+    const bars = new WeakMap();
+    function barFor(alt) {
+      let bar = bars.get(alt);
+      if (bar) return bar;
+      bar = chrome('div', 'vs-bar');
+      bar.setAttribute('role', 'group');
+      // A press here is not a click out of the page: the caret stays put.
+      bar.addEventListener('mousedown', (e) => e.preventDefault());
+      bar.prev = button('vs-prev', ICON.prev, `Previous version (${KEYS.up})`, () => V.step(alt, -1));
+      bar.count = button('vs-count', '', 'Every version', () => {
+        document.dispatchEvent(new CustomEvent('bio:list', { detail: { alt, anchor: bar.count } }));
+      });
+      bar.count.setAttribute('aria-haspopup', 'dialog');
+      bar.count.setAttribute('aria-expanded', 'false');
+      bar.next = button('vs-next', ICON.next, `Next version (${KEYS.down})`, () => V.step(alt, 1));
+      bar.name = chrome('span', 'vs-name');
+      bar.add = button('vs-new', `${ICON.plus}<span>New version</span>`, `A copy of this version to rewrite (${KEYS.fork})`, () => V.another(alt));
+      bar.append(bar.prev, bar.count, bar.next, bar.name, bar.add);
+      bars.set(alt, bar);
+      return bar;
+    }
+
+    // Filled in place, never rebuilt, so nothing under the pointer is replaced.
+    function paint() {
+      const alts = V.units().filter(V.isAlt);
+      for (const alt of alts) {
+        const bar = barFor(alt);
+        // Last in the block, under the version on show. An undo that rewrites
+        // the block keeps its chrome but puts it first, so this puts it back.
+        if (alt.lastElementChild !== bar) alt.append(bar);
+        const all = V.versionsOf(alt);
+        const shown = V.shownIn(alt);
+        const at = all.indexOf(shown);
+        bar.prev.disabled = at <= 0;
+        bar.next.disabled = at >= all.length - 1;
+        bar.count.textContent = `${at + 1} / ${all.length}`;
+        bar.count.setAttribute('aria-label', `Version ${at + 1} of ${all.length}. Every version`);
+        bar.name.textContent = shown ? `${V.whatOf(alt)} · ${V.labelOf(shown)}` : V.whatOf(alt);
+        bar.setAttribute('aria-label', `${V.whatOf(alt)} versions`);
+      }
+      quiet.textContent = alts.length
+        ? `${alts.map((a) => `.pf-bar[data-kind=alt][data-for='${CSS.escape(marble.id(a))}']`).join(', ')} { display: none !important; }`
+        : '';
+      caret();
+    }
+
+    // ----------------------------------------------- a plain paragraph's offer
+
+    const layer = chrome('div', 'vs-layer');
+    layer.removeAttribute('contenteditable');
+    document.body.append(layer);
+    const plus = button('vs-plus', `${ICON.plus}<span>New version</span>`, `Another version of this paragraph (${KEYS.fork})`, () => {
+      if (plus.unit?.isConnected) V.another(plus.unit);
+    });
+    plus.addEventListener('mousedown', (e) => e.preventDefault());
+    layer.append(plus);
+
+    let pause = 0;
+    function offer(unit) {
+      clearTimeout(pause);
+      plus.removeAttribute('data-on');
+      plus.unit = null;
+      if (!unit || !unit.matches('p')) return;
+      // Only once the writing stops, so nothing flickers in the gap as you type.
+      pause = setTimeout(() => {
+        const box = unit.getBoundingClientRect();
+        plus.style.left = `${Math.round(box.left + scrollX - 6)}px`;
+        plus.style.top = `${Math.round(box.bottom + scrollY)}px`;
+        plus.unit = unit;
+        plus.setAttribute('data-on', '');
+      }, 700);
+    }
+
+    let caretAlt = null;
+    function caret() {
+      const unit = V.caretUnit();
+      const alt = V.isAlt(unit) ? unit : null;
+      if (alt !== caretAlt) {
+        caretAlt?.removeAttribute('data-vs-caret');
+        alt?.setAttribute('data-vs-caret', '');
+        caretAlt = alt;
+      }
+      if (unit !== plus.unit || !plus.hasAttribute('data-on')) offer(alt ? null : unit);
+    }
+
+    let queued = false;
+    const frame = () => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(() => { queued = false; paint(); });
+    };
+    document.addEventListener('selectionchange', caret);
+    flow.addEventListener('input', () => offer(V.caretUnit() && !V.isAlt(V.caretUnit()) ? V.caretUnit() : null));
+    flow.addEventListener('focusout', () => setTimeout(caret, 0));
+    addEventListener('resize', () => offer(plus.unit));
+    document.addEventListener('bio:versions', frame);
+    document.addEventListener('marble:history', frame);
+    marble.register(frame);
+    paint();
+  };
+
+  if (window.marble) begin(window.marble);
+  else addEventListener('marble:ready', (event) => begin(event.detail), { once: true });
+})();
+</script>
+  <script data-marble-id="vs-list">
+// Every version of a block, in one list.
+//
+// Opened from the count in a pager ("2 / 4"). Each row says what the version
+// is called, how long it is and how it begins, so the one you want is found by
+// reading, not by flipping the page through all of them. A click puts it on
+// the site and the list stays open, so you can step through and compare.
+// Type over a name to rename it. ↑ ↓ move, Enter shows, Esc closes.
+(() => {
+  const begin = (marble) => {
+    const V = window.bioVersions;
+    if (!V) return;
+
+    const style = document.createElement('style');
+    marble.transient(style);
+    style.textContent = `
+      .vs-pop {
+        position: fixed; z-index: 66; display: flex; flex-direction: column;
+        width: 360px; max-width: calc(100vw - 16px); max-height: min(62vh, 520px);
+        background: var(--background, #fff); color: var(--foreground, #171717);
+        border: 1px solid var(--rule, #e4e4e7); border-radius: 6px;
+        box-shadow: 0 2px 6px rgba(0,0,0,.06), 0 12px 32px rgba(0,0,0,.12);
+        font: 400 12.5px/1.4 var(--sans, system-ui, sans-serif);
+      }
+      .vs-pop[hidden] { display: none; }
+      .vs-head { display: flex; align-items: baseline; gap: 6px; padding: 10px 8px 8px 14px; border-bottom: 1px solid var(--rule, #e4e4e7); }
+      .vs-head b { font-weight: 600; }
+      .vs-head span { color: var(--dim, #71717a); flex: 1; }
+      .vs-rows { overflow: auto; padding: 4px; overscroll-behavior: contain; }
+      .vs-row {
+        display: grid; grid-template-columns: 14px 1fr auto; gap: 2px 8px; align-items: center;
+        padding: 8px 8px 9px 10px; border-radius: 4px; cursor: pointer; outline: none;
+      }
+      .vs-row:hover, .vs-row:focus-visible { background: rgba(127,127,127,.08); }
+      .vs-row:focus-visible { box-shadow: inset 0 0 0 1px var(--dim, #71717a); }
+      .vs-row[aria-selected=true] { background: rgba(127,127,127,.12); }
+      .vs-dot { width: 9px; height: 9px; border-radius: 50%; border: 1px solid var(--dim, #71717a); justify-self: center; }
+      .vs-row[aria-selected=true] .vs-dot { background: var(--foreground, #171717); border-color: var(--foreground, #171717); }
+      .vs-title { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+      .vs-title input {
+        min-width: 0; width: 100%; max-width: 14rem; padding: 1px 0; border: 0; border-bottom: 1px solid transparent;
+        background: none; color: inherit; font: 600 12.5px var(--sans, system-ui, sans-serif); outline: none;
+      }
+      .vs-title input:hover { border-bottom-color: var(--rule, #e4e4e7); }
+      .vs-title input:focus { border-bottom-color: var(--dim, #71717a); }
+      .vs-title input::placeholder { color: inherit; }
+      .vs-meta { color: var(--faint, #a1a1aa); white-space: nowrap; font-size: 11.5px; }
+      .vs-snip {
+        grid-column: 2 / 4; color: var(--dim, #71717a); font-size: 12px;
+        display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+      }
+      .vs-snip.vs-none { font-style: italic; color: var(--faint, #a1a1aa); }
+      .vs-pop button {
+        border: 0; background: none; color: var(--dim, #71717a); font: inherit; cursor: pointer;
+        padding: 4px 7px; border-radius: 3px; transition: background-color .12s ease, color .12s ease;
+      }
+      .vs-pop button:hover:not(:disabled) { color: var(--foreground, #171717); background: rgba(127,127,127,.12); }
+      .vs-pop button:disabled { opacity: .35; cursor: default; }
+      .vs-pop button:focus-visible { outline: 1px solid var(--dim, #71717a); outline-offset: 1px; }
+      .vs-del { opacity: 0; }
+      .vs-row:hover .vs-del, .vs-row:focus-within .vs-del { opacity: 1; }
+      .vs-pop button.vs-del:hover { color: #b4544f; background: rgba(180,84,79,.1); }
+      .vs-foot { display: flex; gap: 4px; padding: 6px 8px; border-top: 1px solid var(--rule, #e4e4e7); }
+      @media (hover: none), (pointer: coarse) { .vs-del { opacity: 1; } .vs-row { padding: 12px 10px; } }
+    `;
+    document.head.append(style);
+
+    const el = (tag, cls, text) => Object.assign(document.createElement(tag), cls ? { className: cls } : {}, text != null ? { textContent: text } : {});
+    const pop = el('div', 'vs-pop');
+    marble.transient(pop);
+    pop.setAttribute('role', 'dialog');
+    pop.hidden = true;
+    document.body.append(pop);
+
+    let alt = null;
+    let anchor = null;
+
+    function room() {
+      const css = getComputedStyle(document.documentElement);
+      const px = (n) => parseFloat(css.getPropertyValue(n)) || 0;
+      return { left: px('--marble-shell-left'), top: px('--marble-shell-top'), right: innerWidth - px('--marble-dock-right'), bottom: innerHeight };
+    }
+    // Under the count it came from, or over it when there is no room below.
+    function place() {
+      if (!anchor?.isConnected) return close();
+      const a = anchor.getBoundingClientRect();
+      const r = room();
+      const w = pop.offsetWidth;
+      const h = pop.offsetHeight;
+      pop.style.left = `${Math.max(r.left + 8, Math.min(a.left - 4, r.right - w - 8))}px`;
+      const below = a.bottom + 6;
+      pop.style.top = `${below + h > r.bottom - 8 ? Math.max(r.top + 8, a.top - h - 6) : below}px`;
+    }
+
+    function fill() {
+      const all = V.versionsOf(alt);
+      const shown = V.shownIn(alt);
+      const focused = pop.contains(document.activeElement) ? document.activeElement : null;
+      const keepRow = focused?.closest?.('.vs-row')?.version;
+      const keepInput = focused?.matches?.('input') ? focused.closest('.vs-row').version : null;
+
+      const head = el('div', 'vs-head');
+      head.append(el('b', '', V.whatOf(alt)), el('span', '', `${all.length} versions`));
+      const x = el('button', '', 'Close');
+      x.type = 'button';
+      x.addEventListener('click', close);
+      head.append(x);
+
+      const rows = el('div', 'vs-rows');
+      rows.setAttribute('role', 'listbox');
+      rows.setAttribute('aria-label', `Versions of ${V.whatOf(alt)}`);
+      for (const v of all) {
+        const row = el('div', 'vs-row');
+        row.version = v;
+        row.tabIndex = -1;
+        row.setAttribute('role', 'option');
+        row.setAttribute('aria-selected', String(v === shown));
+        const words = V.wordsOf(v).length;
+        const name = el('input');
+        name.value = v.getAttribute('data-label') ?? '';
+        name.placeholder = V.labelOf(v);
+        name.spellcheck = false;
+        name.setAttribute('aria-label', 'Name of this version');
+        name.addEventListener('click', (e) => e.stopPropagation());
+        name.addEventListener('change', () => V.rename(v, name.value));
+        name.addEventListener('keydown', (e) => {
+          e.stopPropagation();
+          if (e.key === 'Enter') { e.preventDefault(); name.blur(); }
+          if (e.key === 'Escape') { e.preventDefault(); name.value = v.getAttribute('data-label') ?? ''; row.focus(); }
+        });
+        const title = el('div', 'vs-title');
+        title.append(name, el('span', 'vs-meta', V.isHidden(v) ? 'hidden' : `${words} words${v === shown ? ' · on the site' : ''}`));
+        const del = el('button', 'vs-del', 'Delete');
+        del.type = 'button';
+        del.disabled = all.length < 2;
+        del.title = all.length < 2 ? 'A block keeps at least one version' : 'Delete this version';
+        del.addEventListener('click', (e) => { e.stopPropagation(); V.drop(alt, v); });
+        const snip = el('div', `vs-snip${V.isHidden(v) ? ' vs-none' : ''}`,
+          V.isHidden(v) ? 'Nothing shows here on the site.' : V.clip(V.wordsOf(v).join(' '), 180) || 'No words yet.');
+        row.append(el('span', 'vs-dot'), title, del, snip);
+        row.addEventListener('click', () => { V.show(alt, v); row.focus(); });
+        rows.append(row);
+      }
+
+      const foot = el('div', 'vs-foot');
+      const add = el('button', '', '+ New version');
+      add.type = 'button';
+      add.title = `A copy of the version on the site (${V.KEYS.fork})`;
+      add.addEventListener('click', () => { close(); V.another(alt); });
+      foot.append(add);
+      if (!all.some(V.isHidden)) {
+        const hide = el('button', '', 'Hide on site');
+        hide.type = 'button';
+        hide.title = 'Show nothing here on the site, keeping every version';
+        hide.addEventListener('click', () => V.hide(alt));
+        foot.append(hide);
+      }
+      pop.replaceChildren(head, rows, foot);
+      pop.setAttribute('aria-label', `Versions of ${V.whatOf(alt)}`);
+      const back = [...rows.children].find((r) => r.version === (keepInput ?? keepRow));
+      if (keepInput && back) back.querySelector('input').focus();
+      else if (back) back.focus();
+    }
+
+    function open(target, from) {
+      if (alt === target && !pop.hidden) return close();
+      close();
+      alt = target;
+      anchor = from;
+      anchor.setAttribute('aria-expanded', 'true');
+      pop.hidden = false;
+      fill();
+      place();
+      const current = [...pop.querySelectorAll('.vs-row')].find((r) => r.getAttribute('aria-selected') === 'true');
+      (current ?? pop.querySelector('.vs-row'))?.focus({ preventScroll: true });
+      current?.scrollIntoView({ block: 'nearest' });
+    }
+    function close() {
+      if (pop.hidden) return;
+      pop.hidden = true;
+      anchor?.setAttribute('aria-expanded', 'false');
+      alt = null;
+      anchor = null;
+    }
+
+    pop.addEventListener('keydown', (e) => {
+      const rows = [...pop.querySelectorAll('.vs-row')];
+      const at = rows.indexOf(document.activeElement);
+      if (e.key === 'Escape') { e.preventDefault(); close(); V.flow.focus({ preventScroll: true }); }
+      else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        rows[Math.max(0, Math.min(rows.length - 1, at + (e.key === 'ArrowDown' ? 1 : -1)))]?.focus();
+      } else if (e.key === 'Enter' && at >= 0) {
+        e.preventDefault();
+        V.show(alt, rows[at].version);
+      }
+    });
+    document.addEventListener('pointerdown', (e) => {
+      if (pop.hidden || pop.contains(e.target) || anchor?.contains(e.target)) return;
+      close();
+    }, true);
+
+    const refresh = () => requestAnimationFrame(() => {
+      if (pop.hidden) return;
+      if (!alt?.isConnected) return close();
+      fill();
+      place();
+    });
+    document.addEventListener('bio:list', (e) => open(e.detail.alt, e.detail.anchor));
+    document.addEventListener('bio:versions', refresh);
+    document.addEventListener('marble:history', refresh);
+    addEventListener('resize', () => !pop.hidden && place());
+    addEventListener('scroll', () => !pop.hidden && place(), { passive: true });
+  };
+
+  if (window.marble) begin(window.marble);
+  else addEventListener('marble:ready', (event) => begin(event.detail), { once: true });
+})();
+</script>
+  <script data-marble-id="vs-wash">
+// What a switch changed.
+//
+// After the pager or the list puts another version on the site, the words it
+// has that the last one did not are washed for a moment, so two drafts a
+// sentence apart can be told apart without reading both. It is a CSS
+// highlight over the words where they stand: nothing in the paragraph is
+// wrapped or moved to show it, so nothing can be filed by mistake, and the
+// first keystroke clears it.
+(() => {
+  const begin = (marble) => {
+    const V = window.bioVersions;
+    if (!V || !window.Highlight || !CSS.highlights) return;
+
+    const norm = (w) => w.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '');
+
+    // Which of b's words are in the longest run of words b shares with a.
+    function common(a, b) {
+      const dp = Array.from({ length: a.length + 1 }, () => new Uint16Array(b.length + 1));
+      for (let i = a.length - 1; i >= 0; i -= 1) {
+        for (let j = b.length - 1; j >= 0; j -= 1) {
+          dp[i][j] = a[i] === b[j] ? dp[i + 1][j + 1] + 1 : Math.max(dp[i + 1][j], dp[i][j + 1]);
+        }
+      }
+      const keep = new Set();
+      for (let i = 0, j = 0; i < a.length && j < b.length;) {
+        if (a[i] === b[j]) { keep.add(j); i += 1; j += 1; }
+        else if (dp[i + 1][j] >= dp[i][j + 1]) i += 1;
+        else j += 1;
+      }
+      return keep;
+    }
+
+    let timer = 0;
+    const clear = () => {
+      clearTimeout(timer);
+      CSS.highlights.delete('vs-fresh');
+    };
+
+    function wash(alt, from) {
+      clear();
+      const to = V.shownIn(alt);
+      if (!from || !to || V.isHidden(from) || V.isHidden(to)) return;
+      const words = [];
+      const walker = document.createTreeWalker(to, NodeFilter.SHOW_TEXT);
+      while (walker.nextNode()) {
+        const node = walker.currentNode;
+        for (const m of node.nodeValue.matchAll(/\S+/g)) {
+          words.push({ node, s: m.index, e: m.index + m[0].length, w: norm(m[0]) });
+        }
+      }
+      const keep = common(V.wordsOf(from).map(norm), words.map((t) => t.w));
+      // A run of new words is one wash, spaces and all, so it reads as a phrase.
+      const runs = [];
+      words.forEach((t, k) => {
+        if (!t.w || keep.has(k)) return;
+        const last = runs[runs.length - 1];
+        if (last && last.node === t.node && last.k === k - 1) Object.assign(last, { e: t.e, k });
+        else runs.push({ node: t.node, s: t.s, e: t.e, k });
+      });
+      if (!runs.length) return;
+      CSS.highlights.set('vs-fresh', new Highlight(...runs.map((r) => new StaticRange({
+        startContainer: r.node, startOffset: r.s, endContainer: r.node, endOffset: r.e,
+      }))));
+      timer = setTimeout(clear, 2600);
+    }
+
+    document.addEventListener('bio:switched', (e) => wash(e.detail.alt, e.detail.from));
+    V.flow.addEventListener('input', clear);
+  };
+
   if (window.marble) begin(window.marble);
   else addEventListener('marble:ready', (event) => begin(event.detail), { once: true });
 })();
