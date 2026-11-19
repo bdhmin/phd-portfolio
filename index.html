@@ -276,7 +276,7 @@
       <p data-marble-id="0fayi70v" data-marble-rich>My research centers around <b>Malleable Software</b>, software that users can easily and expressively modify and extend to their desired needs.</p>
       <marble-alt data-marble-id="statement" data-label="Research statement" data-marble-active="v1">
         <div data-marble-alt="v1" data-marble-id="stmt-v1">
-          <p data-marble-id="stmt-v1-b" data-marble-rich>Recently, I've been exploring malleable software under the world of generative user interfaces (GenUI). Generative AI can now automatically build almost anything we envision. Yet, we're still generating the same traditional interfaces we've always had. <b>How must we design generative user interfaces differently compared to the traditional user interfaces we have today? What must&nbsp;<i>GenUI Design</i> look like, as opposed to <i>UI Design</i>?</b></p>
+          <p data-marble-id="stmt-v1-b" data-marble-rich>Recently, I've been exploring malleable software under the world of generative user interfaces (GenUI). Generative AI can now automatically build almost anything we envision. Yet, we're still generating the same traditional interfaces we've always had. <b>How must we design generative interfaces differently compared to the traditional interfaces we have today? What must&nbsp;<i>GenUI Design</i> look like, as opposed to <i>UI Design</i>?</b></p>
         </div>
         <div data-marble-alt="v2" data-marble-id="stmt-v2">
           <p data-marble-id="stmt-v2-a" data-marble-rich>My research centers on <b>malleable software</b>—interfaces that enable users to easily, expressively, and broadly customize their software interface without code or a bloated list of settings. Specifically, I explore <strong>how we can bring malleable software to real-world, production-grade software systems, considering the tensions between designers, developers, and end-users.</strong> To do so, I study these three user groups, create interaction techniques, develop novel software systems, and create theoretical frameworks for bringing malleable software to more end-users.</p>
@@ -321,10 +321,22 @@
      stack, so the year a paper is filed under is where it sits, and a paper
      dragged into another year is in that year's list, not wearing a label.
      A year whose last paper has gone shows nothing, not a bare heading. */
-  .years { display: flex; flex-direction: column; gap: 4rem; }
-  @container page (min-width: 768px) { .years { gap: 3rem; } }
+  .years { display: flex; flex-direction: column; gap: 3rem; }
+  @container page (min-width: 768px) { .years { gap: 2.25rem; } }
   .year:not(:has(.paper)) { display: none; }
-  .year-h { margin: 0 0 1.25rem; font-family: var(--sans); font-weight: 600; font-size: 1rem; line-height: 1.5rem; color: var(--dim); }
+  .year-h { margin: 0 0 .75rem; font-family: var(--sans); font-weight: 600; font-size: 1rem; line-height: 1.5rem; color: var(--dim); }
+
+  /* How close the list sits. A paper's picture is about as tall as its text,
+     so a row needs little air to read as one, and a year or a section needs
+     only enough more to be told from the next. These come after sitecss and
+     win over its first, looser spacing for the same rules. */
+  .papers { gap: 3.5rem; margin-top: 3.5rem; }
+  .papers h2 { margin-bottom: 1rem; }
+  .stack { gap: 2.5rem; }
+  @container page (min-width: 768px) { .stack { gap: 1.25rem; } }
+  /* Stacked, the picture starts where its title does, not centred over it. */
+  .paper { gap: .75rem; align-items: flex-start; }
+  @container page (min-width: 768px) { .paper { gap: 1.75rem; align-items: center; } }
 </style>
     <div data-marble-id="grp-pubs">
       <h2 data-marble-id="grp-pubs-h" data-marble-editable data-paper-list="#stack-pubs">Publications</h2>
@@ -590,7 +602,7 @@
   <!-- The label is typed and the date is not, so they are two elements. The
        script at the end of the file writes the date and nothing else, which
        is what keeps the wording here and only here. -->
-  <span data-marble-id="foot-t"><span data-marble-id="foot-l" data-marble-editable>Last Updated:</span> <span data-marble-id="foot-d">November 2, 2026</span></span>
+  <span data-marble-id="foot-t"><span data-marble-id="foot-l" data-marble-editable>Last Updated:</span> <span data-marble-id="foot-d">November 19, 2026</span></span>
 </footer>
   <script data-marble-id="flowwire">
 // The bio, as one page to write on.

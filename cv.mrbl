@@ -526,6 +526,131 @@
         new ResizeObserver(measure).observe(document.documentElement);
       })();
     </script>
+    <style data-marble-id="wo0d307j">
+      /* An entry can stay in the file but off the CV, like a submission still
+         under review. It carries data-cv-off. Whoever reads the CV (the PDF, a
+         share link, the file opened on its own) does not see it. Only the
+         owner's own view, the one with the drive's shell in it, keeps it in
+         place, faded, with its eye held out in the margin to put it back. */
+      .doc [data-marble-removable] { position: relative; }
+      html:not(:has(body > marble-shell)) .doc [data-cv-off],
+      html:not(:has(body > marble-shell)) .cv-eye { display: none; }
+      .doc [data-cv-off] > :not(.cv-eye, .marble-grip) { opacity: .32; }
+
+      /* One lane further out than the drag handle, so the eye never sits on
+         the text and lines up down the page. */
+      .cv-eye {
+        position: absolute;
+        left: calc(var(--lane) - 1.1rem);
+        top: 0;
+        display: grid;
+        place-items: center;
+        width: 1rem;
+        height: 1.15rem;
+        padding: 0;
+        border: 0;
+        border-radius: 4px;
+        background: none;
+        color: var(--ink-1);
+        cursor: pointer;
+        opacity: 0;
+        transition:
+          opacity var(--out) var(--ease),
+          color var(--out) var(--ease),
+          background-color var(--out) var(--ease);
+      }
+      .cv-eye svg { width: 13px; height: 13px; display: block; }
+      .doc [data-marble-removable]:hover > .cv-eye,
+      .doc [data-marble-removable] > .cv-eye:focus-visible { opacity: .55; transition-duration: var(--in); }
+      .doc [data-cv-off] > .cv-eye { opacity: .8; }
+      .doc [data-marble-removable] > .cv-eye:hover {
+        opacity: 1;
+        color: var(--ink-3);
+        background: var(--tint-2);
+        transition-duration: var(--in);
+      }
+      .cv-eye:focus-visible { outline: 2px solid #5b8def; outline-offset: 1px; }
+
+      @media print {
+        .doc [data-cv-off], .cv-eye { display: none !important; }
+      }
+    </style>
+    <script data-marble-id="ed0qi4tk">
+      // The eye beside each entry. Whether an entry is on the CV is one
+      // attribute on the entry itself, filed like any other change, so it
+      // survives a reload and undoes with Ctrl+Z. The eyes are drawn by the
+      // page and are not part of the file.
+      (() => {
+        const OFF = 'data-cv-off';
+        const svg = (d) =>
+          `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"` +
+          ` stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+        const EYE = svg('<path d="M1 8s2.6-4.6 7-4.6S15 8 15 8s-2.6 4.6-7 4.6S1 8 1 8z"/><circle cx="8" cy="8" r="1.9"/>');
+        const EYE_OFF = svg(
+          '<path d="M6.5 3.6A7.7 7.7 0 0 1 8 3.4c4.4 0 7 4.6 7 4.6a13 13 0 0 1-2.2 2.8"/>' +
+          '<path d="M4.1 4.6A12.7 12.7 0 0 0 1 8s2.6 4.6 7 4.6a7.4 7.4 0 0 0 2.5-.4"/>' +
+          '<path d="M2.2 2.2l11.6 11.6"/>');
+
+        function paint(item) {
+          const eye = item.querySelector(':scope > .cv-eye');
+          const off = item.hasAttribute(OFF);
+          if (!eye || eye.dataset.off === String(off)) return;
+          eye.dataset.off = String(off);
+          eye.innerHTML = off ? EYE_OFF : EYE;
+          eye.title = off ? 'Show on the CV' : 'Hide from the CV';
+          eye.setAttribute('aria-label', eye.title);
+          eye.setAttribute('aria-pressed', String(off));
+        }
+
+        function keep(item, off) {
+          const marble = window.marble;
+          const id = marble?.id(item);
+          if (!id) return;
+          item.toggleAttribute(OFF, off);
+          paint(item);
+          const redo = { type: 'setAttr', id, name: OFF, value: off ? '' : null };
+          const undo = { type: 'setAttr', id, name: OFF, value: off ? null : '' };
+          marble.record({ redo: [redo], undo: [undo] });
+          marble.op(redo, { immediate: true });
+        }
+
+        function wire() {
+          const doc = document.querySelector('.doc');
+          if (!doc) return;
+          for (const item of doc.querySelectorAll('[data-marble-removable]')) {
+            if (!item.querySelector(':scope > .cv-eye')) {
+              const eye = document.createElement('button');
+              eye.type = 'button';
+              eye.className = 'cv-eye';
+              eye.setAttribute('data-marble-transient', '');
+              eye.setAttribute('contenteditable', 'false');
+              eye.addEventListener('click', (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                keep(item, !item.hasAttribute(OFF));
+              });
+              item.prepend(eye);
+            }
+            paint(item);
+          }
+        }
+
+        function begin(marble) {
+          wire();
+          marble.register(wire);
+          // New entries, and an undo that puts one back on the CV.
+          const doc = document.querySelector('.doc');
+          if (doc) new MutationObserver(wire).observe(doc, {
+            childList: true, subtree: true, attributes: true, attributeFilter: [OFF],
+          });
+        }
+
+        const start = () => window.marble
+          ? begin(window.marble)
+          : addEventListener('marble:ready', (event) => begin(event.detail), { once: true });
+        document.readyState === 'loading' ? addEventListener('DOMContentLoaded', start, { once: true }) : start();
+      })();
+    </script>
   </div>
   <div class="rail-group" data-marble-id="rg-face">
     <h2 class="rail-title" data-marble-id="rt-face" data-marble-editable>Typeface</h2>
@@ -566,6 +691,31 @@
   <div class="doc" data-marble-id="doc">
 
 
+  <section data-marble-id="ti3yaisc" class="sec-block" aria-label="Research Focus"><h2 data-marble-id="tj5u0am9" class="sec" data-marble-editable>Research Focus</h2>
+    <style data-marble-id="sg3ib5h6">
+      /* The research focus is one paragraph in the body face. Empty, it keeps a
+         line of height so there is somewhere to click, and shows a hint. A
+         line broken with Shift+Enter stays broken. */
+      .focus { margin: 0 0 7pt; min-height: 1.34em; white-space: pre-wrap; }
+      .focus:empty::before { content: attr(data-ph); color: rgba(17, 17, 20, .38); }
+      @media print { .focus:empty::before { content: none; } }
+    </style>
+    <p data-marble-id="9hfa52xc" class="focus" data-marble-editable="write" data-ph="Your research focus, in a sentence or two.">My research focuses on designing components to a software stack that give people agency over their software interfaces. 
+
+My research focuses on designing components to a software stack that give people agency over their software interfaces. 
+
+My research focuses on designing tools that make software interfaces more personalized for people. 
+
+Making the interface malleable
+Providing agency over AI-generated interfaces
+
+Goal: Give people agency over their software tools
+How: Redesign layers of our software stack
+
+My research focuses on developing design approaches and tools in the software stack to help people create personalized software tools to empower their work.
+
+My research focuses helping people create personalized software tools that empower their work.</p>
+  </section>
   <section class="sec-block" data-marble-id="blk-edu" aria-label="Education">
     <!-- ================= EDUCATION ================= -->
 
@@ -576,11 +726,11 @@
         <div class="org" data-marble-id="edu-ucsd-org" data-marble-editable>University of California San Diego</div>
         <div class="row indent" data-marble-id="edu-phd">
           <span data-marble-id="edu-phd-l" data-marble-editable>Ph.D. in Cognitive Science. Advisor: Haijun Xia</span>
-          <span class="r" data-marble-id="edu-phd-r" data-marble-editable>Expected June 2029</span>
+          <span class="r" data-marble-id="edu-phd-r" data-marble-editable>Expected 06/2029</span>
         </div>
         <div class="row indent" data-marble-id="edu-bs">
           <span data-marble-id="edu-bs-l" data-marble-editable>B.S. in Computer Science (Magna Cum Laude)</span>
-          <span class="r" data-marble-id="edu-bs-r" data-marble-editable>June 2023</span>
+          <span class="r" data-marble-id="edu-bs-r" data-marble-editable>06/2023</span>
         </div>
       </div>
     </div>
@@ -598,18 +748,18 @@
       <div class="entry" data-marble-removable data-marble-id="bepu1ktw">
     <div class="row">
       <span class="org" data-marble-editable data-marble-id="hdzssnmf">The Allen Institute for Artificial Intelligence</span>
-      <span class="r" data-marble-editable data-marble-id="q2u95hlu">September 2026 - Current</span>
+      <span class="r" data-marble-editable data-marble-id="q2u95hlu">09/2026 - Current</span>
     </div>
     <div class="row">
       <span data-marble-editable data-marble-id="xio8i8lr">Research Intern</span>
       <span class="r" data-marble-editable data-marble-id="8hg4uh4c">Seattle, WA</span>
     </div>
-    <div class="sup" data-marble-editable data-marble-id="g13eqyia">Sangho Suh</div>
+    <div class="sup" data-marble-editable data-marble-id="g13eqyia">Supervisor: Sangho Suh</div>
   </div>
       <div class="entry" data-marble-id="res-msft" data-marble-removable>
         <div class="row" data-marble-id="res-msft-1">
           <span class="org" data-marble-id="res-msft-org" data-marble-editable>FX and EPIC Research Group, Microsoft</span>
-          <span class="r" data-marble-id="res-msft-when" data-marble-editable>May 2026 - August 2026</span>
+          <span class="r" data-marble-id="res-msft-when" data-marble-editable>05/2026 - 08/2026</span>
         </div>
         <div class="row" data-marble-id="res-msft-2">
           <span data-marble-id="res-msft-role" data-marble-editable>Research Intern</span>
@@ -621,19 +771,19 @@
       <div class="entry" data-marble-id="res-fil2" data-marble-removable>
         <div class="row" data-marble-id="res-fil2-1">
           <span class="org" data-marble-id="res-fil2-org" data-marble-editable>Foundation Interface Lab, UC San Diego</span>
-          <span class="r" data-marble-id="res-fil2-when" data-marble-editable>September 2023 - September 2024</span>
+          <span class="r" data-marble-id="res-fil2-when" data-marble-editable>09/2023 - Current</span>
         </div>
         <div class="row" data-marble-id="res-fil2-2">
-          <span data-marble-id="res-fil2-role" data-marble-editable>Researcher</span>
+          <span data-marble-id="res-fil2-role" data-marble-editable>Ph.D. Researcher</span>
           <span class="r" data-marble-id="res-fil2-where" data-marble-editable>La Jolla, CA</span>
         </div>
-        <div data-marble-id="res-fil2-sup" data-marble-editable>Supervisor: Haijun Xia [C3]</div>
+        <div data-marble-id="res-fil2-sup" data-marble-editable>Supervisor: Haijun Xia [C3, C5, R1, P3, P6, P8]</div>
       </div>
 
       <div class="entry" data-marble-id="res-kix" data-marble-removable>
         <div class="row" data-marble-id="res-kix-1">
           <span class="org" data-marble-id="res-kix-org" data-marble-editable>KIXLAB, KAIST</span>
-          <span class="r" data-marble-id="res-kix-when" data-marble-editable>July 2023 - September 2023</span>
+          <span class="r" data-marble-id="res-kix-when" data-marble-editable>07/2023 - 09/2023</span>
         </div>
         <div class="row" data-marble-id="res-kix-2">
           <span data-marble-id="res-kix-role" data-marble-editable>Undergraduate Research Intern</span>
@@ -645,7 +795,7 @@
       <div class="entry" data-marble-id="res-fil1" data-marble-removable>
         <div class="row" data-marble-id="res-fil1-1">
           <span class="org" data-marble-id="res-fil1-org" data-marble-editable>Foundation Interface Lab, UC San Diego</span>
-          <span class="r" data-marble-id="res-fil1-when" data-marble-editable>November 2022 - June 2023</span>
+          <span class="r" data-marble-id="res-fil1-when" data-marble-editable>11/2022 - 06/2023</span>
         </div>
         <div class="row" data-marble-id="res-fil1-2">
           <span data-marble-id="res-fil1-role" data-marble-editable>Undergraduate Researcher</span>
@@ -657,7 +807,7 @@
       <div class="entry" data-marble-id="res-t4g" data-marble-removable>
         <div class="row" data-marble-id="res-t4g-1">
           <span class="org" data-marble-id="res-t4g-org" data-marble-editable>Tech4Good Lab, UC Santa Cruz</span>
-          <span class="r" data-marble-id="res-t4g-when" data-marble-editable>January 2021 - January 2023</span>
+          <span class="r" data-marble-id="res-t4g-when" data-marble-editable>01/2021 - 01/2023</span>
         </div>
         <div class="row" data-marble-id="res-t4g-2">
           <span data-marble-id="res-t4g-role" data-marble-editable>Undergraduate Researcher</span>
@@ -680,16 +830,7 @@
     <div data-marble-id="conf" data-marble-sortable="pubs">
 
 
-      <div class="pub" data-marble-removable data-marble-id="vvuccy2k">
-    <div class="key" data-marble-editable data-marble-id="0ohuc3ch">2026 [C9]</div>
-    <div class="body">
-      <p class="title" data-marble-editable data-marble-id="i6bfzgio">Elicitive User Interfaces: Designing How Users Shape Generative Interfaces</p>
-      <p class="authors"><span data-marble-id="2ifzzjts" data-marble-editable>Eunhye Kim*, </span><strong data-marble-id="b4nqc0ji" data-marble-editable>Bryan Min*</strong><span data-marble-id="7c0dohir" data-marble-editable>, Haijun Xia, Juho Kim</span></p>
-      <p class="venue" data-marble-editable data-marble-id="to872kj4">Under Review</p>
-      
-    </div>
-  </div>
-      <div data-marble-id="wl7d386k" class="pub" data-marble-removable>
+      <div data-cv-off="" data-marble-id="wl7d386k" class="pub" data-marble-removable>
         <div data-marble-id="gl4mpx2n" class="key" data-marble-editable>2026 [C8]</div>
         <div data-marble-id="zs4we11b" class="body">
           <p data-marble-id="jfh68vsn" class="title" data-marble-editable>Who Composes the Web? Exploring User and System Roles in Feature-Level Composition</p>
@@ -767,12 +908,29 @@
     </div>
     <div data-marble-id="pre" data-marble-sortable="pubs">
 
+      <div class="pub" data-marble-removable data-marble-id="vvuccy2k">
+    <div class="key" data-marble-editable data-marble-id="0ohuc3ch">2026 [R3]</div>
+    <div class="body">
+      <p class="title" data-marble-editable data-marble-id="i6bfzgio">Elicitive User Interfaces: Designing How Users Shape Generative Interfaces</p>
+      <p class="authors"><span data-marble-id="2ifzzjts" data-marble-editable>Eunhye Kim*, </span><strong data-marble-id="b4nqc0ji" data-marble-editable>Bryan Min*</strong><span data-marble-id="7c0dohir" data-marble-editable>, Haijun Xia, Juho Kim</span></p>
+      <p class="venue" data-marble-editable data-marble-id="to872kj4">09/2026 - arXiv:2609.23642 - DOI: 10.48550/arXiv.2609.23642</p>
+      
+    </div>
+  </div>
+      <div class="pub" data-marble-id="r1" data-marble-removable>
+        <div class="key" data-marble-id="r1-k" data-marble-editable>2026 [R2]</div>
+        <div class="body" data-marble-id="r1-b">
+          <p class="title" data-marble-id="r1-t" data-marble-editable>Gradual Generation of User Interfaces as a Design Method for Malleable Software</p>
+          <p class="authors" data-marble-id="r1-a"><strong data-marble-id="r1-me" data-marble-editable>Bryan Min</strong><span data-marble-id="r1-a2" data-marble-editable>, Peiling Jiang, Zhicheng Huang, Haijun Xia</span></p>
+          <p class="venue" data-marble-id="r1-v" data-marble-editable>01/2026 - arXiv:2601.17975</p>
+        </div>
+      </div>
       <div class="pub" data-marble-id="r2" data-marble-removable>
         <div class="key" data-marble-id="r2-k" data-marble-editable>2026 [R1]</div>
         <div class="body" data-marble-id="r2-b">
           <p class="title" data-marble-id="r2-t" data-marble-editable>Making Abstraction Concrete: A Design Space and Interaction Model of Abstraction in Interactive Systems</p>
           <p class="authors" data-marble-id="r2-a"><strong data-marble-id="r2-me" data-marble-editable>Bryan Min</strong><span data-marble-id="r2-a2" data-marble-editable>, Sangho Suh, Jim Hollan, Haijun Xia</span></p>
-          <p class="venue" data-marble-id="r2-v" data-marble-editable>May 2026 - arXiv:2605.11344</p>
+          <p class="venue" data-marble-id="r2-v" data-marble-editable>05/2026 - arXiv:2605.11344</p>
         </div>
       </div>
 
@@ -784,14 +942,6 @@
     </div>
     <div data-marble-id="pos" data-marble-sortable="pubs">
 
-      <div class="pub" data-marble-id="r1" data-marble-removable>
-        <div class="key" data-marble-id="r1-k" data-marble-editable>2026 [P8]</div>
-        <div class="body" data-marble-id="r1-b">
-          <p class="title" data-marble-id="r1-t" data-marble-editable>Gradual Generation of User Interfaces as a Design Method for Malleable Software</p>
-          <p class="authors" data-marble-id="r1-a"><strong data-marble-id="r1-me" data-marble-editable>Bryan Min</strong><span data-marble-id="r1-a2" data-marble-editable>, Peiling Jiang, Zhicheng Huang, Haijun Xia</span></p>
-          <p class="venue" data-marble-id="r1-v" data-marble-editable>January 2026 - arXiv:2601.17975</p>
-        </div>
-      </div>
 
       <div class="pub" data-marble-id="p7" data-marble-removable>
         <div class="key" data-marble-id="p7-k" data-marble-editable>2026 [P7]</div>
@@ -875,54 +1025,90 @@
       </div>
 
     </div>
+    <p data-marble-id="anm5zz6o" class="footnote" style="margin: 0; font-size: .85em; font-style: italic;" data-marble-editable>* Equal contribution</p>
+    <script data-marble-id="pubnum-js">
+// Paper numbers. The [C9], [R2], [P7] or [A1] on a paper is its place in its
+// own list, counted up from the bottom, after the letter that list's + button
+// carries, so the newest paper has the highest number. Only papers on the CV
+// are counted, so the PDF never skips a number; one taken off with its eye
+// shows the number it would take back. The label stays in the key's text, so
+// the file and the PDF read the same with or without a host.
+//
+// It is put right after anything a person does in this tab (a drag, an add, a
+// delete, an undo, a key typed over) and filed with marble.op like any other
+// edit. Changes that arrive from elsewhere (another tab, an agent) are left as
+// they came until someone here acts, so two open tabs never race to write the
+// same fix. The key being typed in is left alone until it loses focus.
+(() => {
+  const doc = document.querySelector('.doc');
+  if (!doc) return;
+
+  // Whatever is in brackets is the label; the rest is the year, as typed.
+  const yearOf = (text) =>
+    text.replace(/\s*\[[^\]]*(\]|$)/g, ' ').replace(/\s+/g, ' ').trim();
+  const letterOf = (list) =>
+    list.previousElementSibling?.querySelector('[data-cv-prefix]')?.dataset.cvPrefix || '';
+
+  function labels() {
+    const out = [];
+    for (const list of doc.querySelectorAll('[data-marble-sortable="pubs"]')) {
+      const letter = letterOf(list);
+      if (!letter) continue;
+      const pubs = [...list.children].filter(
+        (el) => el.matches('.pub') && !el.hasAttribute('data-marble-transient'));
+      let below = 0;
+      for (const pub of pubs.reverse()) {
+        const off = pub.hasAttribute('data-cv-off');
+        const key = pub.querySelector(':scope > .key');
+        if (key) out.push([key, `[${letter}${below + 1}]`]);
+        if (!off) below += 1;
+      }
+    }
+    return out;
+  }
+
+  function settle() {
+    const marble = window.marble;
+    if (!marble) return;
+    const typing = document.activeElement;
+    for (const [key, label] of labels()) {
+      if (key === typing || key.contains(typing)) continue;
+      const was = key.textContent.replace(/\s+/g, ' ').trim();
+      const year = yearOf(was);
+      const text = year ? `${year} ${label}` : label;
+      const id = marble.id(key);
+      if (text === was || !id) continue;
+      key.textContent = text;
+      marble.op({ type: 'setText', id, text }, { immediate: true });
+    }
+  }
+
+  // After the gesture's own handlers have run and filed their change. A paper
+  // being dragged moves on every dragover, so nothing is filed until it drops.
+  let queued = false;
+  let dragging = false;
+  const soon = () => {
+    if (queued || dragging) return;
+    queued = true;
+    setTimeout(() => { queued = false; if (!dragging) settle(); }, 0);
+  };
+  addEventListener('dragstart', () => { dragging = true; }, true);
+  addEventListener('dragend', () => { dragging = false; }, true);
+
+  // A change that lands a moment after the gesture (an undo from the drive's
+  // own button) is caught by watching the lists for a short while after it.
+  let touched = -Infinity;
+  const touch = () => { touched = performance.now(); soon(); };
+  for (const type of ['pointerup', 'click', 'keyup', 'dragend', 'submit', 'focusout']) {
+    addEventListener(type, touch, true);
+  }
+  new MutationObserver(() => {
+    if (performance.now() - touched < 1500) soon();
+  }).observe(doc, { childList: true, subtree: true });
+})();
+</script>
   </section>
 
-
-  <section class="sec-block" data-marble-id="blk-pro" aria-label="Professional Experience">
-    <!-- ================= PROFESSIONAL EXPERIENCE ================= -->
-
-    <div class="head-row" data-marble-id="hr-s-pro">
-      <button class="add" data-marble-id="add-pro" type="button" data-cv-form="exp" data-marble-add="#tpl-exp" data-marble-into="next">+</button>
-      <h2 class="sec" data-marble-id="s-pro" data-marble-editable>Professional Experience</h2>
-    </div>
-
-    <div data-marble-id="pro" data-marble-sortable="exp">
-
-      <div class="entry" data-marble-id="pro-comm" data-marble-removable>
-        <div class="row" data-marble-id="pro-comm-1">
-          <span class="org" data-marble-id="pro-comm-org" data-marble-editable>Communications Department, UC San Diego</span>
-          <span class="r" data-marble-id="pro-comm-when" data-marble-editable>October 2022 - July 2023</span>
-        </div>
-        <div class="row" data-marble-id="pro-comm-2">
-          <span data-marble-id="pro-comm-role" data-marble-editable>Data Visualization Developer</span>
-          <span class="r" data-marble-id="pro-comm-where" data-marble-editable>La Jolla, CA</span>
-        </div>
-      </div>
-
-      <div class="entry" data-marble-id="pro-att" data-marble-removable>
-        <div class="row" data-marble-id="pro-att-1">
-          <span class="org" data-marble-id="pro-att-org" data-marble-editable>AT&amp;T</span>
-          <span class="r" data-marble-id="pro-att-when" data-marble-editable>June 2022 - September 2022</span>
-        </div>
-        <div class="row" data-marble-id="pro-att-2">
-          <span data-marble-id="pro-att-role" data-marble-editable>Software Engineer Intern</span>
-          <span class="r" data-marble-id="pro-att-where" data-marble-editable>Chicago, IL</span>
-        </div>
-      </div>
-
-      <div class="entry" data-marble-id="pro-cse" data-marble-removable>
-        <div class="row" data-marble-id="pro-cse-1">
-          <span class="org" data-marble-id="pro-cse-org" data-marble-editable>CSE Department, UC San Diego</span>
-          <span class="r" data-marble-id="pro-cse-when" data-marble-editable>June 2022 - October 2022</span>
-        </div>
-        <div class="row" data-marble-id="pro-cse-2">
-          <span data-marble-id="pro-cse-role" data-marble-editable>Undergraduate Research Assistant</span>
-          <span class="r" data-marble-id="pro-cse-where" data-marble-editable>La Jolla, CA</span>
-        </div>
-      </div>
-
-    </div>
-  </section>
 
   <section class="sec-block" data-marble-id="blk-hon" aria-label="Honors and Awards">
     <!-- ================= HONORS ================= -->
@@ -943,6 +1129,52 @@
       </div>
     </div>
   </section>
+  <section class="sec-block" data-marble-id="blk-pro" aria-label="Professional Experience">
+    <!-- ================= PROFESSIONAL EXPERIENCE ================= -->
+
+    <div class="head-row" data-marble-id="hr-s-pro">
+      <button class="add" data-marble-id="add-pro" type="button" data-cv-form="exp" data-marble-add="#tpl-exp" data-marble-into="next">+</button>
+      <h2 class="sec" data-marble-id="s-pro" data-marble-editable>Professional Experience</h2>
+    </div>
+
+    <div data-marble-id="pro" data-marble-sortable="exp">
+
+      <div class="entry" data-marble-id="pro-comm" data-marble-removable>
+        <div class="row" data-marble-id="pro-comm-1">
+          <span class="org" data-marble-id="pro-comm-org" data-marble-editable>Communications Department, UC San Diego</span>
+          <span class="r" data-marble-id="pro-comm-when" data-marble-editable>10/2022 - 07/2023</span>
+        </div>
+        <div class="row" data-marble-id="pro-comm-2">
+          <span data-marble-id="pro-comm-role" data-marble-editable>Data Visualization Developer</span>
+          <span class="r" data-marble-id="pro-comm-where" data-marble-editable>La Jolla, CA</span>
+        </div>
+      </div>
+
+      <div class="entry" data-marble-id="pro-att" data-marble-removable>
+        <div class="row" data-marble-id="pro-att-1">
+          <span class="org" data-marble-id="pro-att-org" data-marble-editable>AT&amp;T</span>
+          <span class="r" data-marble-id="pro-att-when" data-marble-editable>06/2022 - 09/2022</span>
+        </div>
+        <div class="row" data-marble-id="pro-att-2">
+          <span data-marble-id="pro-att-role" data-marble-editable>Software Engineer Intern</span>
+          <span class="r" data-marble-id="pro-att-where" data-marble-editable>Chicago, IL</span>
+        </div>
+      </div>
+
+      <div class="entry" data-marble-id="pro-cse" data-marble-removable>
+        <div class="row" data-marble-id="pro-cse-1">
+          <span class="org" data-marble-id="pro-cse-org" data-marble-editable>CSE Department, UC San Diego</span>
+          <span class="r" data-marble-id="pro-cse-when" data-marble-editable>06/2022 - 10/2022</span>
+        </div>
+        <div class="row" data-marble-id="pro-cse-2">
+          <span data-marble-id="pro-cse-role" data-marble-editable>Undergraduate Research Assistant</span>
+          <span class="r" data-marble-id="pro-cse-where" data-marble-editable>La Jolla, CA</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
   <section class="sec-block" data-marble-id="blk-tea" aria-label="Teaching">
     <!-- ================= TEACHING ================= -->
 
@@ -1032,7 +1264,7 @@
       <div class="entry" data-marble-id="tal-1" data-marble-removable>
         <div class="row" data-marble-id="tal-1-1">
           <span class="org" data-marble-id="tal-1-org" data-marble-editable>Dynamic Abstractions Reading Group</span>
-          <span class="r" data-marble-id="tal-1-when" data-marble-editable>February 2026</span>
+          <span class="r" data-marble-id="tal-1-when" data-marble-editable>02/2026</span>
         </div>
         <div class="talk" data-marble-id="tal-1-t" data-marble-editable>What is Malleable Software Now?</div>
       </div>
@@ -1040,7 +1272,7 @@
       <div class="entry" data-marble-id="tal-2" data-marble-removable>
         <div class="row" data-marble-id="tal-2-1">
           <span class="org" data-marble-id="tal-2-org" data-marble-editable>CHI 2025 Workshop on Tools for Thought, Selected Lightning Talk</span>
-          <span class="r" data-marble-id="tal-2-when" data-marble-editable>April 2025</span>
+          <span class="r" data-marble-id="tal-2-when" data-marble-editable>04/2025</span>
         </div>
         <div class="talk" data-marble-id="tal-2-t" data-marble-editable>Feedforward for GenAI: Opportunities for a Design Space</div>
       </div>
@@ -1048,7 +1280,7 @@
       <div class="entry" data-marble-id="tal-3" data-marble-removable>
         <div class="row" data-marble-id="tal-3-1">
           <span class="org" data-marble-id="tal-3-org" data-marble-editable>Cognitive Science Student Association 2024 Conference</span>
-          <span class="r" data-marble-id="tal-3-when" data-marble-editable>May 2024</span>
+          <span class="r" data-marble-id="tal-3-when" data-marble-editable>05/2024</span>
         </div>
         <div class="talk" data-marble-id="tal-3-t" data-marble-editable>Towards Malleable and Proactive Information Spaces with Generative AI</div>
       </div>
@@ -1094,7 +1326,6 @@
     </div>
   </section>
   </div>
-  <p data-marble-id="anm5zz6o" class="footnote" style="margin: 2.2em 0 0; font-size: .85em; font-style: italic;" data-marble-editable>* Equal contribution</p>
 </main>
 
 <!-- What the + buttons clone. Ids are minted at insert time, not copied. -->
