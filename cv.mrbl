@@ -651,6 +651,21 @@
         document.readyState === 'loading' ? addEventListener('DOMContentLoaded', start, { once: true }) : start();
       })();
     </script>
+    <style data-marble-id="zg20c3ye">
+      /* Typing in a field shows as a faint wash of ink behind the words, not a
+         blue ring around them. The wash spreads past the text with a shadow so
+         nothing shifts when focus arrives. */
+      [data-marble-editable]:focus,
+      [data-marble-editable]:focus-visible {
+        outline: none;
+        background: var(--tint-1);
+        box-shadow: 0 0 0 3px var(--tint-1);
+        border-radius: 2px;
+      }
+      @media print {
+        [data-marble-editable]:focus { background: none; box-shadow: none; }
+      }
+    </style>
   </div>
   <div class="rail-group" data-marble-id="rg-face">
     <h2 class="rail-title" data-marble-id="rt-face" data-marble-editable>Typeface</h2>
@@ -691,7 +706,7 @@
   <div class="doc" data-marble-id="doc">
 
 
-  <section data-marble-id="ti3yaisc" class="sec-block" aria-label="Research Focus"><h2 data-marble-id="tj5u0am9" class="sec" data-marble-editable>Research Focus</h2>
+  <section hidden="" data-marble-id="ti3yaisc" class="sec-block" aria-label="Research Focus"><h2 data-marble-id="tj5u0am9" class="sec" data-marble-editable>Research Focus</h2>
     <style data-marble-id="sg3ib5h6">
       /* The research focus is one paragraph in the body face. Empty, it keeps a
          line of height so there is somewhere to click, and shows a hint. A
@@ -700,17 +715,24 @@
       .focus:empty::before { content: attr(data-ph); color: rgba(17, 17, 20, .38); }
       @media print { .focus:empty::before { content: none; } }
     </style>
-    <p data-marble-id="9hfa52xc" class="focus" data-marble-editable="write" data-ph="Your research focus, in a sentence or two.">My research focuses on designing components to a software stack that give people agency over their software interfaces. 
+    <p data-marble-id="9hfa52xc" class="focus" data-marble-editable="write" data-ph="Your research focus, in a sentence or two.">My research focuses on developing tools and design approaches to make software interfaces more personalizable. I 
 
-My research focuses on designing components to a software stack that give people agency over their software interfaces. 
+My research centers around malleable software: software in which users can freely and easily personalize to their desired needs and tasks. I develop tools and design approaches to make software more conducive to personalization to empower people's ability to create their own tools, 
 
-My research focuses on designing tools that make software interfaces more personalized for people. 
+My research focuses on developing tools and design approaches to make software more personalizable. to empower people's ability to create their own tools, 
+
 
 Making the interface malleable
 Providing agency over AI-generated interfaces
 
 Goal: Give people agency over their software tools
 How: Redesign layers of our software stack
+
+My research focuses on designing components to a software stack that give people agency over their software interfaces. 
+
+My research focuses on designing components to a software stack that give people agency over their software interfaces. 
+
+
 
 My research focuses on developing design approaches and tools in the software stack to help people create personalized software tools to empower their work.
 
